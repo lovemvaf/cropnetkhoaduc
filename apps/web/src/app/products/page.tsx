@@ -6,6 +6,8 @@ import ProductCard from '@/features/products/components/ProductCard';
 import { apiClient } from '@/shared/services/api';
 import { formatVND } from '@cropnet/utils';
 import { Search, SlidersHorizontal, ArrowUpDown, ChevronLeft, ChevronRight, Tag } from 'lucide-react';
+import Link from 'next/link';
+
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -155,12 +157,12 @@ export default function ProductsPage() {
                       <span className="text-lg font-black text-primary-500">{formatVND(Number(p.price))}</span>
                       <span className="text-xs text-gray-400"> / {p.unit}</span>
                     </div>
-                    <a
+                    <Link
                       href={`/products/${p.id}`}
                       className="bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-4 py-2 rounded-xl transition-colors shadow-sm"
                     >
                       Mua ngay
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </Card>
