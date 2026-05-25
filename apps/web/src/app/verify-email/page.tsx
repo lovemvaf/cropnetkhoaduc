@@ -5,6 +5,7 @@ import { Card, Container } from '@cropnet/ui';
 import { useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { apiClient } from '@/shared/services/api';
+import Link from 'next/link';
 
 function VerifyEmailForm() {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
@@ -174,9 +175,9 @@ function VerifyEmailForm() {
             {resending ? 'Đang gửi lại...' : 'Chưa nhận được mã? Gửi lại mã xác minh'}
           </button>
           
-          <a href="/login" className="text-gray-400 hover:underline font-medium mt-1">
+          <Link href="/login" className="text-gray-400 hover:underline font-medium mt-1">
             Quay lại Đăng nhập
-          </a>
+          </Link>
         </div>
       </Card>
     </Container>

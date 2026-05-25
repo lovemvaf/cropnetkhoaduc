@@ -1,5 +1,6 @@
 import React from 'react';
 import { Sprout } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -18,9 +19,9 @@ export default function Footer() {
         <div>
           <h4 className="font-semibold text-gray-900 mb-4">Liên kết nhanh</h4>
           <ul className="space-y-2 text-gray-500">
-            <li><a href="/products" className="hover:text-primary-500">Mua sắm</a></li>
-            <li><a href="/forum" className="hover:text-primary-500">Cộng đồng</a></li>
-            <li><a href="/dashboard/supplier" className="hover:text-primary-500">Góc nhà vườn</a></li>
+            <li><Link href="/products" className="hover:text-primary-500">Mua sắm</Link></li>
+            <li><Link href="/forum" className="hover:text-primary-500">Cộng đồng</Link></li>
+            <li><Link href="/dashboard/supplier" className="hover:text-primary-500">Góc nhà vườn</Link></li>
           </ul>
         </div>
 

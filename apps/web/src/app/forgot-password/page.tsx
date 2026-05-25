@@ -5,6 +5,7 @@ import { Card, Container } from '@cropnet/ui';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/shared/services/api';
+import Link from 'next/link';
 
 export default function ForgotPasswordPage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -110,9 +111,9 @@ export default function ForgotPasswordPage() {
         </form>
 
         <div className="text-center mt-4 text-xs text-gray-500 border-t pt-4">
-          <a href="/login" className="text-primary-500 font-bold hover:underline">
+          <Link href="/login" className="text-primary-500 font-bold hover:underline">
             Quay lại Đăng nhập
-          </a>
+          </Link>
         </div>
       </Card>
     </Container>

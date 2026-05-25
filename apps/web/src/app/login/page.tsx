@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useAuthStore } from '@/shared/stores/auth';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/shared/services/api';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -146,9 +147,9 @@ export default function LoginPage() {
 
         <div className="text-center mt-4 text-xs text-gray-500 border-t pt-4">
           Chưa có tài khoản?{' '}
-          <a href="/register" className="text-primary-500 font-bold hover:underline">
+          <Link href="/register" className="text-primary-500 font-bold hover:underline">
             Đăng ký ngay
-          </a>
+          </Link>
         </div>
       </Card>
     </Container>

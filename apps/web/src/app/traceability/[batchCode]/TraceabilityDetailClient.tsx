@@ -10,6 +10,7 @@ import {
 import { useParams } from 'next/navigation';
 import { apiClient } from '@/shared/services/api';
 import { formatDate } from '@cropnet/utils';
+import Link from 'next/link';
 
 // Premium Realistic Digital Certificate Templates
 function CertificateTemplate({ cert, batch, shareUrl }: { cert: any; batch: any; shareUrl: string }) {
@@ -249,9 +250,9 @@ export default function TraceabilityDetailPageClient() {
         <HelpCircle className="w-16 h-16 text-gray-300 mx-auto" />
         <h3 className="text-xl font-extrabold text-gray-900">Không Tìm Thấy Thông Tin</h3>
         <p className="text-sm text-gray-500">Mã lô hàng truy xuất không hợp lệ hoặc đã bị vô hiệu hóa bởi nhà vườn.</p>
-        <a href="/products" className="inline-block bg-primary-500 hover:bg-primary-600 text-white font-bold text-sm px-6 py-2.5 rounded-xl transition-colors">
+        <Link href="/products" className="inline-block bg-primary-500 hover:bg-primary-600 text-white font-bold text-sm px-6 py-2.5 rounded-xl transition-colors">
           Quay lại cửa hàng
-        </a>
+        </Link>
       </Container>
     );
   }
