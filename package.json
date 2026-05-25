@@ -1,0 +1,18 @@
+{
+  "name": "cropnet-monorepo",
+  "version": "1.0.0",
+  "description": "Sàn thương mại điện tử nông sản Việt Nam - D2C",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:server": "npm run dev --workspace=apps/server",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "build:server": "npm run build --workspace=apps/server",
+    "build:web": "npm run build --workspace=apps/web",
+    "db:migrate": "npm run db:migrate --workspace=apps/server",
+    "db:seed": "npm run db:seed --workspace=apps/server"
+  }
+}
