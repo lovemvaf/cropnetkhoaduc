@@ -39,7 +39,7 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       // Smart offline fallback for frontend-only testing using DB seeds credentials
-      if (err.code === 'ERR_NETWORK') {
+      if (err.code === 'ERR_NETWORK' || !err.response) {
         if (data.email === 'admin@cropnet.vn' && data.password === '123456') {
           login('mock-token-admin', { id: 'admin-123', email: data.email, fullName: 'Cộng Tác Viên CropNet', role: 'ADMIN', status: 'ACTIVE', supplierStatus: null });
           router.push('/admin');

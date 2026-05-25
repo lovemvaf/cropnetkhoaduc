@@ -40,7 +40,7 @@ export default function RegisterPage() {
         setServerError(res.data.error?.message || (typeof res.data.error === 'string' ? res.data.error : null) || 'Đăng ký thất bại');
       }
     } catch (err: any) {
-      if (err.code === 'ERR_NETWORK') {
+      if (err.code === 'ERR_NETWORK' || !err.response) {
         alert('Đăng ký giả lập thành công (Môi trường phát triển)!');
         router.push('/login');
         return;
