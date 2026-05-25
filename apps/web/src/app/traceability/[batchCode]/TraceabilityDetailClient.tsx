@@ -167,58 +167,168 @@ export default function TraceabilityDetailPageClient() {
       } catch (err) {
         console.warn('Failed to load batch from database, falling back:', err);
         // Direct local fallback matching the redesigned structure
-        const mockFallback = {
-          batchCode,
-          harvestDate: new Date().toISOString(),
-          farmingArea: 'Phân khu A3 - Trồng trọt Bưởi Hữu Cơ',
-          farmingProcess: 'Tưới tiêu bằng nước ngọt tự nhiên từ sông Hàm Luông, bón phân compost hữu cơ tự nhiên không sử dụng thuốc trừ sâu hóa học.',
-          product: {
-            name: 'Bưởi Da Xanh Bến Tre',
-            supplier: {
-              farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn',
-              address: 'Xã Sơn Định, Huyện Chợ Lách, Tỉnh Bến Tre',
-              latitude: 10.2458,
-              longitude: 106.1284
-            }
-          },
-          certifications: [
-            {
-              id: 'mock-cert-1',
-              name: 'Chứng nhận VietGAP',
-              issuer: 'Cơ quan kiểm nghiệm cây trồng Bến Tre',
-              validUntil: '2028-12-31T00:00:00.000Z',
-              imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
-              status: 'APPROVED'
-            }
-          ],
-          logisticsTimeline: [
-            { status: 'PICKED_UP', title: 'Thu hoạch & Đóng gói', description: 'Lô bưởi đạt chuẩn chín được thu hoạch thủ công và phân loại kỹ lưỡng tại vựa Cái Mơn', timestamp: new Date(Date.now() - 3600 * 4000).toISOString(), location: 'Chợ Lách, Bến Tre' },
-            { status: 'IN_TRANSIT', title: 'Vận chuyển lạnh', description: 'Đang vận chuyển bằng xe lạnh chuyên dụng, kiểm soát nhiệt độ nghiêm ngặt', timestamp: new Date(Date.now() - 3600 * 2000).toISOString(), location: 'Cao tốc Trung Lương - Mỹ Thuận' },
-            { status: 'DELIVERED', title: 'Cập cảng CropNet TP. HCM', description: 'Đã nhập kho mát phân phối và sẵn sàng giao hàng trực tiếp tới khách hàng D2C', timestamp: new Date().toISOString(), location: 'Bình Chánh, TP. HCM' }
-          ],
-          inspectionReports: [
-            {
-              inspector: 'Trạm Kiểm Định Vùng 2 (Bộ NN&PTNT)',
-              status: 'PASSED',
-              checkDate: new Date(Date.now() - 3600 * 3000).toISOString(),
-              comments: 'Đã hoàn thành kiểm nghiệm các chỉ tiêu an toàn thực phẩm sinh học và hóa học. Lô hàng đạt độ chín, mẫu mã đẹp, không phát hiện dư lượng thuốc bảo vệ thực vật hay kim loại nặng.',
-              metrics: {
-                pesticideLevel: '0.0% (Không phát hiện)',
-                humidity: '84.8%',
-                sugarLevel: '12.6 Brix'
+        // Direct local fallback matching the redesigned structure
+        let mockFallback: any = null;
+
+        if (batchCode === 'BATCH-CACHUA-DALAT-01') {
+          mockFallback = {
+            batchCode,
+            harvestDate: new Date().toISOString(),
+            farmingArea: 'Nhà màng khu B - Trồng trọt Cà Chua Hữu Cơ',
+            farmingProcess: 'Hệ thống tưới nhỏ giọt công nghệ Israel khép kín, bón phân hữu cơ vi sinh không sử dụng thuốc trừ sâu hóa học.',
+            product: {
+              name: 'Cà Chua Bi Đà Lạt',
+              supplier: {
+                farmName: 'Dalat Bio Farm',
+                address: 'Đường Hồ Xuân Hương, Phường 9, TP. Đà Lạt, Tỉnh Lâm Đồng',
+                latitude: 11.9542,
+                longitude: 108.4612
               }
+            },
+            certifications: [
+              {
+                id: 'mock-cert-tomato',
+                name: 'Chứng nhận VietGAP',
+                issuer: 'Cơ quan kiểm nghiệm lâm nghiệp Lâm Đồng',
+                validUntil: '2028-12-31T00:00:00.000Z',
+                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                status: 'APPROVED'
+              }
+            ],
+            logisticsTimeline: [
+              { status: 'PICKED_UP', title: 'Thu hoạch & Đóng gói', description: 'Cà chua bi thu hoạch chín tự nhiên tại nhà màng Dalat Bio Farm', timestamp: new Date(Date.now() - 3600 * 4000).toISOString(), location: 'TP. Đà Lạt, Lâm Đồng' },
+              { status: 'IN_TRANSIT', title: 'Vận chuyển lạnh', description: 'Đang vận chuyển từ Đà Lạt xuống TP. HCM bằng xe đông lạnh chuyên dụng', timestamp: new Date(Date.now() - 3600 * 2000).toISOString(), location: 'Đèo Bảo Lộc, Lâm Đồng' },
+              { status: 'DELIVERED', title: 'Nhập kho mát TP. HCM', description: 'Đã nhập kho phân phối mát CropNet và sẵn sàng giao hàng', timestamp: new Date().toISOString(), location: 'Quận 7, TP. HCM' }
+            ],
+            inspectionReports: [
+              {
+                inspector: 'Trung tâm Phân tích và Kiểm nghiệm Lâm Đồng',
+                status: 'PASSED',
+                checkDate: new Date(Date.now() - 3600 * 3000).toISOString(),
+                comments: 'Mẫu cà chua bi đạt các chỉ tiêu hóa lý, không có kim loại nặng hay tồn dư chất bảo vệ thực vật. Hàm lượng dinh dưỡng cao.',
+                metrics: {
+                  pesticideLevel: '0.0%',
+                  humidity: '92.3%',
+                  sugarLevel: '7.8 Brix'
+                }
+              }
+            ],
+            shipmentInfo: {
+              shipmentId: `SHIP-TOMATO-${batchCode}`,
+              carrier: 'Dalat Express Logistics',
+              vehicle: 'Xe lạnh Hyundai 1.5 tấn - BKS 49C-567.89',
+              currentTemp: '4.8°C',
+              humidity: '82.4%',
+              departureDate: new Date(Date.now() - 3600 * 3000).toISOString(),
+              arrivalDate: new Date().toISOString()
             }
-          ],
-          shipmentInfo: {
-            shipmentId: `SHIP-BUOI-${batchCode}`,
-            carrier: 'CropNet Express Cold-Chain',
-            vehicle: 'Xe đông lạnh Isuzu 2.4 tấn - BKS 29H-456.78',
-            currentTemp: '5.4°C',
-            humidity: '76.8%',
-            departureDate: new Date(Date.now() - 3600 * 3000).toISOString(),
-            arrivalDate: new Date().toISOString()
-          }
-        };
+          };
+        } else if (batchCode === 'BATCH-RAUMUONG-01') {
+          mockFallback = {
+            batchCode,
+            harvestDate: new Date().toISOString(),
+            farmingArea: 'Phân khu C1 - Trồng rau thủy canh hữu cơ',
+            farmingProcess: 'Phương pháp thủy canh hồi lưu dùng dung dịch dinh dưỡng hữu cơ tự chế từ men vi sinh vi lượng sạch.',
+            product: {
+              name: 'Rau Muống Hữu Cơ',
+              supplier: {
+                farmName: 'Vườn Rau Sạch Bến Tre',
+                address: 'Huyện Châu Thành, Tỉnh Bến Tre',
+                latitude: 10.2742,
+                longitude: 106.3124
+              }
+            },
+            certifications: [
+              {
+                id: 'mock-cert-spinach',
+                name: 'Chứng nhận hữu cơ Organic',
+                issuer: 'Hiệp hội Nông nghiệp Hữu cơ Việt Nam',
+                validUntil: '2028-12-31T00:00:00.000Z',
+                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                status: 'APPROVED'
+              }
+            ],
+            logisticsTimeline: [
+              { status: 'PICKED_UP', title: 'Thu hoạch cắt gốc', description: 'Rau muống non được thu hoạch cắt gốc lúc sáng sớm', timestamp: new Date(Date.now() - 3600 * 4000).toISOString(), location: 'Châu Thành, Bến Tre' },
+              { status: 'DELIVERED', title: 'Giao trực tiếp D2C', description: 'Đã cập bến cửa hàng phân phối trung chuyển CropNet trong ngày', timestamp: new Date().toISOString(), location: 'Bình Tân, TP. HCM' }
+            ],
+            inspectionReports: [
+              {
+                inspector: 'Chi cục Bảo vệ Thực vật Bến Tre',
+                status: 'PASSED',
+                checkDate: new Date(Date.now() - 3600 * 3000).toISOString(),
+                comments: 'Sản phẩm rau ăn lá đạt chuẩn an toàn vệ sinh thực phẩm cao nhất, hoàn toàn không có hóa chất kích thích sinh trưởng.',
+                metrics: {
+                  pesticideLevel: '0.0%',
+                  humidity: '94.5%',
+                  sugarLevel: '1.2 Brix'
+                }
+              }
+            ],
+            shipmentInfo: {
+              shipmentId: `SHIP-SPINACH-${batchCode}`,
+              carrier: 'Giao Hàng Nhanh CropNet',
+              vehicle: 'Xe tải nhẹ Suzuki 500kg - BKS 71C-123.45',
+              currentTemp: '8.2°C',
+              humidity: '90.1%',
+              departureDate: new Date(Date.now() - 3600 * 3000).toISOString(),
+              arrivalDate: new Date().toISOString()
+            }
+          };
+        } else {
+          mockFallback = {
+            batchCode,
+            harvestDate: new Date().toISOString(),
+            farmingArea: 'Phân khu A3 - Trồng trọt Bưởi Hữu Cơ',
+            farmingProcess: 'Tưới tiêu bằng nước ngọt tự nhiên từ sông Hàm Luông, bón phân compost hữu cơ tự nhiên không sử dụng thuốc trừ sâu hóa học.',
+            product: {
+              name: 'Bưởi Da Xanh Bến Tre',
+              supplier: {
+                farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn',
+                address: 'Xã Sơn Định, Huyện Chợ Lách, Tỉnh Bến Tre',
+                latitude: 10.2458,
+                longitude: 106.1284
+              }
+            },
+            certifications: [
+              {
+                id: 'mock-cert-1',
+                name: 'Chứng nhận VietGAP',
+                issuer: 'Cơ quan kiểm nghiệm cây trồng Bến Tre',
+                validUntil: '2028-12-31T00:00:00.000Z',
+                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                status: 'APPROVED'
+              }
+            ],
+            logisticsTimeline: [
+              { status: 'PICKED_UP', title: 'Thu hoạch & Đóng gói', description: 'Lô bưởi đạt chuẩn chín được thu hoạch thủ công và phân loại kỹ lưỡng tại vựa Cái Mơn', timestamp: new Date(Date.now() - 3600 * 4000).toISOString(), location: 'Chợ Lách, Bến Tre' },
+              { status: 'IN_TRANSIT', title: 'Vận chuyển lạnh', description: 'Đang vận chuyển bằng xe lạnh chuyên dụng, kiểm soát nhiệt độ nghiêm ngặt', timestamp: new Date(Date.now() - 3600 * 2000).toISOString(), location: 'Cao tốc Trung Lương - Mỹ Thuận' },
+              { status: 'DELIVERED', title: 'Cập cảng CropNet TP. HCM', description: 'Đã nhập kho mát phân phối và sẵn sàng giao hàng trực tiếp tới khách hàng D2C', timestamp: new Date().toISOString(), location: 'Bình Chánh, TP. HCM' }
+            ],
+            inspectionReports: [
+              {
+                inspector: 'Trạm Kiểm Định Vùng 2 (Bộ NN&PTNT)',
+                status: 'PASSED',
+                checkDate: new Date(Date.now() - 3600 * 3000).toISOString(),
+                comments: 'Đã hoàn thành kiểm nghiệm các chỉ tiêu an toàn thực phẩm sinh học và hóa học. Lô hàng đạt độ chín, mẫu mã đẹp, không phát hiện dư lượng thuốc bảo vệ thực vật hay kim loại nặng.',
+                metrics: {
+                  pesticideLevel: '0.0% (Không phát hiện)',
+                  humidity: '84.8%',
+                  sugarLevel: '12.6 Brix'
+                }
+              }
+            ],
+            shipmentInfo: {
+              shipmentId: `SHIP-BUOI-${batchCode}`,
+              carrier: 'CropNet Express Cold-Chain',
+              vehicle: 'Xe đông lạnh Isuzu 2.4 tấn - BKS 29H-456.78',
+              currentTemp: '5.4°C',
+              humidity: '76.8%',
+              departureDate: new Date(Date.now() - 3600 * 3000).toISOString(),
+              arrivalDate: new Date().toISOString()
+            }
+          };
+        }
         setBatch(mockFallback);
         const approved = (mockFallback.certifications || []).filter((c: any) => !c.status || c.status === 'APPROVED');
         if (approved.length > 0) {
