@@ -49,40 +49,100 @@ export default function ProductDetailPageClient() {
       } catch (err) {
         console.warn('Failed to load product details, using offline backup:', err);
         // Mock data fallback
-        const mockProduct = {
-          id: id as string,
-          name: 'Bưởi Da Xanh Bến Tre',
-          price: 65000,
-          unit: 'quả 1.2kg',
-          description: 'Bưởi da xanh ngon ngọt đậm đà, thu hoạch trực tiếp tại vườn Cái Mơn đạt chuẩn VietGAP. Không sử dụng phân hóa học hay chất bảo quản độc hại, quy trình đóng gói khép kín.',
-          categoryId: 'cat-fruits',
-          tags: ['VietGAP', 'Đặc sản', 'Bến Tre'],
-          farmName: 'HTX Trái Cây Sạch Cái Mơn',
-          address: 'Huyện Chợ Lách, Tỉnh Bến Tre',
-          imageUrl: 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=800&auto=format',
-          images: [
-            { url: 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=800&auto=format' },
-            { url: 'https://images.unsplash.com/photo-1610397613000-f0de065f806e?w=800&auto=format' },
-            { url: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format' }
-          ],
-          variants: [
-            { name: 'Quả vừa (1.2kg)', price: 65000 },
-            { name: 'Quả to VIP (1.5kg)', price: 95000 },
-            { name: 'Combo 3 Quả (3.6kg)', price: 180000 }
-          ],
-          batches: [
-            { id: 'mock-batch-1', batchCode: 'BATCH-BUOI-CAIMON-01', harvestDate: new Date(), farmingArea: 'Phân khu A3', farmingProcess: 'Tưới sông Hàm Luông, phân hữu cơ Cái Mơn' },
-            { id: 'mock-batch-2', batchCode: 'BATCH-BUOI-CAIMON-02', harvestDate: new Date(Date.now() - 86400000 * 7), farmingArea: 'Phân khu A4', farmingProcess: 'Bón compost sinh học tự nhiên' }
-          ]
-        };
-        setProduct(mockProduct);
-        setSelectedVariant(mockProduct.variants[0]);
+        const allMockProducts = [
+          {
+            id: '1',
+            name: 'Bưởi Da Xanh Bến Tre',
+            price: 65000,
+            unit: 'quả 1.2kg',
+            description: 'Bưởi da xanh ngon ngọt đậm đà, thu hoạch trực tiếp tại vườn Cái Mơn đạt chuẩn VietGAP. Không sử dụng phân hóa học hay chất bảo quản độc hại, quy trình đóng gói khép kín.',
+            categoryId: 'cat-fruits',
+            tags: ['VietGAP', 'Đặc sản', 'Bến Tre'],
+            farmName: 'HTX Trái Cây Sạch Cái Mơn',
+            address: 'Huyện Chợ Lách, Tỉnh Bến Tre',
+            imageUrl: 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=800&auto=format',
+            images: [
+              { url: 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=800&auto=format' },
+              { url: 'https://images.unsplash.com/photo-1610397613000-f0de065f806e?w=800&auto=format' },
+              { url: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format' }
+            ],
+            variants: [
+              { name: 'Quả vừa (1.2kg)', price: 65000 },
+              { name: 'Quả to VIP (1.5kg)', price: 95000 },
+              { name: 'Combo 3 Quả (3.6kg)', price: 180000 }
+            ],
+            batches: [
+              { id: 'mock-batch-1', batchCode: 'BATCH-BUOI-CAIMON-01', harvestDate: new Date(), farmingArea: 'Phân khu A3', farmingProcess: 'Tưới sông Hàm Luông, phân hữu cơ Cái Mơn' },
+              { id: 'mock-batch-2', batchCode: 'BATCH-BUOI-CAIMON-02', harvestDate: new Date(Date.now() - 86400000 * 7), farmingArea: 'Phân khu A4', farmingProcess: 'Bón compost sinh học tự nhiên' }
+            ]
+          },
+          {
+            id: '2',
+            name: 'Cà Chua Bi Đà Lạt',
+            price: 35000,
+            unit: 'túi 500g',
+            description: 'Cà chua chín mọng thơm mát, giàu vitamin, được trồng trong nhà kính theo quy chuẩn hữu cơ khép kín tại Đà Lạt, đảm bảo không dư lượng thuốc bảo vệ thực vật.',
+            categoryId: 'cat-veggies',
+            tags: ['Hữu cơ', 'Đà Lạt'],
+            farmName: 'Dalat Bio Farm',
+            address: 'Đường Hồ Xuân Hương, Phường 9, TP. Đà Lạt, Tỉnh Lâm Đồng',
+            imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format',
+            images: [
+              { url: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' },
+              { url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format' }
+            ],
+            variants: [
+              { name: 'Túi 500g', price: 35000 },
+              { name: 'Hộp giấy cao cấp 1kg', price: 68000 }
+            ],
+            batches: [
+              { id: 'mock-batch-tomato-1', batchCode: 'BATCH-CACHUA-DALAT-01', harvestDate: new Date(), farmingArea: 'Nhà màng khu B', farmingProcess: 'Hệ thống tưới nhỏ giọt công nghệ Israel' }
+            ]
+          },
+          {
+            id: '3',
+            name: 'Rau Muống Hữu Cơ',
+            price: 15000,
+            unit: 'bó 500g',
+            description: 'Rau muống non xanh, giòn ngọt, trồng hoàn toàn bằng phương pháp hữu cơ tự nhiên tại Bến Tre, không dùng phân hóa học hay chất kích thích tăng trưởng.',
+            categoryId: 'cat-veggies',
+            tags: ['Hữu cơ', 'D2C'],
+            farmName: 'Vườn Rau Sạch Bến Tre',
+            address: 'Huyện Châu Thành, Tỉnh Bến Tre',
+            imageUrl: 'https://images.unsplash.com/photo-1557844352-761f2565b576?w=800&auto=format',
+            images: [
+              { url: 'https://images.unsplash.com/photo-1557844352-761f2565b576?w=800&auto=format' }
+            ],
+            variants: [
+              { name: 'Bó 500g', price: 15000 },
+              { name: 'Combo 3 Bó (1.5kg)', price: 42000 }
+            ],
+            batches: [
+              { id: 'mock-batch-spinach-1', batchCode: 'BATCH-RAUMUONG-01', harvestDate: new Date(), farmingArea: 'Phân khu C1', farmingProcess: 'Bón phân trùn quế vi sinh tự ủ' }
+            ]
+          }
+        ];
+
+        const matchedProduct = allMockProducts.find(p => p.id === id) || allMockProducts[0];
+        setProduct(matchedProduct);
+        if (matchedProduct.variants && matchedProduct.variants.length > 0) {
+          setSelectedVariant(matchedProduct.variants[0]);
+        } else {
+          setSelectedVariant(null);
+        }
 
         // Mock related products
-        setRelatedProducts([
-          { id: '2', name: 'Cà Chua Bi Đà Lạt', price: 35000, unit: 'túi 500g', farmName: 'Dalat Bio Farm', imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=500&auto=format' },
-          { id: '3', name: 'Rau Muống Hữu Cơ', price: 15000, unit: 'bó 500g', farmName: 'Vườn Rau Sạch Bến Tre', imageUrl: 'https://images.unsplash.com/photo-1557844352-761f2565b576?w=500&auto=format' }
-        ]);
+        const related = allMockProducts.filter(p => p.id !== matchedProduct.id && p.categoryId === matchedProduct.categoryId);
+        const finalRelated = related.length > 0 ? related : allMockProducts.filter(p => p.id !== matchedProduct.id);
+
+        setRelatedProducts(finalRelated.map(p => ({
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          unit: p.unit,
+          farmName: p.farmName,
+          imageUrl: p.imageUrl
+        })));
       } finally {
         setLoading(false);
       }
