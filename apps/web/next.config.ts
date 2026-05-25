@@ -7,6 +7,7 @@ const repoName = process.env.GITHUB_REPOSITORY ? `/${process.env.GITHUB_REPOSITO
 const nextConfig: NextConfig = {
   output: 'export',
   basePath: isProd ? repoName : '',
+  trailingSlash: true,
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true

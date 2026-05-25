@@ -128,12 +128,12 @@ export default function LoginPage() {
               />
               Ghi nhớ đăng nhập
             </label>
-            <a
+            <Link
               href="/forgot-password"
               className="text-primary-500 hover:underline font-semibold"
             >
               Quên mật khẩu?
-            </a>
+            </Link>
           </div>
 
           <button

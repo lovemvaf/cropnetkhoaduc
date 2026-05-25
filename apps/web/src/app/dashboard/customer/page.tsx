@@ -175,7 +175,7 @@ export default function CustomerDashboardPage() {
                 </div>
               </div>
               <div className="pt-4 border-t border-gray-100 text-center">
-                <Link href="/marketplace" className="text-xs text-primary-500 font-black hover:underline">
+                <Link href="/products" className="text-xs text-primary-500 font-black hover:underline">
                   ➔ Tiếp tục mua sắm sạch
                 </Link>
               </div>
