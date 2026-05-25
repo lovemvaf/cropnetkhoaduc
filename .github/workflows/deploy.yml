@@ -28,7 +28,9 @@ jobs:
         run: npm ci
 
       - name: Build web application 🏗️
-        run: npm run build:web
+        run: |
+          npm run build:web
+          touch apps/web/out/.nojekyll
 
       - name: Deploy static files to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@v4
