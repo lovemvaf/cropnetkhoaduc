@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { formatVND } from '@cropnet/utils';
 import { Star, ShieldCheck } from 'lucide-react';
+import { getAssetPath } from '@/shared/utils/path';
 
 interface ProductCardProps {
   id: string;
@@ -17,7 +18,7 @@ export default function ProductCard({ id, name, price, unit, imageUrl, farmName 
     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
       <div className="relative aspect-video bg-gray-100 overflow-hidden">
         <img
-          src={imageUrl || 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=500&auto=format'}
+          src={getAssetPath(imageUrl) || 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=500&auto=format'}
           alt={name}
           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
         />

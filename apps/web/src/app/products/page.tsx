@@ -7,6 +7,7 @@ import { apiClient } from '@/shared/services/api';
 import { formatVND } from '@cropnet/utils';
 import { Search, SlidersHorizontal, ArrowUpDown, ChevronLeft, ChevronRight, Tag } from 'lucide-react';
 import Link from 'next/link';
+import { getAssetPath } from '@/shared/utils/path';
 
 
 export default function ProductsPage() {
@@ -146,7 +147,7 @@ export default function ProductsPage() {
             {featuredProducts.map((p) => (
               <Card key={`featured-${p.id}`} className="overflow-hidden border border-primary-100 bg-primary-50/10 hover:shadow-md transition-shadow flex flex-col sm:flex-row p-0">
                 <div className="w-full sm:w-2/5 aspect-[4/3] sm:aspect-square relative flex-shrink-0 bg-gray-100">
-                  <img src={p.images?.[0]?.url || p.imageUrl} alt={p.name} className="object-cover w-full h-full" />
+                  <img src={getAssetPath(p.images?.[0]?.url || p.imageUrl)} alt={p.name} className="object-cover w-full h-full" />
                   <div className="absolute top-2 left-2 bg-primary-500 text-white text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full shadow-sm">
                     Hot D2C
                   </div>

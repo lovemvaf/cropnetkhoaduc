@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { apiClient } from '@/shared/services/api';
 import ProductCard from '@/features/products/components/ProductCard';
+import { getAssetPath } from '@/shared/utils/path';
 
 export default function ProductDetailPageClient() {
   const { id } = useParams();
@@ -307,7 +308,7 @@ export default function ProductDetailPageClient() {
         <div className="space-y-4">
           <div className="relative aspect-square sm:aspect-[4/3] rounded-3xl overflow-hidden shadow-sm bg-gray-50 border border-gray-100">
             <img
-              src={imagesList[activeImageIndex]?.url}
+              src={getAssetPath(imagesList[activeImageIndex]?.url)}
               alt={product.name}
               className="object-cover w-full h-full transition-all duration-300"
             />
@@ -323,7 +324,7 @@ export default function ProductDetailPageClient() {
                     activeImageIndex === idx ? 'border-primary-500 scale-95 shadow-sm' : 'border-gray-100 opacity-70 hover:opacity-100'
                   }`}
                 >
-                  <img src={img.url} alt={`Thumb ${idx}`} className="w-full h-full object-cover" />
+                  <img src={getAssetPath(img.url)} alt={`Thumb ${idx}`} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
