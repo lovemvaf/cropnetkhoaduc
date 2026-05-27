@@ -13,6 +13,7 @@ import { apiClient } from '@/shared/services/api';
 import { useAuthStore } from '@/shared/stores/auth';
 import { formatVND, formatDate } from '@cropnet/utils';
 import { useRouter } from 'next/navigation';
+import { getAssetPath } from '@/shared/utils/path';
 
 export default function SupplierDashboardPage() {
   const { user, logout } = useAuthStore();
@@ -1155,7 +1156,7 @@ export default function SupplierDashboardPage() {
                   products.map(p => (
                     <tr key={p.id} className="border-b border-gray-50 text-sm hover:bg-gray-50/55 transition-colors">
                       <td className="py-4 px-5 font-bold text-gray-900 flex items-center gap-3">
-                        <img src={p.images?.[0]?.url || p.imageUrl} alt={p.name} className="w-12 h-12 rounded-xl object-cover border border-gray-100" />
+                        <img src={getAssetPath(p.images?.[0]?.url || p.imageUrl)} alt={p.name} className="w-12 h-12 rounded-xl object-cover border border-gray-100" />
                         <span>{p.name}</span>
                       </td>
                       <td className="py-4 px-5 text-gray-700 font-bold">{formatVND(Number(p.price))}</td>

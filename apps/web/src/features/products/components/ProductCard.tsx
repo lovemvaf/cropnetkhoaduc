@@ -16,11 +16,11 @@ interface ProductCardProps {
 export default function ProductCard({ id, name, price, unit, imageUrl, farmName }: ProductCardProps) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
-      <div className="relative aspect-video bg-gray-100 overflow-hidden">
+      <div className="relative aspect-square bg-gray-50 border-b border-gray-100/50 overflow-hidden">
         <img
           src={getAssetPath(imageUrl) || 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=500&auto=format'}
           alt={name}
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ease-out"
         />
         <div className="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-1">
           <ShieldCheck className="w-3.5 h-3.5" />

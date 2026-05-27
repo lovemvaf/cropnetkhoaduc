@@ -248,7 +248,7 @@ export default function ProductDetailPageClient() {
           price: p.price,
           unit: p.unit,
           farmName: p.farmName,
-          imageUrl: p.imageUrl
+          imageUrl: p.images?.[0]?.url || p.imageUrl
         })));
       } finally {
         setLoading(false);

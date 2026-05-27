@@ -10,6 +10,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { apiClient } from '@/shared/services/api';
 import { formatVND, formatDate } from '@cropnet/utils';
 import Link from 'next/link';
+import { getAssetPath } from '@/shared/utils/path';
 
 export default function OrderTrackingPageClient() {
   const { id } = useParams();
@@ -302,7 +303,7 @@ export default function OrderTrackingPageClient() {
             <div key={item.id} className="flex justify-between items-center text-xs">
               <div className="flex items-center gap-3">
                 <img 
-                  src={item.product?.images?.[0]?.url || item.product?.imageUrl || 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=100&auto=format'} 
+                  src={getAssetPath(item.product?.images?.[0]?.url || item.product?.imageUrl) || 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=100&auto=format'} 
                   alt={item.product?.name} 
                   className="w-10 h-10 rounded-lg object-cover" 
                 />

@@ -55,6 +55,7 @@ export const MOCK_PRODUCTS: any[] = [
     images: [
       { url: '/buoi-da-xanh-cai-mon.jpg' }
     ],
+    imageUrl: '/buoi-da-xanh-cai-mon.jpg',
     tags: ['VietGAP', 'Đặc sản', 'Bến Tre']
   },
   {
@@ -70,6 +71,7 @@ export const MOCK_PRODUCTS: any[] = [
     supplier: { id: 'mock-supplier-tomato', farmName: 'Dalat Bio Farm', address: 'Đường Hồ Xuân Hương, Phường 9, TP. Đà Lạt, Tỉnh Lâm Đồng' },
     category: { name: 'Rau Củ Hữu Cơ' },
     images: [{ url: '/cachuabidalat.jpg' }],
+    imageUrl: '/cachuabidalat.jpg',
     tags: ['Hữu cơ', 'Đà Lạt']
   },
   {
@@ -85,6 +87,7 @@ export const MOCK_PRODUCTS: any[] = [
     supplier: { id: 'mock-supplier-id2', farmName: 'Vườn Rau Sạch Bến Tre', address: 'Huyện Châu Thành, Tỉnh Bến Tre' },
     category: { name: 'Rau Củ Hữu Cơ' },
     images: [{ url: '/rau-muong-huu-co.jpg' }],
+    imageUrl: '/rau-muong-huu-co.jpg',
     tags: ['Hữu cơ', 'D2C']
   },
   {
@@ -100,6 +103,7 @@ export const MOCK_PRODUCTS: any[] = [
     supplier: { id: 'mock-supplier-durian', farmName: 'HTX Sầu Riêng Vĩnh Long', address: 'Huyện Long Hồ, Tỉnh Vĩnh Long' },
     category: { name: 'Trái Cây Sạch' },
     images: [{ url: '/sau-rieng-vinh-long.jpg' }],
+    imageUrl: '/sau-rieng-vinh-long.jpg',
     tags: ['VietGAP', 'Đặc sản', 'Vĩnh Long']
   },
   {
@@ -115,6 +119,7 @@ export const MOCK_PRODUCTS: any[] = [
     supplier: { id: 'mock-supplier-mango', farmName: 'HTX Xoài Cát Hòa Lộc', address: 'Huyện Cái Bè, Tỉnh Tiền Giang' },
     category: { name: 'Trái Cây Sạch' },
     images: [{ url: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&auto=format' }],
+    imageUrl: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&auto=format',
     tags: ['VietGAP', 'Đặc sản', 'Tiền Giang']
   },
   {
@@ -130,6 +135,7 @@ export const MOCK_PRODUCTS: any[] = [
     supplier: { id: 'mock-supplier-avocado', farmName: 'Vườn Bơ Sáp Đắk Lắk', address: 'Huyện Cư M\'gar, Tỉnh Đắk Lắk' },
     category: { name: 'Trái Cây Sạch' },
     images: [{ url: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=500&auto=format' }],
+    imageUrl: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=500&auto=format',
     tags: ['VietGAP', 'Đặc sản', 'Đắk Lắk']
   },
   {
@@ -145,6 +151,7 @@ export const MOCK_PRODUCTS: any[] = [
     supplier: { id: 'mock-supplier-mushroom', farmName: 'Lâm Đồng Organics', address: 'Đức Trọng, Tỉnh Lâm Đồng' },
     category: { name: 'Rau Củ Hữu Cơ' },
     images: [{ url: '/nam-dui-ga.jpg' }],
+    imageUrl: '/nam-dui-ga.jpg',
     tags: ['Hữu cơ', 'Lâm Đồng']
   },
   {
@@ -160,6 +167,7 @@ export const MOCK_PRODUCTS: any[] = [
     supplier: { id: 'mock-supplier-asparagus', farmName: 'Hợp Tác Xã Măng Tây Ninh Thuận', address: 'Huyện Ninh Phước, Tỉnh Ninh Thuận' },
     category: { name: 'Rau Củ Hữu Cơ' },
     images: [{ url: '/mang-tay-xanh.jpg' }],
+    imageUrl: '/mang-tay-xanh.jpg',
     tags: ['VietGAP', 'Đặc sản', 'Ninh Thuận']
   }
 ];

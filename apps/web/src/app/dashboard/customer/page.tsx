@@ -8,6 +8,7 @@ import { formatVND, formatDate } from '@cropnet/utils';
 import { ShoppingBag, Star, CheckCircle, Package, Truck, MessageSquare, DollarSign, Bookmark } from 'lucide-react';
 import Link from 'next/link';
 import { RevenueAreaChart } from '@/shared/components/QuickCharts';
+import { getAssetPath } from '@/shared/utils/path';
 
 export default function CustomerDashboardPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -221,7 +222,7 @@ export default function CustomerDashboardPage() {
                       <div key={item.id} className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                           <img
-                            src={item.product?.images?.[0]?.url || item.product?.imageUrl || 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=150&auto=format'}
+                            src={getAssetPath(item.product?.images?.[0]?.url || item.product?.imageUrl) || 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=150&auto=format'}
                             alt={item.product?.name}
                             className="w-12 h-12 rounded-xl object-cover border border-gray-100"
                           />
@@ -290,7 +291,7 @@ export default function CustomerDashboardPage() {
               </div>
               <div className="flex items-center gap-3">
                 <img
-                  src={reviewingItem.product?.images?.[0]?.url || reviewingItem.product?.imageUrl}
+                  src={getAssetPath(reviewingItem.product?.images?.[0]?.url || reviewingItem.product?.imageUrl)}
                   alt={reviewingItem.product?.name}
                   className="w-14 h-14 rounded-2xl object-cover"
                 />
