@@ -457,15 +457,15 @@ export default function ForumPage() {
       )}
 
       {/* Hero Banner / Header */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-emerald-850 via-teal-900 to-emerald-950 p-8 md:p-12 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 border border-emerald-800/30">
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-primary-600 via-emerald-950 to-teal-950 p-8 md:p-12 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 border border-emerald-800/30">
         <div className="space-y-3 max-w-2xl">
           <Badge className="bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 px-3 py-1 rounded-full text-xs uppercase tracking-wider">
             CropNet Social Commerce Hub
           </Badge>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r from-white via-emerald-100 to-teal-100">
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-none text-white">
             Cộng Đồng Nông Nghiệp Sạch
           </h1>
-          <p className="text-emerald-100/80 text-sm md:text-base leading-relaxed">
+          <p className="text-emerald-50/90 text-sm md:text-base leading-relaxed">
             Kết nối nhà nông Kể câu chuyện vườn rừng và Người tiêu dùng chia sẻ mẹo vặt, công thức nấu ăn sạch tự nhiên.
           </p>
         </div>
