@@ -43,8 +43,8 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: '1',
     categoryId: 'cat-fruits',
-    name: 'Bưởi Da Xanh Bến Tre',
-    description: 'Bưởi da xanh ngọt đậm đà, thu hoạch trực tiếp tại vườn cây Cái Mơn đạt chuẩn hữu cơ.',
+    name: 'Bưởi Da Xanh Cái Mơn',
+    description: 'Bưởi da xanh ngọt đậm đà, vỏ mỏng ruột hồng tiêu biểu của vương quốc trái cây Cái Mơn, canh tác hữu cơ tự nhiên.',
     price: 65000,
     unit: 'quả 1.2kg',
     stock: 50,
@@ -52,35 +52,115 @@ export const MOCK_PRODUCTS: any[] = [
     createdAt: new Date(),
     supplier: { id: 'mock-supplier-id', farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn', address: 'Xã Sơn Định, Huyện Chợ Lách, Tỉnh Bến Tre' },
     category: { name: 'Trái Cây Sạch' },
-    images: [{ url: 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=500&auto=format' }]
+    images: [
+      { url: '/buoi-da-xanh-cai-mon.jpg' }
+    ],
+    tags: ['VietGAP', 'Đặc sản', 'Bến Tre']
   },
   {
     id: '2',
     categoryId: 'cat-veggies',
     name: 'Cà Chua Bi Đà Lạt',
-    description: 'Cà chua chín mọng thơm mát, giàu vitamin, được trồng trong nhà kính theo quy chuẩn khép kín.',
+    description: 'Cà chua chín mọng thơm mát, giàu vitamin, được trồng trong nhà kính theo quy chuẩn hữu cơ khép kín.',
     price: 35000,
     unit: 'túi 500g',
     stock: 120,
     status: 'ACTIVE',
     createdAt: new Date(),
-    supplier: { id: 'mock-supplier-id', farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn', address: 'Xã Sơn Định, Huyện Chợ Lách, Tỉnh Bến Tre' },
+    supplier: { id: 'mock-supplier-tomato', farmName: 'Dalat Bio Farm', address: 'Đường Hồ Xuân Hương, Phường 9, TP. Đà Lạt, Tỉnh Lâm Đồng' },
     category: { name: 'Rau Củ Hữu Cơ' },
-    images: [{ url: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=500&auto=format' }]
+    images: [{ url: '/cachuabidalat.jpg' }],
+    tags: ['Hữu cơ', 'Đà Lạt']
   },
   {
     id: '3',
     categoryId: 'cat-veggies',
     name: 'Rau Muống Hữu Cơ',
-    description: 'Rau muống non xanh, ăn giòn ngọt, trồng theo phương pháp tự nhiên không chất hóa học.',
+    description: 'Rau muống non xanh, ăn giòn ngọt, trồng theo phương pháp tự nhiên không chất hóa học tại Bến Tre.',
     price: 15000,
     unit: 'bó 500g',
     stock: 200,
     status: 'ACTIVE',
     createdAt: new Date(),
-    supplier: { id: 'mock-supplier-id2', farmName: 'Vườn Rau Sạch Bến Tre', address: 'Bến Tre' },
+    supplier: { id: 'mock-supplier-id2', farmName: 'Vườn Rau Sạch Bến Tre', address: 'Huyện Châu Thành, Tỉnh Bến Tre' },
     category: { name: 'Rau Củ Hữu Cơ' },
-    images: [{ url: 'https://images.unsplash.com/photo-1557844352-761f2565b576?w=500&auto=format' }]
+    images: [{ url: '/rau-muong-huu-co.jpg' }],
+    tags: ['Hữu cơ', 'D2C']
+  },
+  {
+    id: '4',
+    categoryId: 'cat-fruits',
+    name: 'Sầu Riêng Ri6 Vĩnh Long',
+    description: 'Sầu riêng Ri6 cơm vàng hạt lép, béo ngậy ngọt ngào đặc sản trứ danh Vĩnh Long, chín tự nhiên không hóa chất nhúng thuốc.',
+    price: 145000,
+    unit: 'kg (quả 2.5kg)',
+    stock: 30,
+    status: 'ACTIVE',
+    createdAt: new Date(),
+    supplier: { id: 'mock-supplier-durian', farmName: 'HTX Sầu Riêng Vĩnh Long', address: 'Huyện Long Hồ, Tỉnh Vĩnh Long' },
+    category: { name: 'Trái Cây Sạch' },
+    images: [{ url: '/sau-rieng-vinh-long.jpg' }],
+    tags: ['VietGAP', 'Đặc sản', 'Vĩnh Long']
+  },
+  {
+    id: '5',
+    categoryId: 'cat-fruits',
+    name: 'Xoài Cát Hòa Lộc',
+    description: 'Xoài cát Hòa Lộc Tiền Giang quả to thuôn dài, khi chín vàng tươi, thịt xoài cát mịn màng ngọt lịm và thơm lừng.',
+    price: 85000,
+    unit: 'kg (2 quả)',
+    stock: 40,
+    status: 'ACTIVE',
+    createdAt: new Date(),
+    supplier: { id: 'mock-supplier-mango', farmName: 'HTX Xoài Cát Hòa Lộc', address: 'Huyện Cái Bè, Tỉnh Tiền Giang' },
+    category: { name: 'Trái Cây Sạch' },
+    images: [{ url: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&auto=format' }],
+    tags: ['VietGAP', 'Đặc sản', 'Tiền Giang']
+  },
+  {
+    id: '6',
+    categoryId: 'cat-fruits',
+    name: 'Bơ Sáp 034 Tây Nguyên',
+    description: 'Bơ sáp 034 dáng dài đặc trưng Tây Nguyên, cơm vàng dẻo quánh, vị ngậy béo tự nhiên, vỏ xanh bóng đẹp mắt.',
+    price: 55000,
+    unit: 'túi 1kg',
+    stock: 60,
+    status: 'ACTIVE',
+    createdAt: new Date(),
+    supplier: { id: 'mock-supplier-avocado', farmName: 'Vườn Bơ Sáp Đắk Lắk', address: 'Huyện Cư M\'gar, Tỉnh Đắk Lắk' },
+    category: { name: 'Trái Cây Sạch' },
+    images: [{ url: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=500&auto=format' }],
+    tags: ['VietGAP', 'Đặc sản', 'Đắk Lắk']
+  },
+  {
+    id: '7',
+    categoryId: 'cat-veggies',
+    name: 'Nấm Đùi Gà Hữu Cơ',
+    description: 'Nấm đùi gà thân trắng ngần, chắc thịt, giòn ngọt giàu dinh dưỡng trồng phòng lạnh khép kín tại Lâm Đồng.',
+    price: 45000,
+    unit: 'hộp 300g',
+    stock: 80,
+    status: 'ACTIVE',
+    createdAt: new Date(),
+    supplier: { id: 'mock-supplier-mushroom', farmName: 'Lâm Đồng Organics', address: 'Đức Trọng, Tỉnh Lâm Đồng' },
+    category: { name: 'Rau Củ Hữu Cơ' },
+    images: [{ url: '/nam-dui-ga.jpg' }],
+    tags: ['Hữu cơ', 'Lâm Đồng']
+  },
+  {
+    id: '8',
+    categoryId: 'cat-veggies',
+    name: 'Măng Tây Xanh Loại 1',
+    description: 'Măng tây xanh Ninh Thuận loại 1 thân mập non tơ giòn ngọt, giàu chất xơ và khoáng chất tốt cho sức khỏe.',
+    price: 85000,
+    unit: 'bó 500g',
+    stock: 100,
+    status: 'ACTIVE',
+    createdAt: new Date(),
+    supplier: { id: 'mock-supplier-asparagus', farmName: 'Hợp Tác Xã Măng Tây Ninh Thuận', address: 'Huyện Ninh Phước, Tỉnh Ninh Thuận' },
+    category: { name: 'Rau Củ Hữu Cơ' },
+    images: [{ url: '/mang-tay-xanh.jpg' }],
+    tags: ['VietGAP', 'Đặc sản', 'Ninh Thuận']
   }
 ];
 
@@ -93,34 +173,34 @@ export const MOCK_BATCHES: any[] = [
     farmingProcess: 'Tưới tiêu bằng nước ngọt tự nhiên từ sông Hàm Luông, bón phân compost hữu cơ tự nhiên không sử dụng thuốc trừ sâu hóa học.',
     qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BATCH-BUOI-CAIMON-01',
     logisticsTimeline: [
-      { status: 'PICKED_UP', title: 'Thu hoạch & Đóng gói', description: 'Lô hàng đã được xếp dỡ vào container lạnh tại HTX Cái Mơn', timestamp: '2026-05-23T06:00:00.000Z', location: 'Cái Mơn, Bến Tre' },
-      { status: 'IN_TRANSIT', title: 'Vận chuyển trung chuyển', description: 'Xe đông lạnh BKS 29H-123.45 đang di chuyển qua cao tốc Trung Lương', timestamp: '2026-05-23T08:30:00.000Z', location: 'Tiền Giang' },
-      { status: 'DELIVERED', title: 'Cập cảng phân phối', description: 'Hàng đã cập kho trung chuyển CropNet D2C TP. HCM', timestamp: '2026-05-23T10:30:00.000Z', location: 'Bình Chánh, TP. HCM' }
+      { status: 'PICKED_UP', title: 'Thu hoạch & Đóng gói', description: 'Lô bưởi đạt chuẩn chín được thu hoạch thủ công và phân loại kỹ lưỡng tại vựa Cái Mơn', timestamp: '2026-05-23T06:00:00.000Z', location: 'Cái Mơn, Bến Tre' },
+      { status: 'IN_TRANSIT', title: 'Vận chuyển lạnh', description: 'Đang vận chuyển bằng xe lạnh chuyên dụng BKS 29H-123.45 qua cao tốc Trung Lương', timestamp: '2026-05-23T08:30:00.000Z', location: 'Tiền Giang' },
+      { status: 'DELIVERED', title: 'Cập cảng CropNet TP. HCM', description: 'Đã nhập kho mát phân phối CropNet và sẵn sàng giao hàng trực tiếp D2C', timestamp: '2026-05-23T10:30:00.000Z', location: 'Bình Chánh, TP. HCM' }
     ],
     inspectionReports: [
       {
-        inspector: 'Trạm Kiểm Định Vùng 2',
+        inspector: 'Trạm Kiểm Định Vùng 2 (Bộ NN&PTNT)',
         status: 'PASSED',
         checkDate: '2026-05-23T07:30:00.000Z',
-        comments: 'Sản phẩm đạt các chỉ số kiểm nghiệm, không có dư lượng thuốc bảo vệ thực vật hay kim loại nặng. Đạt chuẩn xuất khẩu loại 1.',
+        comments: 'Đã hoàn thành kiểm nghiệm các chỉ tiêu an toàn thực phẩm sinh học và hóa học. Lô hàng đạt độ chín, mẫu mã đẹp, không phát hiện dư lượng thuốc bảo vệ thực vật hay kim loại nặng.',
         metrics: {
-          pesticideLevel: '0.0%',
-          humidity: '85.2%',
-          sugarLevel: '12.5 Brix'
+          pesticideLevel: '0.0% (Không phát hiện)',
+          humidity: '84.8%',
+          sugarLevel: '12.6 Brix'
         }
       }
     ],
     shipmentInfo: {
       shipmentId: 'SHIP-BUOI-CAIMON-01',
-      carrier: 'Hãng vận tải Vạn Xuân',
-      vehicle: 'Container đông lạnh Hyundai 3.5 tấn - BKS 29H-123.45',
-      currentTemp: '5.2°C',
-      humidity: '78.4%',
+      carrier: 'CropNet Express Cold-Chain',
+      vehicle: 'Xe đông lạnh Isuzu 2.4 tấn - BKS 29H-123.45',
+      currentTemp: '5.4°C',
+      humidity: '76.8%',
       departureDate: '2026-05-23T06:15:00.000Z',
       arrivalDate: '2026-05-23T10:45:00.000Z'
     },
     product: {
-      name: 'Bưởi Da Xanh Bến Tre',
+      name: 'Bưởi Da Xanh Cái Mơn',
       supplier: {
         farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn',
         address: 'Xã Sơn Định, Huyện Chợ Lách, Tỉnh Bến Tre',
@@ -133,6 +213,113 @@ export const MOCK_BATCHES: any[] = [
         id: 'mock-cert-1',
         name: 'Chứng nhận VietGAP',
         issuer: 'Cơ quan kiểm nghiệm cây trồng Bến Tre',
+        status: 'APPROVED',
+        validUntil: new Date('2028-12-31'),
+        imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format'
+      }
+    ]
+  },
+  {
+    id: 'mock-batch-tomato-1',
+    batchCode: 'BATCH-CACHUA-DALAT-01',
+    harvestDate: new Date(),
+    farmingArea: 'Nhà màng khu B - Trồng trọt Cà Chua Hữu Cơ',
+    farmingProcess: 'Hệ thống tưới nhỏ giọt công nghệ Israel khép kín, bón phân hữu cơ vi sinh không sử dụng thuốc trừ sâu hóa học.',
+    qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BATCH-CACHUA-DALAT-01',
+    logisticsTimeline: [
+      { status: 'PICKED_UP', title: 'Thu hoạch & Đóng gói', description: 'Cà chua bi thu hoạch chín tự nhiên tại nhà màng Dalat Bio Farm', timestamp: '2026-05-23T06:00:00.000Z', location: 'TP. Đà Lạt, Lâm Đồng' },
+      { status: 'IN_TRANSIT', title: 'Vận chuyển lạnh', description: 'Đang vận chuyển từ Đà Lạt xuống TP. HCM bằng xe đông lạnh chuyên dụng', timestamp: '2026-05-23T08:30:00.000Z', location: 'Đèo Bảo Lộc, Lâm Đồng' },
+      { status: 'DELIVERED', title: 'Nhập kho mát TP. HCM', description: 'Đã nhập kho phân phối mát CropNet và sẵn sàng giao hàng', timestamp: '2026-05-23T10:30:00.000Z', location: 'Quận 7, TP. HCM' }
+    ],
+    inspectionReports: [
+      {
+        inspector: 'Trung tâm Phân tích và Kiểm nghiệm Lâm Đồng',
+        status: 'PASSED',
+        checkDate: '2026-05-23T07:30:00.000Z',
+        comments: 'Mẫu cà chua bi đạt các chỉ chỉ tiêu hóa lý, không có kim loại nặng hay tồn dư chất bảo vệ thực vật. Hàm lượng dinh dưỡng cao.',
+        metrics: {
+          pesticideLevel: '0.0%',
+          humidity: '92.3%',
+          sugarLevel: '7.8 Brix'
+        }
+      }
+    ],
+    shipmentInfo: {
+      shipmentId: 'SHIP-TOMATO-BATCH-CACHUA-DALAT-01',
+      carrier: 'Dalat Express Logistics',
+      vehicle: 'Xe lạnh Hyundai 1.5 tấn - BKS 49C-567.89',
+      currentTemp: '4.8°C',
+      humidity: '82.4%',
+      departureDate: '2026-05-23T06:15:00.000Z',
+      arrivalDate: '2026-05-23T10:45:00.000Z'
+    },
+    product: {
+      name: 'Cà Chua Bi Đà Lạt',
+      supplier: {
+        farmName: 'Dalat Bio Farm',
+        address: 'Đường Hồ Xuân Hương, Phường 9, TP. Đà Lạt, Tỉnh Lâm Đồng',
+        latitude: 11.9542,
+        longitude: 108.4612
+      }
+    },
+    certifications: [
+      {
+        id: 'mock-cert-tomato',
+        name: 'Chứng nhận VietGAP',
+        issuer: 'Cơ quan kiểm nghiệm lâm nghiệp Lâm Đồng',
+        status: 'APPROVED',
+        validUntil: new Date('2028-12-31'),
+        imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format'
+      }
+    ]
+  },
+  {
+    id: 'mock-batch-spinach-1',
+    batchCode: 'BATCH-RAUMUONG-01',
+    harvestDate: new Date(),
+    farmingArea: 'Phân khu C1 - Trồng rau thủy canh hữu cơ',
+    farmingProcess: 'Phương pháp thủy canh hồi lưu dùng dung dịch dinh dưỡng hữu cơ tự chế từ men vi sinh vi lượng sạch.',
+    qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BATCH-RAUMUONG-01',
+    logisticsTimeline: [
+      { status: 'PICKED_UP', title: 'Thu hoạch cắt gốc', description: 'Rau muống non được thu hoạch cắt gốc lúc sáng sớm', timestamp: '2026-05-23T06:00:00.000Z', location: 'Châu Thành, Bến Tre' },
+      { status: 'DELIVERED', title: 'Giao trực tiếp D2C', description: 'Đã cập bến cửa hàng phân phối trung chuyển CropNet trong ngày', timestamp: '2026-05-23T08:30:00.000Z', location: 'Bình Tân, TP. HCM' }
+    ],
+    inspectionReports: [
+      {
+        inspector: 'Chi cục Bảo vệ Thực vật Bến Tre',
+        status: 'PASSED',
+        checkDate: '2026-05-23T07:30:00.000Z',
+        comments: 'Sản phẩm rau ăn lá đạt chuẩn an toàn vệ sinh thực phẩm cao nhất, hoàn toàn không có hóa chất kích thích sinh trưởng.',
+        metrics: {
+          pesticideLevel: '0.0%',
+          humidity: '94.5%',
+          sugarLevel: '1.2 Brix'
+        }
+      }
+    ],
+    shipmentInfo: {
+      shipmentId: 'SHIP-SPINACH-BATCH-RAUMUONG-01',
+      carrier: 'Giao Hàng Nhanh CropNet',
+      vehicle: 'Xe tải nhẹ Suzuki 500kg - BKS 71C-123.45',
+      currentTemp: '8.2°C',
+      humidity: '90.1%',
+      departureDate: '2026-05-23T06:15:00.000Z',
+      arrivalDate: '2026-05-23T08:30:00.000Z'
+    },
+    product: {
+      name: 'Rau Muống Hữu Cơ',
+      supplier: {
+        farmName: 'Vườn Rau Sạch Bến Tre',
+        address: 'Huyện Châu Thành, Tỉnh Bến Tre',
+        latitude: 10.2742,
+        longitude: 106.3124
+      }
+    },
+    certifications: [
+      {
+        id: 'mock-cert-spinach',
+        name: 'Chứng nhận hữu cơ Organic',
+        issuer: 'Hiệp hội Nông nghiệp Hữu cơ Việt Nam',
         status: 'APPROVED',
         validUntil: new Date('2028-12-31'),
         imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format'

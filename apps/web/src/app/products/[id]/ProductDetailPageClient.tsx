@@ -52,19 +52,17 @@ export default function ProductDetailPageClient() {
         const allMockProducts = [
           {
             id: '1',
-            name: 'Bưởi Da Xanh Bến Tre',
+            name: 'Bưởi Da Xanh Cái Mơn',
             price: 65000,
             unit: 'quả 1.2kg',
-            description: 'Bưởi da xanh ngon ngọt đậm đà, thu hoạch trực tiếp tại vườn Cái Mơn đạt chuẩn VietGAP. Không sử dụng phân hóa học hay chất bảo quản độc hại, quy trình đóng gói khép kín.',
+            description: 'Bưởi da xanh ngon ngọt đậm đà, vỏ mỏng ruột hồng tiêu biểu của vương quốc trái cây Cái Mơn, thu hoạch trực tiếp tại vườn Cái Mơn đạt chuẩn VietGAP. Quy trình thu hoạch thủ công và kiểm định an toàn thực phẩm nghiêm ngặt.',
             categoryId: 'cat-fruits',
             tags: ['VietGAP', 'Đặc sản', 'Bến Tre'],
-            farmName: 'HTX Trái Cây Sạch Cái Mơn',
+            farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn',
             address: 'Huyện Chợ Lách, Tỉnh Bến Tre',
-            imageUrl: 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=800&auto=format',
+            imageUrl: '/buoi-da-xanh-cai-mon.jpg',
             images: [
-              { url: 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=800&auto=format' },
-              { url: 'https://images.unsplash.com/photo-1610397613000-f0de065f806e?w=800&auto=format' },
-              { url: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format' }
+              { url: '/buoi-da-xanh-cai-mon.jpg' }
             ],
             variants: [
               { name: 'Quả vừa (1.2kg)', price: 65000 },
@@ -72,8 +70,7 @@ export default function ProductDetailPageClient() {
               { name: 'Combo 3 Quả (3.6kg)', price: 180000 }
             ],
             batches: [
-              { id: 'mock-batch-1', batchCode: 'BATCH-BUOI-CAIMON-01', harvestDate: new Date(), farmingArea: 'Phân khu A3', farmingProcess: 'Tưới sông Hàm Luông, phân hữu cơ Cái Mơn' },
-              { id: 'mock-batch-2', batchCode: 'BATCH-BUOI-CAIMON-02', harvestDate: new Date(Date.now() - 86400000 * 7), farmingArea: 'Phân khu A4', farmingProcess: 'Bón compost sinh học tự nhiên' }
+              { id: 'mock-batch-1', batchCode: 'BATCH-BUOI-CAIMON-01', harvestDate: new Date(), farmingArea: 'Phân khu A3', farmingProcess: 'Tưới sông Hàm Luông, phân hữu cơ Cái Mơn' }
             ]
           },
           {
@@ -86,10 +83,9 @@ export default function ProductDetailPageClient() {
             tags: ['Hữu cơ', 'Đà Lạt'],
             farmName: 'Dalat Bio Farm',
             address: 'Đường Hồ Xuân Hương, Phường 9, TP. Đà Lạt, Tỉnh Lâm Đồng',
-            imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format',
+            imageUrl: '/cachuabidalat.jpg',
             images: [
-              { url: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' },
-              { url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format' }
+              { url: '/cachuabidalat.jpg' }
             ],
             variants: [
               { name: 'Túi 500g', price: 35000 },
@@ -109,9 +105,9 @@ export default function ProductDetailPageClient() {
             tags: ['Hữu cơ', 'D2C'],
             farmName: 'Vườn Rau Sạch Bến Tre',
             address: 'Huyện Châu Thành, Tỉnh Bến Tre',
-            imageUrl: 'https://images.unsplash.com/photo-1557844352-761f2565b576?w=800&auto=format',
+            imageUrl: '/rau-muong-huu-co.jpg',
             images: [
-              { url: 'https://images.unsplash.com/photo-1557844352-761f2565b576?w=800&auto=format' }
+              { url: '/rau-muong-huu-co.jpg' }
             ],
             variants: [
               { name: 'Bó 500g', price: 15000 },
@@ -119,6 +115,116 @@ export default function ProductDetailPageClient() {
             ],
             batches: [
               { id: 'mock-batch-spinach-1', batchCode: 'BATCH-RAUMUONG-01', harvestDate: new Date(), farmingArea: 'Phân khu C1', farmingProcess: 'Bón phân trùn quế vi sinh tự ủ' }
+            ]
+          },
+          {
+            id: '4',
+            name: 'Sầu Riêng Ri6 Vĩnh Long',
+            price: 145000,
+            unit: 'kg (quả 2.5kg)',
+            description: 'Sầu riêng Ri6 cơm vàng hạt lép, béo ngậy ngọt ngào đặc sản trứ danh Vĩnh Long, chín tự nhiên không hóa chất nhúng thuốc. Hương vị đậm đà đẳng cấp.',
+            categoryId: 'cat-fruits',
+            tags: ['VietGAP', 'Đặc sản', 'Vĩnh Long'],
+            farmName: 'HTX Sầu Riêng Vĩnh Long',
+            address: 'Huyện Long Hồ, Tỉnh Vĩnh Long',
+            imageUrl: '/sau-rieng-vinh-long.jpg',
+            images: [
+              { url: '/sau-rieng-vinh-long.jpg' }
+            ],
+            variants: [
+              { name: 'Quả 2.5kg', price: 362500 },
+              { name: 'Khay bóc múi sẵn 500g', price: 185000 }
+            ],
+            batches: [
+              { id: 'mock-batch-durian-1', batchCode: 'BATCH-SAURIENG-RI6-01', harvestDate: new Date(), farmingArea: 'Phân khu D1', farmingProcess: 'Bón phân trùn quế, không thuốc trừ sâu sinh học' }
+            ]
+          },
+          {
+            id: '5',
+            name: 'Xoài Cát Hòa Lộc',
+            price: 85000,
+            unit: 'kg (2 quả)',
+            description: 'Xoài cát Hòa Lộc Tiền Giang quả to thuôn dài, khi chín vàng tươi, thịt xoài cát mịn màng ngọt lịm và thơm lừng.',
+            categoryId: 'cat-fruits',
+            tags: ['VietGAP', 'Đặc sản', 'Tiền Giang'],
+            farmName: 'HTX Xoài Cát Hòa Lộc',
+            address: 'Huyện Cái Bè, Tỉnh Tiền Giang',
+            imageUrl: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&auto=format',
+            images: [
+              { url: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&auto=format' }
+            ],
+            variants: [
+              { name: 'Hộp 2 quả (1kg)', price: 85000 },
+              { name: 'Hộp VIP làm quà 3kg', price: 270000 }
+            ],
+            batches: [
+              { id: 'mock-batch-mango-1', batchCode: 'BATCH-XOAICAT-HOALOC-01', harvestDate: new Date(), farmingArea: 'Khu vực bao quả A2', farmingProcess: 'Bao quả tránh sâu bệnh, bón phân hữu cơ vi sinh' }
+            ]
+          },
+          {
+            id: '6',
+            name: 'Bơ Sáp 034 Tây Nguyên',
+            price: 55000,
+            unit: 'túi 1kg',
+            description: "Bơ sáp 034 dáng dài đặc trưng Tây Nguyên, cơm vàng dẻo quánh, vị ngậy béo tự nhiên, vỏ xanh bóng đẹp mắt, thích hợp cho cả gia đình ăn dặm hoặc làm sinh tố.",
+            categoryId: 'cat-fruits',
+            tags: ['VietGAP', 'Đặc sản', 'Đắk Lắk'],
+            farmName: 'Vườn Bơ Sáp Đắk Lắk',
+            address: "Huyện Cư M'gar, Tỉnh Đắk Lắk",
+            imageUrl: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=800&auto=format',
+            images: [
+              { url: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=800&auto=format' }
+            ],
+            variants: [
+              { name: 'Túi 1kg (3-4 quả)', price: 55000 },
+              { name: 'Túi VIP 2kg (được chọn quả)', price: 105000 }
+            ],
+            batches: [
+              { id: 'mock-batch-avocado-1', batchCode: 'BATCH-BOSAP-034-01', harvestDate: new Date(), farmingArea: 'Đồi bơ phân khu B3', farmingProcess: 'Tưới nước tưới tự động, bón phân compost tự nhiên' }
+            ]
+          },
+          {
+            id: '7',
+            name: 'Nấm Đùi Gà Hữu Cơ',
+            price: 45000,
+            unit: 'hộp 300g',
+            description: 'Nấm đùi gà thân trắng ngần, chắc thịt, giòn ngọt giàu dinh dưỡng trồng phòng lạnh khép kín tại Lâm Đồng. Đảm bảo an toàn sinh học tuyệt đối.',
+            categoryId: 'cat-veggies',
+            tags: ['Hữu cơ', 'Lâm Đồng'],
+            farmName: 'Lâm Đồng Organics',
+            address: 'Đức Trọng, Tỉnh Lâm Đồng',
+            imageUrl: '/nam-dui-ga.jpg',
+            images: [
+              { url: '/nam-dui-ga.jpg' }
+            ],
+            variants: [
+              { name: 'Hộp 300g', price: 45000 },
+              { name: 'Combo 2 Hộp (600g)', price: 85000 }
+            ],
+            batches: [
+              { id: 'mock-batch-mushroom-1', batchCode: 'BATCH-NAMDUIGA-HUYEN-01', harvestDate: new Date(), farmingArea: 'Phòng lạnh nuôi cấy nấm số 4', farmingProcess: 'Kiểm soát nhiệt độ 18 độ C, độ ẩm 85%, sử dụng mùn cưa hữu cơ tiệt trùng' }
+            ]
+          },
+          {
+            id: '8',
+            name: 'Măng Tây Xanh Loại 1',
+            price: 85000,
+            unit: 'bó 500g',
+            description: 'Măng tây xanh Ninh Thuận loại 1 thân mập non tơ giòn ngọt, giàu chất xơ và khoáng chất tốt cho sức khỏe. Thích hợp cho các món xào, luộc hoặc nướng.',
+            categoryId: 'cat-veggies',
+            tags: ['VietGAP', 'Đặc sản', 'Ninh Thuận'],
+            farmName: 'HTX Măng Tây Ninh Thuận',
+            address: 'Huyện Ninh Phước, Tỉnh Ninh Thuận',
+            imageUrl: '/mang-tay-xanh.jpg',
+            images: [
+              { url: '/mang-tay-xanh.jpg' }
+            ],
+            variants: [
+              { name: 'Bó 500g loại mập', price: 85000 },
+              { name: 'Bó 1kg', price: 160000 }
+            ],
+            batches: [
+              { id: 'mock-batch-asparagus-1', batchCode: 'BATCH-MANGTAY-NINHTHUAN-01', harvestDate: new Date(), farmingArea: 'Cánh đồng cát Ninh Phước', farmingProcess: 'Tưới nhỏ giọt tiết kiệm nước, bón phân phân bò hoai mục sinh học' }
             ]
           }
         ];

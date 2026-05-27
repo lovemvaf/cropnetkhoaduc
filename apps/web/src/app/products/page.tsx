@@ -80,9 +80,14 @@ export default function ProductsPage() {
       console.warn('Failed to fetch products, using offline backup:', err);
       // Offline search fallback
       const offlineProducts = [
-        { id: '1', name: 'Bưởi Da Xanh Bến Tre', price: 65000, unit: 'quả 1.2kg', categoryId: 'cat-fruits', tags: ['VietGAP', 'Đặc sản', 'Bến Tre'], status: 'ACTIVE', supplier: { farmName: 'HTX Cái Mơn', address: 'Bến Tre' }, imageUrl: 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=500&auto=format' },
-        { id: '2', name: 'Cà Chua Bi Đà Lạt', price: 35000, unit: 'túi 500g', categoryId: 'cat-veggies', tags: ['Hữu cơ', 'Đà Lạt'], status: 'ACTIVE', supplier: { farmName: 'Dalat Bio Farm', address: 'Đà Lạt' }, imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=500&auto=format' },
-        { id: '3', name: 'Rau Muống Hữu Cơ', price: 15000, unit: 'bó 500g', categoryId: 'cat-veggies', tags: ['Hữu cơ', 'D2C'], status: 'ACTIVE', supplier: { farmName: 'Vườn Rau Sạch Bến Tre', address: 'Bến Tre' }, imageUrl: 'https://images.unsplash.com/photo-1557844352-761f2565b576?w=500&auto=format' }
+        { id: '1', name: 'Bưởi Da Xanh Cái Mơn', price: 65000, unit: 'quả 1.2kg', categoryId: 'cat-fruits', tags: ['VietGAP', 'Đặc sản', 'Bến Tre'], status: 'ACTIVE', supplier: { farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn', address: 'Bến Tre' }, imageUrl: '/buoi-da-xanh-cai-mon.jpg' },
+        { id: '2', name: 'Cà Chua Bi Đà Lạt', price: 35000, unit: 'túi 500g', categoryId: 'cat-veggies', tags: ['Hữu cơ', 'Đà Lạt'], status: 'ACTIVE', supplier: { farmName: 'Dalat Bio Farm', address: 'Đà Lạt' }, imageUrl: '/cachuabidalat.jpg' },
+        { id: '3', name: 'Rau Muống Hữu Cơ', price: 15000, unit: 'bó 500g', categoryId: 'cat-veggies', tags: ['Hữu cơ', 'D2C'], status: 'ACTIVE', supplier: { farmName: 'Vườn Rau Sạch Bến Tre', address: 'Bến Tre' }, imageUrl: '/rau-muong-huu-co.jpg' },
+        { id: '4', name: 'Sầu Riêng Ri6 Vĩnh Long', price: 145000, unit: 'kg (quả 2.5kg)', categoryId: 'cat-fruits', tags: ['VietGAP', 'Đặc sản', 'Vĩnh Long'], status: 'ACTIVE', supplier: { farmName: 'HTX Sầu Riêng Vĩnh Long', address: 'Vĩnh Long' }, imageUrl: '/sau-rieng-vinh-long.jpg' },
+        { id: '5', name: 'Xoài Cát Hòa Lộc', price: 85000, unit: 'kg (2 quả)', categoryId: 'cat-fruits', tags: ['VietGAP', 'Đặc sản', 'Tiền Giang'], status: 'ACTIVE', supplier: { farmName: 'HTX Xoài Cát Hòa Lộc', address: 'Tiền Giang' }, imageUrl: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&auto=format' },
+        { id: '6', name: 'Bơ Sáp 034 Tây Nguyên', price: 55000, unit: 'túi 1kg', categoryId: 'cat-fruits', tags: ['VietGAP', 'Đặc sản', 'Đắk Lắk'], status: 'ACTIVE', supplier: { farmName: 'Vườn Bơ Sáp Đắk Lắk', address: 'Đắk Lắk' }, imageUrl: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=500&auto=format' },
+        { id: '7', name: 'Nấm Đùi Gà Hữu Cơ', price: 45000, unit: 'hộp 300g', categoryId: 'cat-veggies', tags: ['Hữu cơ', 'Lâm Đồng'], status: 'ACTIVE', supplier: { farmName: 'Lâm Đồng Organics', address: 'Lâm Đồng' }, imageUrl: '/nam-dui-ga.jpg' },
+        { id: '8', name: 'Măng Tây Xanh Loại 1', price: 85000, unit: 'bó 500g', categoryId: 'cat-veggies', tags: ['VietGAP', 'Đặc sản', 'Ninh Thuận'], status: 'ACTIVE', supplier: { farmName: 'HTX Măng Tây Ninh Thuận', address: 'Ninh Thuận' }, imageUrl: '/mang-tay-xanh.jpg' }
       ];
       
       let filtered = offlineProducts;
@@ -152,14 +157,18 @@ export default function ProductsPage() {
                     <h4 className="font-extrabold text-xl text-gray-900 leading-tight">{p.name}</h4>
                     <p className="text-xs text-gray-500 line-clamp-2">{p.description || 'Nông sản hữu cơ canh tác trực tiếp đảm bảo vệ sinh an toàn thực phẩm.'}</p>
                   </div>
-                  <div className="flex items-center justify-between mt-4">
-                    <div>
-                      <span className="text-lg font-black text-primary-500">{formatVND(Number(p.price))}</span>
-                      <span className="text-xs text-gray-400"> / {p.unit}</span>
+                  <div className="flex items-end justify-between mt-4">
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-lg font-black text-primary-500 leading-tight">
+                        {formatVND(Number(p.price))}
+                      </span>
+                      <span className="text-xs text-gray-400 truncate mt-0.5" title={p.unit}>
+                        / {p.unit}
+                      </span>
                     </div>
                     <Link
                       href={`/products/${p.id}`}
-                      className="bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-4 py-2 rounded-xl transition-colors shadow-sm"
+                      className="bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-sm flex-shrink-0 whitespace-nowrap ml-2 active:scale-95 duration-150"
                     >
                       Mua ngay
                     </Link>

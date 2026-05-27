@@ -275,6 +275,269 @@ export default function TraceabilityDetailPageClient() {
               arrivalDate: new Date().toISOString()
             }
           };
+        } else if (batchCode === 'BATCH-SAURIENG-RI6-01') {
+          mockFallback = {
+            batchCode,
+            harvestDate: new Date().toISOString(),
+            farmingArea: 'Phân khu D1 - Vườn Sầu Riêng Ri6 Lâu Năm',
+            farmingProcess: 'Phương pháp bón phân trùn quế vi sinh tự nhiên, không ngâm nhúng thuốc ép chín độc hại.',
+            product: {
+              name: 'Sầu Riêng Ri6 Vĩnh Long',
+              supplier: {
+                farmName: 'HTX Sầu Riêng Vĩnh Long',
+                address: 'Huyện Long Hồ, Tỉnh Vĩnh Long',
+                latitude: 10.2312,
+                longitude: 105.9723
+              }
+            },
+            certifications: [
+              {
+                id: 'mock-cert-durian',
+                name: 'Chứng nhận VietGAP',
+                issuer: 'Chi cục Bảo vệ Thực vật Vĩnh Long',
+                validUntil: '2028-12-31T00:00:00.000Z',
+                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                status: 'APPROVED'
+              }
+            ],
+            logisticsTimeline: [
+              { status: 'PICKED_UP', title: 'Thu hoạch thủ công', description: 'Gõ kiểm tra từng quả và thu hoạch trực tiếp tại vườn', timestamp: new Date(Date.now() - 3600 * 8000).toISOString(), location: 'Long Hồ, Vĩnh Long' },
+              { status: 'IN_TRANSIT', title: 'Vận chuyển lạnh chuyên dụng', description: 'Xe đông lạnh đang chuyển hàng về tổng kho phân phối CropNet', timestamp: new Date(Date.now() - 3600 * 4000).toISOString(), location: 'Bình Chánh, TP. HCM' },
+              { status: 'DELIVERED', title: 'Phân phối D2C', description: 'Đã cập bến cửa hàng phân phối trung chuyển CropNet', timestamp: new Date().toISOString(), location: 'Quận 7, TP. HCM' }
+            ],
+            inspectionReports: [
+              {
+                inspector: 'Trạm Kiểm Định Vùng 2',
+                status: 'PASSED',
+                checkDate: new Date(Date.now() - 3600 * 5000).toISOString(),
+                comments: 'Múi sầu riêng ráo dẻo, thơm ngậy tự nhiên, tuyệt đối không có dư lượng hóa chất ép chín.',
+                metrics: {
+                  pesticideLevel: '0.0%',
+                  humidity: '65.2%',
+                  sugarLevel: '28.5 Brix'
+                }
+              }
+            ],
+            shipmentInfo: {
+              shipmentId: `SHIP-DURIAN-${batchCode}`,
+              carrier: 'CropNet Cold Express',
+              vehicle: 'Container Hyundai 2.5 tấn - BKS 64C-345.67',
+              currentTemp: '12.4°C',
+              humidity: '72.1%',
+              departureDate: new Date(Date.now() - 3600 * 6000).toISOString(),
+              arrivalDate: new Date().toISOString()
+            }
+          };
+        } else if (batchCode === 'BATCH-XOAICAT-HOALOC-01') {
+          mockFallback = {
+            batchCode,
+            harvestDate: new Date().toISOString(),
+            farmingArea: 'Khu vực bao quả A2 - Trồng xoài chuyên canh',
+            farmingProcess: 'Sử dụng kỹ thuật bao quả cách ly sâu bệnh, hạn chế tối đa sử dụng thuốc bảo vệ thực vật.',
+            product: {
+              name: 'Xoài Cát Hòa Lộc',
+              supplier: {
+                farmName: 'HTX Xoài Cát Hòa Lộc',
+                address: 'Huyện Cái Bè, Tỉnh Tiền Giang',
+                latitude: 10.3842,
+                longitude: 106.0124
+              }
+            },
+            certifications: [
+              {
+                id: 'mock-cert-mango',
+                name: 'Chứng nhận VietGAP',
+                issuer: 'Chi cục Quản lý Chất lượng Nông sản Tiền Giang',
+                validUntil: '2028-12-31T00:00:00.000Z',
+                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                status: 'APPROVED'
+              }
+            ],
+            logisticsTimeline: [
+              { status: 'PICKED_UP', title: 'Thu hoạch bọc quả', description: 'Thu hoạch cắt cuống thủ công lúc chín hửng nhẹ', timestamp: new Date(Date.now() - 3600 * 5000).toISOString(), location: 'Cái Bè, Tiền Giang' },
+              { status: 'DELIVERED', title: 'Giao trực tiếp D2C', description: 'Đã cập bến cửa hàng phân phối trung chuyển CropNet trong ngày', timestamp: new Date().toISOString(), location: 'Bình Tân, TP. HCM' }
+            ],
+            inspectionReports: [
+              {
+                inspector: 'Trạm Kiểm Định Vùng 2',
+                status: 'PASSED',
+                checkDate: new Date(Date.now() - 3600 * 4000).toISOString(),
+                comments: 'Xoài cát đạt mẫu mã đẹp xuất sắc, không dư lượng thuốc hóa học, cơm mịn vàng ngọt lịm.',
+                metrics: {
+                  pesticideLevel: '0.0%',
+                  humidity: '82.1%',
+                  sugarLevel: '18.4 Brix'
+                }
+              }
+            ],
+            shipmentInfo: {
+              shipmentId: `SHIP-MANGO-${batchCode}`,
+              carrier: 'Giao Hàng Nhanh CropNet',
+              vehicle: 'Xe tải nhẹ Suzuki - BKS 63C-234.56',
+              currentTemp: '10.5°C',
+              humidity: '75.2%',
+              departureDate: new Date(Date.now() - 3600 * 4500).toISOString(),
+              arrivalDate: new Date().toISOString()
+            }
+          };
+        } else if (batchCode === 'BATCH-BOSAP-034-01') {
+          mockFallback = {
+            batchCode,
+            harvestDate: new Date().toISOString(),
+            farmingArea: 'Đồi bơ phân khu B3 - Đất đỏ Bazan Tây Nguyên',
+            farmingProcess: 'Tưới nước nhỏ giọt tiết kiệm nguồn nước tự nhiên, bón phân hữu cơ vi lượng sinh học ủ mục.',
+            product: {
+              name: 'Bơ Sáp 034 Tây Nguyên',
+              supplier: {
+                farmName: 'Vườn Bơ Sáp Đắk Lắk',
+                address: "Huyện Cư M'gar, Tỉnh Đắk Lắk",
+                latitude: 12.8124,
+                longitude: 108.1256
+              }
+            },
+            certifications: [
+              {
+                id: 'mock-cert-avocado',
+                name: 'Chứng nhận VietGAP',
+                issuer: 'Chi cục Trồng trọt Lâm Đồng',
+                validUntil: '2028-12-31T00:00:00.000Z',
+                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                status: 'APPROVED'
+              }
+            ],
+            logisticsTimeline: [
+              { status: 'PICKED_UP', title: 'Hái quả bằng sào chuyên dụng', description: 'Bơ sáp già quả được hái nhẹ nhàng để không dập nát', timestamp: new Date(Date.now() - 3600 * 12000).toISOString(), location: "Cư M'gar, Đắk Lắk" },
+              { status: 'IN_TRANSIT', title: 'Xe chuyển liên tỉnh', description: 'Đang vận chuyển từ Tây Nguyên xuống tổng kho phân phối CropNet', timestamp: new Date(Date.now() - 3600 * 6000).toISOString(), location: 'Bình Phước' },
+              { status: 'DELIVERED', title: 'Nhập kho D2C TP. HCM', description: 'Đã cập bến cửa hàng phân phối trung chuyển CropNet sẵn sàng giao hàng', timestamp: new Date().toISOString(), location: 'Bình Chánh, TP. HCM' }
+            ],
+            inspectionReports: [
+              {
+                inspector: 'Trạm Kiểm Định Lâm Đồng',
+                status: 'PASSED',
+                checkDate: new Date(Date.now() - 3600 * 8000).toISOString(),
+                comments: 'Cơm bơ dẻo ngậy cực cao, tỷ lệ xơ 0%, không có côn trùng chích hút vỏ quả.',
+                metrics: {
+                  pesticideLevel: '0.0%',
+                  humidity: '72.4%',
+                  sugarLevel: '2.5 Brix'
+                }
+              }
+            ],
+            shipmentInfo: {
+              shipmentId: `SHIP-AVOCADO-${batchCode}`,
+              carrier: 'Tây Nguyên Logis',
+              vehicle: 'Xe tải Isuzu 3.5 tấn - BKS 47C-890.12',
+              currentTemp: '12.0°C',
+              humidity: '74.2%',
+              departureDate: new Date(Date.now() - 3600 * 10000).toISOString(),
+              arrivalDate: new Date().toISOString()
+            }
+          };
+        } else if (batchCode === 'BATCH-NAMDUIGA-HUYEN-01') {
+          mockFallback = {
+            batchCode,
+            harvestDate: new Date().toISOString(),
+            farmingArea: 'Phòng lạnh nuôi cấy nấm số 4 - Khép kín',
+            farmingProcess: 'Nấm đùi gà trồng phòng lạnh tiệt trùng khép kín, kiểm soát nhiệt độ ẩm hoàn hảo, không hóa chất bảo quản.',
+            product: {
+              name: 'Nấm Đùi Gà Hữu Cơ',
+              supplier: {
+                farmName: 'Lâm Đồng Organics',
+                address: 'Đức Trọng, Tỉnh Lâm Đồng',
+                latitude: 11.7512,
+                longitude: 108.3842
+              }
+            },
+            certifications: [
+              {
+                id: 'mock-cert-mushroom',
+                name: 'Chứng nhận VietGAP',
+                issuer: 'Viện Nghiên cứu Sinh học Lâm Đồng',
+                validUntil: '2028-12-31T00:00:00.000Z',
+                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                status: 'APPROVED'
+              }
+            ],
+            logisticsTimeline: [
+              { status: 'PICKED_UP', title: 'Thu hoạch cắt gốc đóng khay', description: 'Nấm cắt gốc xếp vào khay hút chân không chất lượng cao', timestamp: new Date(Date.now() - 3600 * 3000).toISOString(), location: 'Đức Trọng, Lâm Đồng' },
+              { status: 'DELIVERED', title: 'Giao trực tiếp D2C', description: 'Đã cập bến kho mát CropNet trong ngày để giữ nấm tươi ngon nhất', timestamp: new Date().toISOString(), location: 'Bình Tân, TP. HCM' }
+            ],
+            inspectionReports: [
+              {
+                inspector: 'Trạm Thú y và Bảo vệ thực vật Lâm Đồng',
+                status: 'PASSED',
+                checkDate: new Date(Date.now() - 3600 * 2500).toISOString(),
+                comments: 'Nấm chắc thịt, trắng tinh khôi, thơm đặc trưng nấm đùi gà hữu cơ, không phát hiện vi sinh hại thực phẩm.',
+                metrics: {
+                  pesticideLevel: '0.0%',
+                  humidity: '88.5%',
+                  sugarLevel: '3.1 Brix'
+                }
+              }
+            ],
+            shipmentInfo: {
+              shipmentId: `SHIP-MUSHROOM-${batchCode}`,
+              carrier: 'Giao Hàng Nhanh CropNet',
+              vehicle: 'Xe đông lạnh nhỏ - BKS 49C-123.45',
+              currentTemp: '4.2°C',
+              humidity: '85.4%',
+              departureDate: new Date(Date.now() - 3600 * 2800).toISOString(),
+              arrivalDate: new Date().toISOString()
+            }
+          };
+        } else if (batchCode === 'BATCH-MANGTAY-NINHTHUAN-01') {
+          mockFallback = {
+            batchCode,
+            harvestDate: new Date().toISOString(),
+            farmingArea: 'Cánh đồng cát Ninh Phước - Trồng măng tây',
+            farmingProcess: 'Tưới nhỏ giọt tiết kiệm nước tưới công nghệ cao Israel, bón phân bò hữu cơ vi sinh ủ hoai mục.',
+            product: {
+              name: 'Măng Tây Xanh Loại 1',
+              supplier: {
+                farmName: 'HTX Măng Tây Ninh Thuận',
+                address: 'Huyện Ninh Phước, Tỉnh Ninh Thuận',
+                latitude: 11.5124,
+                longitude: 108.9723
+              }
+            },
+            certifications: [
+              {
+                id: 'mock-cert-asparagus',
+                name: 'Chứng nhận VietGAP',
+                issuer: 'Chi cục Bảo vệ Thực vật Ninh Thuận',
+                validUntil: '2028-12-31T00:00:00.000Z',
+                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                status: 'APPROVED'
+              }
+            ],
+            logisticsTimeline: [
+              { status: 'PICKED_UP', title: 'Cắt măng sáng sớm', description: 'Măng tây non tơ mầm nhú được thu hoạch bằng tay trước khi nắng gắt', timestamp: new Date(Date.now() - 3600 * 6000).toISOString(), location: 'Ninh Phước, Ninh Thuận' },
+              { status: 'IN_TRANSIT', title: 'Xe chuyển liên tỉnh', description: 'Đang vận chuyển măng về tổng kho phân phối CropNet TP. HCM', timestamp: new Date(Date.now() - 3600 * 3000).toISOString(), location: 'Bình Thuận' },
+              { status: 'DELIVERED', title: 'Nhập kho mát TP. HCM', description: 'Đã cập bến cửa hàng phân phối trung chuyển CropNet sẵn sàng giao D2C', timestamp: new Date().toISOString(), location: 'Bình Chánh, TP. HCM' }
+            ],
+            inspectionReports: [
+              {
+                inspector: 'Chi cục Quản lý chất lượng Ninh Thuận',
+                status: 'PASSED',
+                checkDate: new Date(Date.now() - 3600 * 4500).toISOString(),
+                comments: 'Măng tây xanh mướt, non tươi tơ giòn, không phát hiện xơ cứng hay dư lượng kim loại nặng ở đất cát.',
+                metrics: {
+                  pesticideLevel: '0.0%',
+                  humidity: '91.2%',
+                  sugarLevel: '4.5 Brix'
+                }
+              }
+            ],
+            shipmentInfo: {
+              shipmentId: `SHIP-ASPARAGUS-${batchCode}`,
+              carrier: 'Ninh Thuận Cold Logis',
+              vehicle: 'Xe tải Isuzu 1.9 tấn - BKS 85C-123.45',
+              currentTemp: '6.5°C',
+              humidity: '82.4%',
+              departureDate: new Date(Date.now() - 3600 * 5000).toISOString(),
+              arrivalDate: new Date().toISOString()
+            }
+          };
         } else {
           mockFallback = {
             batchCode,
@@ -282,7 +545,7 @@ export default function TraceabilityDetailPageClient() {
             farmingArea: 'Phân khu A3 - Trồng trọt Bưởi Hữu Cơ',
             farmingProcess: 'Tưới tiêu bằng nước ngọt tự nhiên từ sông Hàm Luông, bón phân compost hữu cơ tự nhiên không sử dụng thuốc trừ sâu hóa học.',
             product: {
-              name: 'Bưởi Da Xanh Bến Tre',
+              name: 'Bưởi Da Xanh Cái Mơn',
               supplier: {
                 farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn',
                 address: 'Xã Sơn Định, Huyện Chợ Lách, Tỉnh Bến Tre',

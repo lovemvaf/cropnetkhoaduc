@@ -17,7 +17,7 @@ export default function ProductCard({ id, name, price, unit, imageUrl, farmName 
     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
       <div className="relative aspect-video bg-gray-100 overflow-hidden">
         <img
-          src={imageUrl || 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=500&auto=format'}
+          src={imageUrl || 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=500&auto=format'}
           alt={name}
           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
         />
@@ -37,12 +37,16 @@ export default function ProductCard({ id, name, price, unit, imageUrl, farmName 
           <span className="text-sm font-medium text-gray-600">4.8</span>
         </div>
 
-        <div className="flex items-center justify-between mt-auto">
-          <div>
-            <span className="text-lg font-bold text-primary-500">{formatVND(price)}</span>
-            <span className="text-xs text-gray-400"> / {unit}</span>
+        <div className="flex items-end justify-between mt-auto pt-3 border-t border-gray-100">
+          <div className="flex flex-col min-w-0">
+            <span className="text-lg font-bold text-primary-500 leading-tight">
+              {formatVND(price)}
+            </span>
+            <span className="text-xs text-gray-400 truncate mt-0.5" title={unit}>
+              / {unit}
+            </span>
           </div>
-          <Link href={`/products/${id}`} className="bg-primary-500 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-primary-600 transition-colors">
+          <Link href={`/products/${id}`} className="bg-primary-500 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-primary-600 transition-all flex-shrink-0 whitespace-nowrap ml-2 shadow-sm hover:shadow active:scale-95 duration-150">
             Chi tiết
           </Link>
         </div>

@@ -143,7 +143,7 @@ export const findProductById = async (id: string) => {
         ...prod,
         supplier: prod.supplier || { id: 'mock-supplier-id', farmName: 'HTX Cái Mơn', address: 'Bến Tre' },
         category: prod.category || { name: 'Trái Cây Sạch' },
-        images: prod.images || [{ url: prod.imageUrl || 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=500&auto=format' }],
+        images: prod.images || [{ url: prod.imageUrl || 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=500&auto=format' }],
         batches: prod.batches || [
           {
             id: 'mock-batch-1',
@@ -219,7 +219,7 @@ export const insertProduct = async (data: {
         category: { name: 'Nông Sản' },
         images: data.imageUrls && data.imageUrls.length > 0 
           ? data.imageUrls.map(url => ({ url })) 
-          : [{ url: 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=500&auto=format' }]
+          : [{ url: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=500&auto=format' }]
       };
       MOCK_PRODUCTS.push(newProduct);
       return newProduct;
