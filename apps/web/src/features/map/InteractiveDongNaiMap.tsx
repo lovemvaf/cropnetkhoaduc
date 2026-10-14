@@ -48,10 +48,24 @@ const OPEN_FREE_MAP_STYLES: Record<BasemapMode, { name: string; url: string; des
   }
 };
 
+function checkWebGL(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+    );
+  } catch {
+    return false;
+  }
+}
+
 export default function InteractiveDongNaiMap() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
+  const currentBasemapRef = useRef<BasemapMode>('liberty');
 
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
@@ -175,18 +189,23 @@ export default function InteractiveDongNaiMap() {
       if (typeof window === 'undefined' || !mapContainerRef.current) return;
       if (mapInstanceRef.current) return;
 
-      try {
-        const maplibreMod: any = await import('maplibre-gl');
-        const maplibregl = maplibreMod.default || maplibreMod;
+      // Kiểm tra hỗ trợ WebGL bản địa (không gọi hàm không tồn tại của thư viện)
+      if (!checkWebGL()) {
+        setWebglSupported(false);
+        setMapError('Thiết bị hoặc trình duyệt của bạn không hỗ trợ WebGL.');
+        return;
+      }
 
-        // Kiểm tra hỗ trợ WebGL
-        if (!maplibregl.supported()) {
-          setWebglSupported(false);
-          setMapError('Thiết bị hoặc trình duyệt của bạn không hỗ trợ WebGL.');
-          return;
+      try {
+        const mod: any = await import('maplibre-gl');
+        if (!isMounted || !mapContainerRef.current) return;
+        const Map = mod.Map || mod.default?.Map || mod.default;
+
+        if (!Map) {
+          throw new Error('Không tìm thấy Map class trong MapLibre GL JS');
         }
 
-        const map = new maplibregl.Map({
+        const map = new Map({
           container: mapContainerRef.current,
           style: OPEN_FREE_MAP_STYLES.liberty.url,
           center: DONG_NAI_METROPOLITAN_BOUNDS.center, // [lng, lat]
@@ -211,7 +230,7 @@ export default function InteractiveDongNaiMap() {
       } catch (err: any) {
         if (!isMounted) return;
         console.error('Lỗi khởi tạo MapLibre:', err);
-        setMapError('Không thể khởi tạo engine bản đồ vector: ' + (err?.message || 'Lỗi không xác định'));
+        setMapError('Không thể khởi tạo engine bản đồ: ' + (err?.message || 'Lỗi không xác định'));
       }
     }
 
@@ -229,6 +248,9 @@ export default function InteractiveDongNaiMap() {
   // Cập nhật lớp nền (OpenFreeMap Vector Style Switcher)
   useEffect(() => {
     if (!mapInstanceRef.current || !mapLoaded) return;
+    if (currentBasemapRef.current === basemap) return; // Tránh set lại cùng style vô ích
+    currentBasemapRef.current = basemap;
+
     const map = mapInstanceRef.current;
     const styleUrl = OPEN_FREE_MAP_STYLES[basemap].url;
 
@@ -327,10 +349,17 @@ export default function InteractiveDongNaiMap() {
 
   // ĐỒNG BỘ MARKERS HOÀN TOÀN THEO BỘ LỌC (LOẠI BỎ TRIỆT ĐỂ GHIM MA)
   useEffect(() => {
+    let isCancelled = false;
+
     async function updateMarkers() {
       if (!mapInstanceRef.current || !mapLoaded) return;
-      const maplibreMod: any = await import('maplibre-gl');
-      const maplibregl = maplibreMod.default || maplibreMod;
+      const mod: any = await import('maplibre-gl');
+      if (isCancelled || !mapInstanceRef.current) return;
+
+      const Marker = mod.Marker || mod.default?.Marker;
+      const Popup = mod.Popup || mod.default?.Popup;
+      if (!Marker || !Popup) return;
+
       const map = mapInstanceRef.current;
 
       // Xóa sạch markers cũ
@@ -398,13 +427,13 @@ export default function InteractiveDongNaiMap() {
           setSelectedPointId(point.id);
         });
 
-        const popup = new maplibregl.Popup({
+        const popup = new Popup({
           offset: [0, -(size + 4)],
           closeButton: false,
           className: 'cropnet-map-popup'
         }).setDOMContent(popupNode);
 
-        const marker = new maplibregl.Marker({
+        const marker = new Marker({
           element: el,
           anchor: 'bottom'
         })
@@ -421,6 +450,10 @@ export default function InteractiveDongNaiMap() {
     }
 
     updateMarkers();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [filteredPoints, selectedPointId, mapLoaded, createSafePopupNode]);
 
   // Thao tác chọn điểm từ danh sách
@@ -488,26 +521,28 @@ export default function InteractiveDongNaiMap() {
         const lng = pos.coords.longitude;
 
         if (mapInstanceRef.current) {
-          const maplibreMod: any = await import('maplibre-gl');
-          const maplibregl = maplibreMod.default || maplibreMod;
-          mapInstanceRef.current.flyTo({
-            center: [lng, lat],
-            zoom: 13,
-            duration: 1200
-          });
+          const mod: any = await import('maplibre-gl');
+          const Marker = mod.Marker || mod.default?.Marker;
+          if (Marker) {
+            mapInstanceRef.current.flyTo({
+              center: [lng, lat],
+              zoom: 13,
+              duration: 1200
+            });
 
-          // Pulse marker
-          const el = document.createElement('div');
-          el.style.width = '16px';
-          el.style.height = '16px';
-          el.style.backgroundColor = '#2C4939';
-          el.style.borderRadius = '50%';
-          el.style.border = '3px solid #FFFFFF';
-          el.style.boxShadow = '0 0 12px rgba(44, 73, 57, 0.8)';
+            // Pulse marker
+            const el = document.createElement('div');
+            el.style.width = '16px';
+            el.style.height = '16px';
+            el.style.backgroundColor = '#2C4939';
+            el.style.borderRadius = '50%';
+            el.style.border = '3px solid #FFFFFF';
+            el.style.boxShadow = '0 0 12px rgba(44, 73, 57, 0.8)';
 
-          new maplibregl.Marker({ element: el })
-            .setLngLat([lng, lat])
-            .addTo(mapInstanceRef.current);
+            new Marker({ element: el })
+              .setLngLat([lng, lat])
+              .addTo(mapInstanceRef.current);
+          }
         }
       },
       (err) => {
