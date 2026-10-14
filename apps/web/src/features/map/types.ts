@@ -6,7 +6,7 @@ export type VerificationStatus = 'VERIFIED' | 'PENDING_AUDIT' | 'TRADITIONAL_REG
 
 export type SubRegion = 'SOUTH' | 'NORTH';
 
-export type BasemapMode = 'voyager' | 'topo' | 'satellite';
+export type BasemapMode = 'liberty' | 'bright' | 'positron';
 
 export interface MapPoint {
   id: string;
@@ -21,7 +21,7 @@ export interface MapPoint {
   accuracyNote: string;
   latitude: number;
   longitude: number;
-  polygonBoundary?: [number, number][]; // [lat, lng] array for regional catchment
+  polygonBoundary?: [number, number][]; // [lng, lat]
   established?: string;
   hectares?: number;
   hectaresEstimateNote?: string;
@@ -44,8 +44,8 @@ export interface RegionPolygonFeature {
   name: string;
   tier: MapTier;
   subRegion: SubRegion;
-  center: [number, number];
-  coordinates: [number, number][];
+  center: [number, number]; // [lng, lat]
+  coordinates: [number, number][]; // [lng, lat]
   fillColor: string;
   strokeColor: string;
   description: string;

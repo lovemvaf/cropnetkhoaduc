@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { Container } from '@cropnet/ui';
 import { Compass, MapPin } from 'lucide-react';
 
-// Dynamic import with ssr: false to guarantee zero SSR hydration issues with Leaflet
+// Dynamic import with ssr: false to guarantee zero SSR hydration issues with MapLibre GL
 const InteractiveDongNaiMap = dynamic(
   () => import('@/features/map/InteractiveDongNaiMap'),
   {

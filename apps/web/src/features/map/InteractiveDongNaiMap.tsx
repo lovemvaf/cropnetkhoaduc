@@ -13,28 +13,51 @@ import {
   Navigation,
   ZoomIn,
   ZoomOut,
-  Maximize2,
   X,
   AlertCircle,
-  FileCheck,
   RotateCcw,
   ShoppingBag,
-  QrCode
+  QrCode,
+  Sparkles
 } from 'lucide-react';
 import Link from 'next/link';
 import { MapPoint, MapTier, BasemapMode, SubRegion } from './types';
 import { DONG_NAI_MAP_POINTS, removeVietnameseTones } from './mapData';
-import { DONG_NAI_METROPOLITAN_BOUNDS, DONG_NAI_REGION_POLYGONS } from './dongNaiGeoJson';
+import {
+  DONG_NAI_METROPOLITAN_BOUNDS,
+  DONG_NAI_REGION_POLYGONS,
+  getRegionsGeoJson
+} from './dongNaiGeoJson';
+
+// OpenFreeMap 100% Free, Keyless, Open-Source Vector Map Styles
+const OPEN_FREE_MAP_STYLES: Record<BasemapMode, { name: string; url: string; description: string }> = {
+  liberty: {
+    name: 'Tiêu chuẩn (Liberty)',
+    url: 'https://tiles.openfreemap.org/styles/liberty',
+    description: 'Bản đồ vector địa hình và hành chính tự nhiên, hiển thị rõ sông hồ và rừng cây.'
+  },
+  bright: {
+    name: 'Sắc nét (Bright)',
+    url: 'https://tiles.openfreemap.org/styles/bright',
+    description: 'Bản đồ vector tương phản cao, tối ưu đọc tên đường và địa danh.'
+  },
+  positron: {
+    name: 'Thanh lịch (Positron)',
+    url: 'https://tiles.openfreemap.org/styles/positron',
+    description: 'Bản đồ vector tông xám tối giản, tôn vinh các ghim và vùng nông sản.'
+  }
+};
 
 export default function InteractiveDongNaiMap() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
-  const tileLayerRef = useRef<any>(null);
-  const markersLayerRef = useRef<any>(null);
-  const polygonsLayerRef = useRef<any>(null);
-  const markersMapRef = useRef<{ [id: string]: any }>({});
+  const markersRef = useRef<any[]>([]);
 
-  const [basemap, setBasemap] = useState<BasemapMode>('voyager');
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapError, setMapError] = useState<string | null>(null);
+  const [webglSupported, setWebglSupported] = useState(true);
+
+  const [basemap, setBasemap] = useState<BasemapMode>('liberty');
   const [selectedPointId, setSelectedPointId] = useState<string>('htx-tantrieu');
   const [activeTier, setActiveTier] = useState<MapTier | 'ALL'>('ALL');
   const [activeSubRegion, setActiveSubRegion] = useState<SubRegion | 'ALL'>('ALL');
@@ -42,9 +65,8 @@ export default function InteractiveDongNaiMap() {
   const [showPolygons, setShowPolygons] = useState(true);
   const [geoLocating, setGeoLocating] = useState(false);
   const [geoNotice, setGeoNotice] = useState<string | null>(null);
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  // Lọc danh sách điểm theo tier, subRegion và tìm kiếm không dấu
+  // Lọc danh sách điểm theo tier, subRegion và tìm kiếm tiếng Việt không dấu
   const filteredPoints = useMemo(() => {
     return DONG_NAI_MAP_POINTS.filter(point => {
       if (activeTier !== 'ALL' && point.tier !== activeTier) return false;
@@ -76,76 +98,167 @@ export default function InteractiveDongNaiMap() {
     return filteredPoints[0] || DONG_NAI_MAP_POINTS[0];
   }, [selectedPointId, filteredPoints]);
 
-  // Cập nhật selectedPointId nếu điểm hiện tại bị lọc mất
+  // Cập nhật selectedPointId nếu điểm hiện tại bị lọc ra khỏi kết quả
   useEffect(() => {
     if (filteredPoints.length > 0 && !filteredPoints.some(p => p.id === selectedPointId)) {
       setSelectedPointId(filteredPoints[0].id);
     }
   }, [filteredPoints, selectedPointId]);
 
-  // Hàm tạo Icon SVG cao cấp theo cấp bậc điểm
-  const createMarkerIcon = useCallback((L: any, point: MapPoint, isSelected: boolean) => {
-    const isTier2 = point.tier === 2;
-    const isTier3 = point.tier === 3;
+  // Thêm layer đa giác tiểu vùng nông nghiệp
+  const addPolygonLayers = useCallback((map: any) => {
+    if (!map) return;
+    try {
+      if (map.getSource('dongnai-regions')) {
+        map.removeLayer('regions-fill');
+        map.removeLayer('regions-outline');
+        map.removeSource('dongnai-regions');
+      }
 
-    // Màu sắc theo chủ đề Earth & Forest
-    const bgColor = isTier2 ? '#2C4939' : (isTier3 ? '#A46C49' : '#5E6B56');
-    const badgeText = isTier2 ? 'HTX' : (isTier3 ? 'QR' : 'VÙNG');
-    const size = isSelected ? 38 : 32;
-    const ringBorder = isSelected ? 'ring-4 ring-[#2C4939]/30 scale-110' : '';
+      map.addSource('dongnai-regions', {
+        type: 'geojson',
+        data: getRegionsGeoJson()
+      });
 
-    return L.divIcon({
-      className: 'custom-cropnet-marker',
-      html: `
-        <div class="relative cursor-pointer transition-all duration-200 ${ringBorder}" style="
-          width: ${size}px;
-          height: ${size + 8}px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          transform: translate(-50%, -100%);
-        ">
-          <div style="
-            width: ${size}px;
-            height: ${size}px;
-            background-color: ${bgColor};
-            border: 2px solid #FFFFFF;
-            border-radius: 50% 50% 50% 0;
-            transform: rotate(-45deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-          ">
-            <span style="
-              transform: rotate(45deg);
-              color: #FFFFFF;
-              font-family: var(--font-sans), sans-serif;
-              font-size: ${isSelected ? '10px' : '9px'};
-              font-weight: 700;
-              letter-spacing: 0.5px;
-            ">
-              ${badgeText}
-            </span>
-          </div>
-          <div style="
-            width: 6px;
-            height: 6px;
-            background: #253129;
-            opacity: 0.3;
-            border-radius: 50%;
-            margin-top: -1px;
-            filter: blur(1px);
-          "></div>
-        </div>
-      `,
-      iconSize: [size, size + 8],
-      iconAnchor: [size / 2, size + 8],
-      popupAnchor: [0, -(size + 10)]
-    });
+      // Lớp tô màu trong suốt
+      map.addLayer({
+        id: 'regions-fill',
+        type: 'fill',
+        source: 'dongnai-regions',
+        paint: {
+          'fill-color': ['get', 'fillColor'],
+          'fill-opacity': 0.14
+        }
+      });
+
+      // Lớp viền nét đứt
+      map.addLayer({
+        id: 'regions-outline',
+        type: 'line',
+        source: 'dongnai-regions',
+        paint: {
+          'line-color': ['get', 'strokeColor'],
+          'line-width': 1.5,
+          'line-dasharray': [3, 2]
+        }
+      });
+
+      // Tương tác hover và click trên đa giác
+      map.on('click', 'regions-fill', (e: any) => {
+        if (!e.features || !e.features[0]) return;
+        const regionId = e.features[0].properties.id;
+        const matchPoint = DONG_NAI_MAP_POINTS.find(
+          p => p.id === regionId.replace('poly-', 'region-') || p.id === regionId.replace('poly-', 'htx-')
+        );
+        if (matchPoint) {
+          setSelectedPointId(matchPoint.id);
+        }
+      });
+
+      map.on('mouseenter', 'regions-fill', () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      map.on('mouseleave', 'regions-fill', () => {
+        map.getCanvas().style.cursor = '';
+      });
+    } catch (err) {
+      console.warn('Lỗi khi vẽ đa giác vùng:', err);
+    }
   }, []);
 
-  // Hàm tạo Popup DOM an toàn (Phòng chống triệt để XSS)
+  // Khởi tạo bản đồ MapLibre GL JS với OpenFreeMap Vector Tiles
+  useEffect(() => {
+    let isMounted = true;
+
+    async function initMapLibre() {
+      if (typeof window === 'undefined' || !mapContainerRef.current) return;
+      if (mapInstanceRef.current) return;
+
+      try {
+        const maplibreMod: any = await import('maplibre-gl');
+        const maplibregl = maplibreMod.default || maplibreMod;
+
+        // Kiểm tra hỗ trợ WebGL
+        if (!maplibregl.supported()) {
+          setWebglSupported(false);
+          setMapError('Thiết bị hoặc trình duyệt của bạn không hỗ trợ WebGL.');
+          return;
+        }
+
+        const map = new maplibregl.Map({
+          container: mapContainerRef.current,
+          style: OPEN_FREE_MAP_STYLES.liberty.url,
+          center: DONG_NAI_METROPOLITAN_BOUNDS.center, // [lng, lat]
+          zoom: DONG_NAI_METROPOLITAN_BOUNDS.defaultZoom,
+          minZoom: 7.5,
+          maxZoom: 18,
+          attributionControl: false // Sẽ thêm attribution tùy chỉnh đẹp bên dưới
+        });
+
+        mapInstanceRef.current = map;
+
+        map.on('load', () => {
+          if (!isMounted) return;
+          setMapLoaded(true);
+          setMapError(null);
+          addPolygonLayers(map);
+        });
+
+        map.on('error', (e: any) => {
+          console.warn('MapLibre notice:', e?.error?.message || e);
+        });
+      } catch (err: any) {
+        if (!isMounted) return;
+        console.error('Lỗi khởi tạo MapLibre:', err);
+        setMapError('Không thể khởi tạo engine bản đồ vector: ' + (err?.message || 'Lỗi không xác định'));
+      }
+    }
+
+    initMapLibre();
+
+    return () => {
+      isMounted = false;
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, [addPolygonLayers]);
+
+  // Cập nhật lớp nền (OpenFreeMap Vector Style Switcher)
+  useEffect(() => {
+    if (!mapInstanceRef.current || !mapLoaded) return;
+    const map = mapInstanceRef.current;
+    const styleUrl = OPEN_FREE_MAP_STYLES[basemap].url;
+
+    map.setStyle(styleUrl);
+
+    map.once('style.load', () => {
+      if (showPolygons) {
+        addPolygonLayers(map);
+      }
+    });
+  }, [basemap, mapLoaded, showPolygons, addPolygonLayers]);
+
+  // Bật/tắt đa giác tiểu vùng
+  useEffect(() => {
+    if (!mapInstanceRef.current || !mapLoaded) return;
+    const map = mapInstanceRef.current;
+
+    try {
+      if (map.getLayer('regions-fill')) {
+        map.setLayoutProperty('regions-fill', 'visibility', showPolygons ? 'visible' : 'none');
+      }
+      if (map.getLayer('regions-outline')) {
+        map.setLayoutProperty('regions-outline', 'visibility', showPolygons ? 'visible' : 'none');
+      }
+    } catch (e) {
+      // Ignore if layers not yet added
+    }
+  }, [showPolygons, mapLoaded]);
+
+  // Tạo Popup DOM an toàn chống XSS
   const createSafePopupNode = useCallback((point: MapPoint, onSelect: () => void) => {
     const container = document.createElement('div');
     container.style.fontFamily = 'inherit';
@@ -173,7 +286,7 @@ export default function InteractiveDongNaiMap() {
     tierBadge.style.fontWeight = '600';
     tierBadge.style.display = 'inline-block';
     tierBadge.style.marginTop = '2px';
-    tierBadge.style.color = point.tier === 2 ? '#2C4939' : (point.tier === 3 ? '#A46C49' : '#647067');
+    tierBadge.style.color = point.tier === 2 ? '#2C4939' : (point.tier === 3 ? '#A46C49' : '#5E6B56');
     header.appendChild(tierBadge);
     container.appendChild(header);
 
@@ -212,191 +325,132 @@ export default function InteractiveDongNaiMap() {
     return container;
   }, []);
 
-  // Khởi tạo bản đồ 1 lần
-  useEffect(() => {
-    let isMounted = true;
-
-    async function initMap() {
-      if (typeof window === 'undefined' || !mapContainerRef.current) return;
-      if (mapInstanceRef.current) return;
-
-      const L = (await import('leaflet')).default;
-
-      // Khởi tạo bản đồ trung tâm Thành phố Đồng Nai hiện hành
-      const map = L.map(mapContainerRef.current, {
-        center: DONG_NAI_METROPOLITAN_BOUNDS.center,
-        zoom: DONG_NAI_METROPOLITAN_BOUNDS.defaultZoom,
-        minZoom: 8,
-        maxZoom: 18,
-        scrollWheelZoom: true,
-        zoomControl: false // Chúng ta dùng custom zoom controls tinh tế
-      });
-
-      mapInstanceRef.current = map;
-
-      // Thêm tile layer mặc định
-      const voyagerTile = L.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-        {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',
-          subdomains: 'abcd',
-          maxZoom: 19
-        }
-      ).addTo(map);
-
-      tileLayerRef.current = voyagerTile;
-
-      // Layer groups quản lý ranh giới và markers
-      const polygonsGroup = L.layerGroup().addTo(map);
-      polygonsLayerRef.current = polygonsGroup;
-
-      const markersGroup = L.layerGroup().addTo(map);
-      markersLayerRef.current = markersGroup;
-
-      // Vẽ các đa giác tiểu vùng nông nghiệp
-      DONG_NAI_REGION_POLYGONS.forEach(region => {
-        const poly = L.polygon(region.coordinates as any, {
-          color: region.strokeColor,
-          fillColor: region.fillColor,
-          fillOpacity: 0.12,
-          weight: 1.5,
-          dashArray: '4, 4'
-        }).addTo(polygonsGroup);
-
-        poly.bindTooltip(region.name, {
-          sticky: true,
-          className: 'custom-region-tooltip'
-        });
-
-        poly.on('click', () => {
-          const matchPoint = DONG_NAI_MAP_POINTS.find(p => p.id === region.id.replace('poly-', 'region-') || p.id === region.id.replace('poly-', 'htx-'));
-          if (matchPoint) {
-            setSelectedPointId(matchPoint.id);
-            setMobileDrawerOpen(true);
-          }
-        });
-      });
-    }
-
-    initMap();
-
-    return () => {
-      isMounted = false;
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
-    };
-  }, []);
-
-  // Cập nhật lớp nền (Basemap Switcher)
-  useEffect(() => {
-    async function updateBasemap() {
-      if (!mapInstanceRef.current) return;
-      const L = (await import('leaflet')).default;
-
-      if (tileLayerRef.current) {
-        mapInstanceRef.current.removeLayer(tileLayerRef.current);
-      }
-
-      let newTileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-      let attribution = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>';
-
-      if (basemap === 'topo') {
-        newTileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}';
-        attribution = 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, USGS';
-      } else if (basemap === 'satellite') {
-        newTileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-        attribution = 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
-      }
-
-      const newTile = L.tileLayer(newTileUrl, {
-        attribution,
-        maxZoom: 19
-      }).addTo(mapInstanceRef.current);
-
-      tileLayerRef.current = newTile;
-    }
-
-    updateBasemap();
-  }, [basemap]);
-
-  // Cập nhật đa giác khi người dùng bật/tắt layer
-  useEffect(() => {
-    if (!polygonsLayerRef.current || !mapInstanceRef.current) return;
-    if (showPolygons) {
-      if (!mapInstanceRef.current.hasLayer(polygonsLayerRef.current)) {
-        mapInstanceRef.current.addLayer(polygonsLayerRef.current);
-      }
-    } else {
-      if (mapInstanceRef.current.hasLayer(polygonsLayerRef.current)) {
-        mapInstanceRef.current.removeLayer(polygonsLayerRef.current);
-      }
-    }
-  }, [showPolygons]);
-
-  // ĐỒNG BỘ MARKERS THEO BỘ LỌC (SỬA TRIỆT ĐỂ LỖI MARKER KHÔNG ĐỒNG BỘ)
+  // ĐỒNG BỘ MARKERS HOÀN TOÀN THEO BỘ LỌC (LOẠI BỎ TRIỆT ĐỂ GHIM MA)
   useEffect(() => {
     async function updateMarkers() {
-      if (!mapInstanceRef.current || !markersLayerRef.current) return;
-      const L = (await import('leaflet')).default;
+      if (!mapInstanceRef.current || !mapLoaded) return;
+      const maplibreMod: any = await import('maplibre-gl');
+      const maplibregl = maplibreMod.default || maplibreMod;
+      const map = mapInstanceRef.current;
 
-      // Xóa toàn bộ marker cũ trên layer
-      markersLayerRef.current.clearLayers();
-      markersMapRef.current = {};
+      // Xóa sạch markers cũ
+      markersRef.current.forEach(m => m.remove());
+      markersRef.current = [];
 
-      // Tạo marker mới chỉ cho các điểm thỏa mãn filteredPoints
+      // Tạo markers mới cho từng điểm thỏa mãn bộ lọc
       filteredPoints.forEach(point => {
         const isSelected = point.id === selectedPointId;
-        const icon = createMarkerIcon(L, point, isSelected);
+        const isTier2 = point.tier === 2;
+        const isTier3 = point.tier === 3;
 
-        const marker = L.marker([point.latitude, point.longitude], {
-          icon,
-          title: point.name
-        });
+        const bgColor = isTier2 ? '#2C4939' : (isTier3 ? '#A46C49' : '#5E6B56');
+        const badgeText = isTier2 ? 'HTX' : (isTier3 ? 'QR' : 'VÙNG');
+        const size = isSelected ? 36 : 30;
 
-        // Tạo nội dung popup an toàn qua DOM
+        // Tạo phần tử DOM marker
+        const el = document.createElement('div');
+        el.className = 'custom-cropnet-marker';
+        el.style.width = `${size}px`;
+        el.style.height = `${size + 8}px`;
+        el.style.display = 'flex';
+        el.style.flexDirection = 'column';
+        el.style.alignItems = 'center';
+        el.style.cursor = 'pointer';
+        el.style.transform = isSelected ? 'scale(1.15)' : 'scale(1)';
+        el.style.transition = 'transform 0.2s ease';
+
+        el.innerHTML = `
+          <div style="
+            width: ${size}px;
+            height: ${size}px;
+            background-color: ${bgColor};
+            border: 2px solid #FFFFFF;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+          ">
+            <span style="
+              transform: rotate(45deg);
+              color: #FFFFFF;
+              font-family: inherit;
+              font-size: ${isSelected ? '10px' : '9px'};
+              font-weight: 700;
+              letter-spacing: 0.5px;
+            ">
+              ${badgeText}
+            </span>
+          </div>
+          <div style="
+            width: 6px;
+            height: 6px;
+            background: #253129;
+            opacity: 0.35;
+            border-radius: 50%;
+            margin-top: -1px;
+            filter: blur(1px);
+          "></div>
+        `;
+
         const popupNode = createSafePopupNode(point, () => {
           setSelectedPointId(point.id);
-          setMobileDrawerOpen(true);
         });
 
-        marker.bindPopup(popupNode);
+        const popup = new maplibregl.Popup({
+          offset: [0, -(size + 4)],
+          closeButton: false,
+          className: 'cropnet-map-popup'
+        }).setDOMContent(popupNode);
 
-        marker.on('click', () => {
+        const marker = new maplibregl.Marker({
+          element: el,
+          anchor: 'bottom'
+        })
+          .setLngLat([point.longitude, point.latitude])
+          .setPopup(popup)
+          .addTo(map);
+
+        el.addEventListener('click', () => {
           setSelectedPointId(point.id);
-          setMobileDrawerOpen(true);
         });
 
-        markersLayerRef.current.addLayer(marker);
-        markersMapRef.current[point.id] = marker;
+        markersRef.current.push(marker);
       });
     }
 
     updateMarkers();
-  }, [filteredPoints, selectedPointId, createMarkerIcon, createSafePopupNode]);
+  }, [filteredPoints, selectedPointId, mapLoaded, createSafePopupNode]);
 
   // Thao tác chọn điểm từ danh sách
   const handleSelectPoint = (point: MapPoint) => {
     setSelectedPointId(point.id);
-    setMobileDrawerOpen(true);
 
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.flyTo([point.latitude, point.longitude], 12, { duration: 1.0 });
-      const marker = markersMapRef.current[point.id];
-      if (marker) {
-        marker.openPopup();
+    if (mapInstanceRef.current && mapLoaded) {
+      mapInstanceRef.current.flyTo({
+        center: [point.longitude, point.latitude],
+        zoom: 12.5,
+        essential: true,
+        duration: 1200
+      });
+
+      // Mở popup tương ứng nếu có
+      const idx = filteredPoints.findIndex(p => p.id === point.id);
+      if (idx !== -1 && markersRef.current[idx]) {
+        markersRef.current[idx].togglePopup();
       }
     }
   };
 
-  // Điều hướng toàn cảnh (Quick views)
+  // Điều hướng toàn cảnh
   const handleFitEntireDongNai = () => {
     if (!mapInstanceRef.current) return;
     mapInstanceRef.current.fitBounds([
       DONG_NAI_METROPOLITAN_BOUNDS.southWest,
       DONG_NAI_METROPOLITAN_BOUNDS.northEast
-    ], { padding: [30, 30] });
+    ], { padding: 40, duration: 1000 });
+    setActiveSubRegion('ALL');
   };
 
   const handleFitSouthDongNai = () => {
@@ -404,7 +458,7 @@ export default function InteractiveDongNaiMap() {
     mapInstanceRef.current.fitBounds([
       DONG_NAI_METROPOLITAN_BOUNDS.southBounds.southWest,
       DONG_NAI_METROPOLITAN_BOUNDS.southBounds.northEast
-    ], { padding: [30, 30] });
+    ], { padding: 40, duration: 1000 });
     setActiveSubRegion('SOUTH');
   };
 
@@ -413,7 +467,7 @@ export default function InteractiveDongNaiMap() {
     mapInstanceRef.current.fitBounds([
       DONG_NAI_METROPOLITAN_BOUNDS.northBounds.southWest,
       DONG_NAI_METROPOLITAN_BOUNDS.northBounds.northEast
-    ], { padding: [30, 30] });
+    ], { padding: 40, duration: 1000 });
     setActiveSubRegion('NORTH');
   };
 
@@ -434,19 +488,26 @@ export default function InteractiveDongNaiMap() {
         const lng = pos.coords.longitude;
 
         if (mapInstanceRef.current) {
-          const L = (await import('leaflet')).default;
-          mapInstanceRef.current.flyTo([lat, lng], 13, { duration: 1.2 });
+          const maplibreMod: any = await import('maplibre-gl');
+          const maplibregl = maplibreMod.default || maplibreMod;
+          mapInstanceRef.current.flyTo({
+            center: [lng, lat],
+            zoom: 13,
+            duration: 1200
+          });
 
-          const userMarker = L.circleMarker([lat, lng], {
-            radius: 8,
-            fillColor: '#2C4939',
-            color: '#FFFFFF',
-            weight: 2,
-            opacity: 1,
-            fillOpacity: 0.9
-          }).addTo(mapInstanceRef.current);
+          // Pulse marker
+          const el = document.createElement('div');
+          el.style.width = '16px';
+          el.style.height = '16px';
+          el.style.backgroundColor = '#2C4939';
+          el.style.borderRadius = '50%';
+          el.style.border = '3px solid #FFFFFF';
+          el.style.boxShadow = '0 0 12px rgba(44, 73, 57, 0.8)';
 
-          userMarker.bindPopup('Vị trí hiện tại của bạn').openPopup();
+          new maplibregl.Marker({ element: el })
+            .setLngLat([lng, lat])
+            .addTo(mapInstanceRef.current);
         }
       },
       (err) => {
@@ -460,15 +521,6 @@ export default function InteractiveDongNaiMap() {
       },
       { timeout: 8000, enableHighAccuracy: true }
     );
-  };
-
-  // Zoom handlers
-  const handleZoomIn = () => {
-    if (mapInstanceRef.current) mapInstanceRef.current.zoomIn();
-  };
-
-  const handleZoomOut = () => {
-    if (mapInstanceRef.current) mapInstanceRef.current.zoomOut();
   };
 
   return (
@@ -525,7 +577,7 @@ export default function InteractiveDongNaiMap() {
           </div>
         </div>
 
-        {/* Thanh điều hướng vùng địa lý nhanh & Bật tắt Ranh giới */}
+        {/* Thanh điều hướng tiểu vùng nhanh & Bật tắt Ranh giới */}
         <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#E2E5DC] text-xs">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[#647067] font-medium text-[11px] flex items-center gap-1">
@@ -575,11 +627,11 @@ export default function InteractiveDongNaiMap() {
               <span>Hiện ranh giới tiểu vùng</span>
             </label>
             <span className="text-[#8C978F] hidden sm:inline">•</span>
-            <span className="text-[#8C978F] hidden sm:inline">Hệ tọa độ: WGS84 (EPSG:4326)</span>
+            <span className="text-[#8C978F] hidden sm:inline">Engine: MapLibre GL • OpenFreeMap Vector</span>
           </div>
         </div>
 
-        {/* Thông báo định vị nếu có */}
+        {/* Thông báo lỗi hoặc định vị nếu có */}
         {geoNotice && (
           <div className="bg-[#F8EFEB] border border-[#E9D5C8] text-[#8C3A27] px-3 py-1.5 rounded text-xs flex items-center gap-2">
             <AlertCircle className="w-3.5 h-3.5 shrink-0" />
@@ -592,67 +644,96 @@ export default function InteractiveDongNaiMap() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Bản đồ Canvas (Left 8 cols) */}
         <div className="lg:col-span-8 bg-white rounded-xl border border-[#E2E5DC] overflow-hidden shadow-subtle relative flex flex-col">
-          {/* Header trên map với Basemap Switcher */}
+          {/* Header trên map với OpenFreeMap Vector Switcher */}
           <div className="p-3 bg-[#F1EFE8] border-b border-[#E2E5DC] flex flex-wrap items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#2C4939] animate-pulse"></span>
               <span className="font-semibold text-[#253129]">
-                Bản Đồ Nông Nghiệp Thành Phố Đồng Nai (Nghị quyết 30/2026/QH16)
+                Bản Đồ Vector Nông Nghiệp Thành Phố Đồng Nai (Nghị quyết 30/2026/QH16)
               </span>
               <span className="text-[#647067] text-[11px] hidden sm:inline">
                 ({filteredPoints.length} điểm hiển thị)
               </span>
             </div>
 
-            {/* Basemap Switcher Controls */}
+            {/* Vector Basemap Switcher (Keyless OpenFreeMap) */}
             <div className="flex items-center gap-1 bg-white p-0.5 rounded border border-[#E2E5DC]">
               <button
-                onClick={() => setBasemap('voyager')}
-                className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                  basemap === 'voyager'
-                    ? 'bg-[#2C4939] text-white'
+                onClick={() => setBasemap('liberty')}
+                className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors ${
+                  basemap === 'liberty'
+                    ? 'bg-[#2C4939] text-white shadow-subtle'
                     : 'text-[#647067] hover:text-[#253129]'
                 }`}
-                title="Bản đồ tiêu chuẩn CARTO Voyager"
+                title="Bản đồ vector tự nhiên Liberty"
               >
                 Tiêu chuẩn
               </button>
               <button
-                onClick={() => setBasemap('topo')}
-                className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                  basemap === 'topo'
-                    ? 'bg-[#2C4939] text-white'
+                onClick={() => setBasemap('bright')}
+                className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors ${
+                  basemap === 'bright'
+                    ? 'bg-[#2C4939] text-white shadow-subtle'
                     : 'text-[#647067] hover:text-[#253129]'
                 }`}
-                title="Bản đồ địa hình nông nghiệp ESRI Topo"
+                title="Bản đồ vector tương phản cao Bright"
               >
-                Địa hình
+                Sắc nét
               </button>
               <button
-                onClick={() => setBasemap('satellite')}
-                className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                  basemap === 'satellite'
-                    ? 'bg-[#2C4939] text-white'
+                onClick={() => setBasemap('positron')}
+                className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors ${
+                  basemap === 'positron'
+                    ? 'bg-[#2C4939] text-white shadow-subtle'
                     : 'text-[#647067] hover:text-[#253129]'
                 }`}
-                title="Ảnh vệ tinh độ phân giải cao ESRI World Imagery"
+                title="Bản đồ vector thanh lịch Positron"
               >
-                Vệ tinh
+                Thanh lịch
               </button>
             </div>
           </div>
 
-          {/* Map Leaflet Container */}
+          {/* Map Container */}
           <div className="relative w-full h-[460px] sm:h-[580px] bg-[#EAECE6]">
+            {!webglSupported ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#FAF9F5] z-20 space-y-3">
+                <AlertCircle className="w-10 h-10 text-[#A46C49]" />
+                <h3 className="font-bold text-[#253129] text-base">Trình duyệt không hỗ trợ WebGL</h3>
+                <p className="text-xs text-[#647067] max-w-md">
+                  Vui lòng bật tính năng tăng tốc phần cứng trong cài đặt trình duyệt để xem bản đồ vector 3D mượt mà.
+                </p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-4 py-2 bg-[#2C4939] text-white rounded text-xs font-medium"
+                >
+                  Tải lại trang
+                </button>
+              </div>
+            ) : null}
+
+            {mapError && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#FAF9F5]/90 z-20 space-y-3">
+                <AlertCircle className="w-8 h-8 text-[#A46C49]" />
+                <p className="text-xs text-[#647067]">{mapError}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-3 py-1.5 bg-[#2C4939] text-white rounded text-xs"
+                >
+                  Thử lại
+                </button>
+              </div>
+            )}
+
             <div
               ref={mapContainerRef}
               className="w-full h-full z-0"
             />
 
             {/* Custom On-Map Controls (Góc phải trên) */}
-            <div className="absolute right-3 top-3 z-[400] flex flex-col gap-1.5">
+            <div className="absolute right-3 top-3 z-[10] flex flex-col gap-1.5">
               <button
-                onClick={handleZoomIn}
+                onClick={() => mapInstanceRef.current?.zoomIn()}
                 className="w-8 h-8 bg-white/95 hover:bg-white text-[#253129] border border-[#E2E5DC] rounded shadow-subtle flex items-center justify-center transition-colors"
                 title="Phóng to"
                 aria-label="Zoom in"
@@ -660,12 +741,20 @@ export default function InteractiveDongNaiMap() {
                 <ZoomIn className="w-4 h-4" />
               </button>
               <button
-                onClick={handleZoomOut}
+                onClick={() => mapInstanceRef.current?.zoomOut()}
                 className="w-8 h-8 bg-white/95 hover:bg-white text-[#253129] border border-[#E2E5DC] rounded shadow-subtle flex items-center justify-center transition-colors"
                 title="Thu nhỏ"
                 aria-label="Zoom out"
               >
                 <ZoomOut className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => mapInstanceRef.current?.resetNorth()}
+                className="w-8 h-8 bg-white/95 hover:bg-white text-[#253129] border border-[#E2E5DC] rounded shadow-subtle flex items-center justify-center transition-colors"
+                title="Đặt lại hướng Bắc"
+                aria-label="Reset North"
+              >
+                <Compass className="w-4 h-4" />
               </button>
               <button
                 onClick={handleFitEntireDongNai}
@@ -689,7 +778,7 @@ export default function InteractiveDongNaiMap() {
             </div>
 
             {/* Chú giải nổi góc dưới trái trên map */}
-            <div className="absolute left-3 bottom-6 z-[400] bg-white/90 backdrop-blur-sm border border-[#E2E5DC] rounded-lg p-2.5 shadow-subtle text-[11px] text-[#253129] hidden sm:block max-w-[280px]">
+            <div className="absolute left-3 bottom-6 z-[10] bg-white/90 backdrop-blur-sm border border-[#E2E5DC] rounded-lg p-2.5 shadow-subtle text-[11px] text-[#253129] hidden sm:block max-w-[280px]">
               <span className="font-semibold block mb-1.5 text-[#2C4939]">Hệ thống ký hiệu GIS:</span>
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5">
@@ -705,6 +794,11 @@ export default function InteractiveDongNaiMap() {
                   <span>Cấp 1: Vùng nông nghiệp truyền thống (Tâm tham khảo)</span>
                 </div>
               </div>
+            </div>
+
+            {/* Attribution hợp pháp góc dưới phải */}
+            <div className="absolute right-2 bottom-1 z-[10] bg-white/80 px-2 py-0.5 rounded text-[10px] text-[#647067] border border-[#E2E5DC]">
+              © <a href="https://openfreemap.org" target="_blank" rel="noopener noreferrer" className="hover:underline">OpenFreeMap</a> © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="hover:underline">OpenStreetMap</a>
             </div>
           </div>
         </div>

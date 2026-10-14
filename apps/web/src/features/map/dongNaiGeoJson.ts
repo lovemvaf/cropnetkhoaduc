@@ -2,30 +2,31 @@ import { RegionPolygonFeature } from './types';
 
 /**
  * Ranh giới ước lượng địa bàn Thành phố Đồng Nai (mở rộng theo Nghị quyết 30/2026/QH16)
- * Tọa độ WGS84 [vĩ độ (lat), kinh độ (lng)]
+ * Định dạng chuẩn GeoJSON và MapLibre: [kinh độ (lng), vĩ độ (lat)]
  */
 export const DONG_NAI_METROPOLITAN_BOUNDS = {
-  southWest: [10.65, 106.55] as [number, number],
-  northEast: [12.05, 107.55] as [number, number],
-  center: [11.28, 107.05] as [number, number],
-  defaultZoom: 9,
+  // MapLibre LngLatBoundsLike: [lng, lat]
+  southWest: [106.55, 10.65] as [number, number],
+  northEast: [107.55, 12.05] as [number, number],
+  center: [107.05, 11.28] as [number, number],
+  defaultZoom: 8.8,
   southBounds: {
-    southWest: [10.65, 106.75] as [number, number],
-    northEast: [11.35, 107.50] as [number, number],
-    center: [10.98, 107.15] as [number, number],
-    zoom: 10
+    southWest: [106.75, 10.65] as [number, number],
+    northEast: [107.50, 11.35] as [number, number],
+    center: [107.15, 10.98] as [number, number],
+    zoom: 9.8
   },
   northBounds: {
-    southWest: [11.35, 106.55] as [number, number],
-    northEast: [12.05, 107.45] as [number, number],
-    center: [11.65, 106.95] as [number, number],
-    zoom: 10
+    southWest: [106.55, 11.35] as [number, number],
+    northEast: [107.45, 12.05] as [number, number],
+    center: [106.95, 11.65] as [number, number],
+    zoom: 9.6
   }
 };
 
 /**
  * Đa giác ranh giới đại diện cho các tiểu vùng chuyên canh đặc thù
- * Tọa độ WGS84 dạng [latitude, longitude] tương thích Leaflet
+ * Tọa độ chuẩn GeoJSON: [longitude, latitude]
  */
 export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
   // 1. Cù Lao Tân Triều (Vùng bưởi sông Đồng Nai)
@@ -34,14 +35,15 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     name: 'Tiểu Vùng Cù Lao Tân Triều (Bưởi Đường Lá Cam)',
     tier: 1,
     subRegion: 'SOUTH',
-    center: [11.0267, 106.8835],
+    center: [106.8835, 11.0267], // [lng, lat]
     coordinates: [
-      [11.042, 106.865],
-      [11.048, 106.885],
-      [11.035, 106.905],
-      [11.015, 106.898],
-      [11.012, 106.872],
-      [11.028, 106.860]
+      [106.865, 11.042],
+      [106.885, 11.048],
+      [106.905, 11.035],
+      [106.898, 11.015],
+      [106.872, 11.012],
+      [106.860, 11.028],
+      [106.865, 11.042] // Đóng vòng polygon
     ],
     fillColor: '#2C4939',
     strokeColor: '#2C4939',
@@ -54,13 +56,14 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     name: 'Vành Đai Đất Đỏ Long Khánh - Xuân Lập',
     tier: 1,
     subRegion: 'SOUTH',
-    center: [10.9258, 107.2412],
+    center: [107.2412, 10.9258],
     coordinates: [
-      [10.965, 107.200],
-      [10.970, 107.275],
-      [10.910, 107.290],
-      [10.885, 107.230],
-      [10.915, 107.195]
+      [107.200, 10.965],
+      [107.275, 10.970],
+      [107.290, 10.910],
+      [107.230, 10.885],
+      [107.195, 10.915],
+      [107.200, 10.965]
     ],
     fillColor: '#A46C49',
     strokeColor: '#A46C49',
@@ -73,13 +76,14 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     name: 'Tiểu Vùng Nông Nghiệp Chân Núi Chứa Chan (Xuân Lộc)',
     tier: 1,
     subRegion: 'SOUTH',
-    center: [10.9325, 107.3820],
+    center: [107.3820, 10.9325],
     coordinates: [
-      [10.975, 107.345],
-      [10.990, 107.410],
-      [10.920, 107.435],
-      [10.880, 107.375],
-      [10.915, 107.330]
+      [107.345, 10.975],
+      [107.410, 10.990],
+      [107.435, 10.920],
+      [107.375, 10.880],
+      [107.330, 10.915],
+      [107.345, 10.975]
     ],
     fillColor: '#7B876C',
     strokeColor: '#7B876C',
@@ -92,13 +96,14 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     name: 'Vùng Đất Đỏ Hồ Tiêu & Sầu Riêng Cẩm Mỹ',
     tier: 1,
     subRegion: 'SOUTH',
-    center: [10.7932, 107.2185],
+    center: [107.2185, 10.7932],
     coordinates: [
-      [10.840, 107.170],
-      [10.845, 107.260],
-      [10.760, 107.270],
-      [10.745, 107.190],
-      [10.785, 107.160]
+      [107.170, 10.840],
+      [107.260, 10.845],
+      [107.270, 10.760],
+      [107.190, 10.745],
+      [107.160, 10.785],
+      [107.170, 10.840]
     ],
     fillColor: '#7B876C',
     strokeColor: '#7B876C',
@@ -111,13 +116,14 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     name: 'Vùng Vành Đai Sinh Thái Vườn Quốc Gia Cát Tiên',
     tier: 1,
     subRegion: 'SOUTH',
-    center: [11.4285, 107.4268],
+    center: [107.4268, 11.4285],
     coordinates: [
-      [11.485, 107.380],
-      [11.510, 107.470],
-      [11.410, 107.495],
-      [11.370, 107.415],
-      [11.405, 107.365]
+      [107.380, 11.485],
+      [107.470, 11.510],
+      [107.495, 11.410],
+      [107.415, 11.370],
+      [107.365, 11.405],
+      [107.380, 11.485]
     ],
     fillColor: '#2C4939',
     strokeColor: '#2C4939',
@@ -130,13 +136,14 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     name: 'Vùng Bán Ngập Sinh Thái Lòng Hồ Trị An',
     tier: 1,
     subRegion: 'SOUTH',
-    center: [11.1215, 107.0189],
+    center: [107.0189, 11.1215],
     coordinates: [
-      [11.180, 106.960],
-      [11.195, 107.080],
-      [11.080, 107.090],
-      [11.050, 107.010],
-      [11.095, 106.945]
+      [106.960, 11.180],
+      [107.080, 11.195],
+      [107.090, 11.080],
+      [107.010, 11.050],
+      [106.945, 11.095],
+      [106.960, 11.180]
     ],
     fillColor: '#4A6984',
     strokeColor: '#4A6984',
@@ -149,13 +156,14 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     name: 'Thủ Phủ Hạt Điều Đất Đỏ Đồng Xoài',
     tier: 1,
     subRegion: 'NORTH',
-    center: [11.5333, 106.8833],
+    center: [106.8833, 11.5333],
     coordinates: [
-      [11.585, 106.820],
-      [11.600, 106.940],
-      [11.490, 106.950],
-      [11.460, 106.860],
-      [11.500, 106.810]
+      [106.820, 11.585],
+      [106.940, 11.600],
+      [106.950, 11.490],
+      [106.860, 11.460],
+      [106.810, 11.500],
+      [106.820, 11.585]
     ],
     fillColor: '#A46C49',
     strokeColor: '#A46C49',
@@ -168,13 +176,14 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     name: 'Vành Đai Nông Lâm & Điều Sinh Thái Phú Riềng',
     tier: 1,
     subRegion: 'NORTH',
-    center: [11.7580, 106.9850],
+    center: [106.9850, 11.7580],
     coordinates: [
-      [11.810, 106.920],
-      [11.830, 107.040],
-      [11.720, 107.060],
-      [11.690, 106.960],
-      [11.730, 106.910]
+      [106.920, 11.810],
+      [107.040, 11.830],
+      [107.060, 11.720],
+      [106.960, 11.690],
+      [106.910, 11.730],
+      [106.920, 11.810]
     ],
     fillColor: '#7B876C',
     strokeColor: '#7B876C',
@@ -187,13 +196,14 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     name: 'Khu Vực Nông Nghiệp Công Nghệ Cao Chơn Thành',
     tier: 1,
     subRegion: 'NORTH',
-    center: [11.4720, 106.6680],
+    center: [106.6680, 11.4720],
     coordinates: [
-      [11.520, 106.610],
-      [11.530, 106.720],
-      [11.430, 106.730],
-      [11.410, 106.640],
-      [11.450, 106.600]
+      [106.610, 11.520],
+      [106.720, 11.530],
+      [106.730, 11.430],
+      [106.640, 11.410],
+      [106.600, 11.450],
+      [106.610, 11.520]
     ],
     fillColor: '#2C4939',
     strokeColor: '#2C4939',
@@ -206,16 +216,43 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     name: 'Vùng Sầu Riêng & Điều Cổ Thụ Đồi Cao Bù Đăng',
     tier: 1,
     subRegion: 'NORTH',
-    center: [11.7650, 107.2420],
+    center: [107.2420, 11.7650],
     coordinates: [
-      [11.830, 107.170],
-      [11.850, 107.310],
-      [11.720, 107.330],
-      [11.680, 107.220],
-      [11.725, 107.160]
+      [107.170, 11.830],
+      [107.310, 11.850],
+      [107.330, 11.720],
+      [107.220, 11.680],
+      [107.160, 11.725],
+      [107.170, 11.830]
     ],
     fillColor: '#A46C49',
     strokeColor: '#A46C49',
     description: 'Độ cao trên 300m so với mực nước biển, chất lượng sầu riêng cơm vàng hạt lép và điều hạt to đồng đều.'
   }
 ];
+
+/**
+ * Xuất dữ liệu GeoJSON FeatureCollection cho MapLibre GL
+ */
+export function getRegionsGeoJson(): GeoJSON.FeatureCollection {
+  return {
+    type: 'FeatureCollection',
+    features: DONG_NAI_REGION_POLYGONS.map(region => ({
+      type: 'Feature',
+      id: region.id,
+      properties: {
+        id: region.id,
+        name: region.name,
+        tier: region.tier,
+        subRegion: region.subRegion,
+        fillColor: region.fillColor,
+        strokeColor: region.strokeColor,
+        description: region.description
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [region.coordinates]
+      }
+    }))
+  };
+}

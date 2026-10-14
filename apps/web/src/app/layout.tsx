@@ -1,6 +1,7 @@
 import React from 'react';
 import '../styles/globals.css';
 import 'leaflet/dist/leaflet.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import Header from '@/shared/components/Header';
 import Footer from '@/shared/components/Footer';
 import { Be_Vietnam_Pro, Playfair_Display } from 'next/font/google';
