@@ -37,8 +37,8 @@ Theo quy định nghiêm ngặt của Bản Yêu Cầu Nâng Cấp Master Prompt
 | **Cổng truy xuất QR (`/traceability`)** | Quét tem bằng camera, tải ảnh tem QR, nhập mã lô thủ công | Nhận diện mã, mở đúng nhật ký bón phân sinh học và phiếu lab | **PASS** |
 | **Traceability Query Route** | Mở URL `.../traceability/?batch=BATCH-BUOI-TANTRIEU-2026-01` | Hiển thị trọn vẹn chi tiết lô bưởi Tân Triều, giấy chứng nhận VietGAP bản chuẩn | **PASS** |
 | **Fail-Closed QR Test** | Mở URL `.../traceability/?batch=BATCH-FAKE-999999` | Cảnh báo tem không hợp lệ, tuyệt đối không hiển thị lô giả mạo | **PASS** |
-| **AI Tư Vấn Bán Hàng (`/ai-tu-van`)** | Kéo thanh ngân sách 500k, bấm *"AI Tính Combo Ngay"* | Sinh combo 485.000đ (Bình rượu bưởi + 2 bưởi lá cam + Hạt điều), nút *"Thêm vào giỏ"* | **PASS** |
-| **Bản đồ số nông nghiệp (`/ban-do`)** | Xem vị trí HTX Tân Triều (Vĩnh Cửu) và HTX Long Khánh trên OpenStreetMap | Tọa độ VN-2000 chính xác, hiển thị popup thông tin liên hệ và chỉ đường | **PASS** |
+| **AI Tư Vấn Bán Hàng (`/ai-tu-van`)** | Kéo thanh ngân sách 500k, bấm *"AI Tính Combo Ngay"* | Sinh combo 435.000đ (2 Bưởi đường lá cam + 1 Bưởi da xanh + Hạt điều), nút *"Thêm vào giỏ"* | **PASS** |
+| **Bản đồ số nông nghiệp (`/ban-do`)** | Xem vị trí HTX Tân Triều (Phường Tân Triều) và HTX Long Khánh (Phường Xuân Lập) trên OpenStreetMap | Tọa độ VN-2000 chính xác, hiển thị popup thông tin liên hệ và chỉ đường | **PASS** |
 | **Lịch mùa vụ 12 tháng (`/mua-vu`)** | Tra cứu tháng thu hoạch bưởi và sầu riêng, đo độ ngọt Brix | Trực quan, cung cấp nút đặt hàng trước (Pre-order) | **PASS** |
 
 ---

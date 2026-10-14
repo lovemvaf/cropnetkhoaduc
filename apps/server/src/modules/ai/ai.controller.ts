@@ -101,24 +101,24 @@ export const handleDraftRfq = async (req: Request, res: Response) => {
     const rfqDraft = {
       rfqNumber,
       createdAt: new Date().toISOString(),
-      status: 'SUBMITTED',
+      status: 'DRAFT_LOCAL',
       companyName,
       contactName: contactName || companyName,
       phone,
       email: email || '',
       notes: notes || 'Yêu cầu báo giá sỉ nông sản chính vụ Thành phố Đồng Nai',
       requestedItems: requestedItems || [
-        { productName: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)', estimatedQuantity: '100 quả' },
+        { productName: 'Bưởi Đường Lá Cam Tân Triều (OCOP)', estimatedQuantity: '100 quả' },
         { productName: 'Hạt Điều Rang Muối Vỏ Lụa (Hộp 500g)', estimatedQuantity: '50 hộp' }
       ],
       assignedCooperative: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều / Long Khánh',
-      processingTimeline: 'Ban thư ký HTX sẽ phản hồi báo giá chính thức trong vòng 4 giờ làm việc.',
-      directHotline: '0251.3822.xxx (Tổ Điều phối Thương mại Nông sản Đồng Nai)'
+      processingTimeline: 'Bản nháp đã được khởi tạo trên hệ thống client. Để phục vụ đánh giá giải pháp AI, bạn có thể sao chép hoặc xuất file bản nháp này.',
+      contactChannel: 'Cổng thông tin HTX Nông sản Thành phố Đồng Nai (Chế độ Thử Nghiệm / Demo)'
     };
 
     res.status(201).json({
       success: true,
-      message: 'Đã tạo bản thảo yêu cầu báo giá sỉ thành công!',
+      message: 'Đã tạo bản thảo yêu cầu báo giá sỉ (RFQ Draft) thành công!',
       data: rfqDraft
     });
   } catch (error: any) {

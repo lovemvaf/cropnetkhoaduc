@@ -108,17 +108,24 @@ export default function AiConsultationPage() {
         setMessages((prev) => [...prev, aiMsg]);
       }
     } catch (err: any) {
-      // Offline smart fallback simulation
+      // Offline fallback using verified rules and genuine Dong Nai product catalog
       const lower = textToSend.toLowerCase();
-      let fallbackText = 'Dạ hệ thống ghi nhận yêu cầu của quý khách. Toàn bộ bưởi đường lá cam Tân Triều và sầu riêng Long Khánh hiện đang sẵn hàng tại kho HTX Đồng Nai. Quý khách có thể xem chi tiết danh mục hoặc thử gợi ý gói quà biếu 500k!';
+      let fallbackText = 'Dạ hệ thống quy tắc CropNet đã tiếp nhận yêu cầu của quý khách. Các nông sản đặc sản như Bưởi đường lá cam Tân Triều, Sầu riêng Ri6 và Chôm chôm Long Khánh đều có hồ sơ truy xuất trên hệ thống. Quý khách có thể xem danh mục hoặc thử gợi ý combo theo ngân sách (ví dụ: 500k, 300k)!';
       let products: any[] = [];
 
       if (lower.includes('500k') || lower.includes('ngân sách') || lower.includes('quà biếu')) {
-        fallbackText = 'Dạ với ngân sách 500.000đ, CropNet Đồng Nai AI gợi ý Combo Quà Biếu Đặc Sản Tinh Hoa gồm 1 Bình Rượu Bưởi Tân Triều (195.000đ), 2 Quả Bưởi Đường Lá Cam OCOP 4 Sao (170.000đ) và 1 Hộp Hạt Điều Rang Củi (120.000đ). Tổng thanh toán là 485.000đ (dư 15.000đ). Quý khách bấm thêm nhanh vào giỏ hàng bên dưới nhé!';
+        fallbackText = 'Dạ với ngân sách 500.000đ, CropNet Đồng Nai AI (chế độ quy tắc xác minh) gợi ý Combo Nông Sản Đồng Nai Tuyển Chọn gồm: 2 Quả Bưởi Đường Lá Cam Tân Triều OCOP (170.000đ), 1 Quả Bưởi Da Xanh Ruột Hồng (75.000đ) và 2 Hộp Hạt Điều Rang Củi Vỏ Lụa (240.000đ). Tổng thanh toán là 485.000đ (còn dư 15.000đ trong hạn mức). Quý khách bấm thêm nhanh vào giỏ hàng bên dưới nhé!';
         products = [
-          { id: '6', name: 'Rượu Bưởi Tân Triều Truyền Thống', price: 195000, unit: 'bình gốm 750ml', quantity: 1, total: 195000, cooperativeName: 'HTX Nông Nghiệp Tân Triều' },
-          { id: '1', name: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)', price: 85000, unit: 'quả (1.1kg - 1.3kg)', quantity: 2, total: 170000, cooperativeName: 'HTX Nông Nghiệp Tân Triều' },
-          { id: '5', name: 'Hạt Điều Rang Muối Vỏ Lụa (Hộp 500g)', price: 120000, unit: 'hộp 500g', quantity: 1, total: 120000, cooperativeName: 'HTX Nông Nghiệp Sinh Thái Long Khánh' }
+          { id: 'prod-buoi-duong-la-cam', name: 'Bưởi Đường Lá Cam Tân Triều (OCOP)', price: 85000, unit: 'quả (1.1kg - 1.3kg)', quantity: 2, total: 170000, cooperativeName: 'HTX Nông Nghiệp Tân Triều' },
+          { id: 'prod-buoi-da-xanh', name: 'Bưởi Da Xanh Tân Triều Hữu Cơ', price: 75000, unit: 'quả (1.3kg - 1.5kg)', quantity: 1, total: 75000, cooperativeName: 'HTX Nông Nghiệp Tân Triều' },
+          { id: 'prod-hat-dieu-dong-nai', name: 'Hạt Điều Rang Muối Vỏ Lụa Đồng Nai (Hộp 500g)', price: 120000, unit: 'hộp 500g', quantity: 2, total: 240000, cooperativeName: 'HTX Nông Nghiệp Sinh Thái Long Khánh' }
+        ];
+      } else if (lower.includes('300k') || lower.includes('200k')) {
+        fallbackText = 'Dạ với ngân sách 300.000đ, CropNet gợi ý Combo Hoa Quả Tươi Mát gồm: 1 Quả Bưởi Da Xanh Tân Triều (75.000đ), 2kg Chôm Chôm Nhãn Long Khánh (90.000đ) và 1 Quả Bưởi Đường Lá Cam (85.000đ). Tổng cộng 250.000đ (dư 50.000đ).';
+        products = [
+          { id: 'prod-buoi-da-xanh', name: 'Bưởi Da Xanh Tân Triều Hữu Cơ', price: 75000, unit: 'quả (1.3kg - 1.5kg)', quantity: 1, total: 75000, cooperativeName: 'HTX Nông Nghiệp Tân Triều' },
+          { id: 'prod-chom-chom-nhan', name: 'Chôm Chôm Nhãn Long Khánh Tươi', price: 45000, unit: 'kg', quantity: 2, total: 90000, cooperativeName: 'HTX Nông Nghiệp Sinh Thái Long Khánh' },
+          { id: 'prod-buoi-duong-la-cam', name: 'Bưởi Đường Lá Cam Tân Triều (OCOP)', price: 85000, unit: 'quả (1.1kg - 1.3kg)', quantity: 1, total: 85000, cooperativeName: 'HTX Nông Nghiệp Tân Triều' }
         ];
       }
 
@@ -180,15 +187,18 @@ export default function AiConsultationPage() {
         setRfqResult(res.data.data);
       }
     } catch (err) {
-      // Offline fallback
+      // Honest offline fallback: DRAFT_LOCAL only
       setRfqResult({
         rfqNumber: `RFQ-DN-${Date.now().toString().slice(-6)}`,
         createdAt: new Date().toISOString(),
         companyName: rfqForm.companyName,
+        contactName: rfqForm.contactName || rfqForm.companyName,
         phone: rfqForm.phone,
-        status: 'SUBMITTED',
-        processingTimeline: 'Hợp tác xã sẽ liên hệ phản hồi báo giá trong vòng 4 giờ làm việc.',
-        directHotline: '0251.3822.xxx'
+        email: rfqForm.email,
+        notes: rfqForm.notes,
+        status: 'DRAFT_LOCAL',
+        processingTimeline: 'Bản thảo đã được tạo và lưu cục bộ trên trình duyệt của bạn (Showcase Demo).',
+        contactChannel: 'Cổng thông tin HTX Nông sản Thành phố Đồng Nai'
       });
     } finally {
       setRfqSubmitting(false);
@@ -483,25 +493,61 @@ export default function AiConsultationPage() {
 
             {rfqResult ? (
               <div className="space-y-4">
-                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
-                  <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
-                  <h4 className="font-black text-emerald-900">Bản Thảo Báo Giá Đã Khởi Tạo!</h4>
-                  <p className="font-mono font-bold text-xs text-emerald-700">{rfqResult.rfqNumber}</p>
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-center space-y-2">
+                  <Badge className="bg-amber-200 text-amber-900 border-0 font-bold px-3 py-1 text-xs">
+                    BẢN NHÁP KỸ THUẬT SỐ (DRAFT_LOCAL)
+                  </Badge>
+                  <h4 className="font-black text-amber-950 text-base">Bản Thảo Báo Giá Đã Khởi Tạo</h4>
+                  <p className="font-mono font-bold text-xs text-amber-800">{rfqResult.rfqNumber}</p>
                 </div>
-                <div className="text-xs text-gray-600 space-y-2 bg-gray-50 p-4 rounded-2xl">
-                  <p><strong>Công ty:</strong> {rfqResult.companyName}</p>
-                  <p><strong>Điện thoại:</strong> {rfqResult.phone}</p>
-                  <p><strong>Tiến độ:</strong> {rfqResult.processingTimeline}</p>
-                  <p><strong>Hotline HTX:</strong> {rfqResult.directHotline}</p>
+
+                <div className="text-xs text-gray-700 space-y-2 bg-gray-50 p-4 rounded-2xl border border-gray-150 font-medium">
+                  <p><strong>Đơn vị yêu cầu:</strong> {rfqResult.companyName}</p>
+                  <p><strong>Người liên hệ:</strong> {rfqResult.contactName || rfqResult.companyName}</p>
+                  <p><strong>Số điện thoại:</strong> {rfqResult.phone}</p>
+                  <p><strong>Nội dung:</strong> {rfqResult.notes || rfqForm.notes}</p>
+                  <p><strong>Trạng thái:</strong> <span className="text-amber-700 font-bold">Lưu cục bộ tại phiên duyệt web</span></p>
+                  <div className="pt-2 border-t border-gray-200 text-[11px] text-gray-500 italic">
+                    * Lưu ý minh bạch: Bản nháp được lưu trên thiết bị của bạn. Để đảm bảo tính trung thực theo quy chế thi, hệ thống chưa gửi tự động đến cơ sở dữ liệu HTX do chưa có nhân viên tiếp nhận đơn hàng.
+                  </div>
                 </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      const text = `YÊU CẦU BÁO GIÁ SỈ CROPNET ĐỒNG NAI AI\nMã RFQ: ${rfqResult.rfqNumber}\nCông ty: ${rfqResult.companyName}\nNgười liên hệ: ${rfqResult.contactName || rfqResult.companyName}\nSĐT: ${rfqResult.phone}\nNội dung: ${rfqResult.notes || rfqForm.notes}\nNgày tạo: ${new Date().toLocaleString('vi-VN')}`;
+                      navigator.clipboard.writeText(text);
+                      alert('Đã sao chép nội dung bản nháp RFQ vào bộ nhớ tạm (clipboard)!');
+                    }}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2.5 rounded-2xl text-xs"
+                  >
+                    Sao chép bản nháp
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      const text = `YÊU CẦU BÁO GIÁ SỈ CROPNET ĐỒNG NAI AI\nMã RFQ: ${rfqResult.rfqNumber}\nCông ty: ${rfqResult.companyName}\nNgười liên hệ: ${rfqResult.contactName || rfqResult.companyName}\nSĐT: ${rfqResult.phone}\nNội dung: ${rfqResult.notes || rfqForm.notes}\nNgày tạo: ${new Date().toLocaleString('vi-VN')}`;
+                      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `${rfqResult.rfqNumber}.txt`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="flex-1 bg-amber-400 hover:bg-amber-300 text-emerald-950 font-bold py-2.5 rounded-2xl text-xs"
+                  >
+                    Tải file (.txt)
+                  </Button>
+                </div>
+
                 <Button
                   onClick={() => {
                     setRfqModalOpen(false);
                     setRfqResult(null);
                   }}
-                  className="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-2xl"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-2xl text-xs"
                 >
-                  Hoàn tất
+                  Đóng cửa sổ
                 </Button>
               </div>
             ) : (

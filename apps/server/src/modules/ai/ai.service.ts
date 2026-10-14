@@ -17,9 +17,12 @@ export interface RecommendedProductItem {
   cooperativeName: string;
 }
 
+export type AiConsultationMode = 'live_ai' | 'verified_rules' | 'demo_example' | 'offline_unavailable';
+
 export interface AiChatResponse {
   reply: string;
   intent: string;
+  mode: AiConsultationMode;
   toolsUsed: string[];
   recommendedProducts?: RecommendedProductItem[];
   suggestedPrompts?: string[];
@@ -50,16 +53,16 @@ export const getFactProducts = async () => {
       include: { supplier: true, category: true, images: true }
     });
     if (prods && prods.length > 0) {
-      return prods.map(p => ({
+      return prods.map((p: any) => ({
         id: p.id,
         name: p.name,
         description: p.description,
-        price: p.price,
+        price: Number(p.price),
         unit: p.unit,
         stock: p.stock,
-        farmName: p.supplier?.farmName || 'HTX Nông Nghiệp Đồng Nai',
+        farmName: p.supplier?.farmName || 'HTX Nông Nghiệp Tân Triều',
         cooperativeId: p.supplierId,
-        category: p.category?.name || 'Nông Sản',
+        category: p.category?.name || 'Trái Cây Đặc Sản Đồng Nai',
         imageUrl: (p.images && p.images[0]?.url) || ''
       }));
     }
@@ -67,16 +70,16 @@ export const getFactProducts = async () => {
     // fallback if DB offline
   }
 
-  return MOCK_PRODUCTS.map(p => ({
+  return MOCK_PRODUCTS.map((p: any) => ({
     id: p.id,
     name: p.name,
     description: p.description,
-    price: p.price,
+    price: Number(p.price),
     unit: p.unit,
     stock: p.stock,
-    farmName: p.supplier?.farmName || 'HTX Nông Nghiệp Đồng Nai',
-    cooperativeId: p.supplier?.id,
-    category: p.category?.name || 'Nông Sản',
+    farmName: p.supplier?.farmName || 'HTX Nông Nghiệp Tân Triều',
+    cooperativeId: p.supplier?.id || p.supplierId,
+    category: p.category?.name || 'Trái Cây Đặc Sản Đồng Nai',
     imageUrl: p.imageUrl || ''
   }));
 };
@@ -105,38 +108,38 @@ export const getSeasonalCalendarData = () => {
   return [
     {
       crop: 'Bưởi Đường Lá Cam & Da Xanh Tân Triều',
-      location: 'Xã Tân Bình, Huyện Vĩnh Cửu, TP Đồng Nai',
+      location: 'Phường Tân Triều, Thành phố Đồng Nai (vùng Cù lao Tân Triều lịch sử)',
       peakSeason: 'Tháng 9 đến Tháng 12 âm lịch (Phục vụ cao điểm Tết Nguyên Đán)',
       status: 'Đang vào vụ thu hoạch rộ chính',
       notes: 'Bưởi tích đủ nước ngọt phù sa sông Đồng Nai, đạt độ ngọt Brix từ 11.5 - 12.5.'
     },
     {
       crop: 'Sầu Riêng Ri6 Long Khánh',
-      location: 'Phường Xuân Lập, TP Long Khánh, TP Đồng Nai',
+      location: 'Phường Xuân Lập, Thành phố Đồng Nai',
       peakSeason: 'Tháng 5 đến Tháng 8 dương lịch, có vụ nghịch nhỏ vào Tháng 10 - 11',
       status: 'Đang thu hoạch chọn lọc trái già',
       notes: 'Đất đỏ bazan, 100% để chín cây tự nhiên hoặc cắt già gõ bộng, không nhúng thuốc kích chín.'
     },
     {
       crop: 'Chôm Chôm Nhãn Long Khánh',
-      location: 'TP Long Khánh, TP Đồng Nai',
+      location: 'Phường Xuân Lập, Thành phố Đồng Nai',
       peakSeason: 'Tháng 5 đến Tháng 7 dương lịch, có hàng rải vụ cuối năm',
       status: 'Đang cung cấp hàng tươi từ vườn',
       notes: 'Trái gai ngắn, cơm dày róc hạt, ăn giòn ngọt thanh.'
     },
     {
       crop: 'Hạt Điều Rang Muối Đồng Nai',
-      location: 'Xuân Lộc & Long Khánh, TP Đồng Nai',
+      location: 'Vùng trồng Xuân Lộc & Xuân Lập, Thành phố Đồng Nai',
       peakSeason: 'Quanh năm (chế biến bảo quản khô hút chân không)',
       status: 'Sẵn sàng giao hàng toàn quốc',
-      notes: 'Hạt điều Bình Phước - Đồng Nai loại A tuyển chọn xuất khẩu, rang củi muối tinh giữ vỏ lụa.'
+      notes: 'Hạt điều rang củi muối tinh giữ vỏ lụa, tiêu chuẩn ATTP HACCP.'
     },
     {
-      crop: 'Rượu Bưởi Tân Triều',
-      location: 'Làng bưởi Tân Triều, Vĩnh Cửu',
+      crop: 'Rượu Bưởi Tân Triều Truyền Thống (Sản phẩm có cồn có điều kiện)',
+      location: 'Cù lao Tân Triều, Phường Tân Triều, Thành phố Đồng Nai',
       peakSeason: 'Quanh năm (ủ men chum sành hạ thổ 6 - 12 tháng)',
-      status: 'Sẵn sàng quà tặng Tết & Sự kiện',
-      notes: 'Đặc sản OCOP Đồng Nai, 15% vol, nước cốt bưởi lên men tự nhiên.'
+      status: 'Sản phẩm truyền thống có điều kiện - Không bán cho người dưới 18 tuổi',
+      notes: 'Đặc sản lên men thủ công từ nước cốt bưởi đường lá cam, 15% vol.'
     }
   ];
 };
@@ -160,73 +163,91 @@ export const optimizeBudgetCombo = async (
   const cleanPurpose = purpose.toLowerCase();
 
   const isGift = cleanPurpose.includes('biếu') || cleanPurpose.includes('quà') || cleanRecipient.includes('đối tác') || cleanRecipient.includes('sếp') || cleanRecipient.includes('công ty');
+  const excludeNuts = cleanRecipient.includes('không hạt điều') || cleanPurpose.includes('không hạt điều') || cleanRecipient.includes('dị ứng');
+  const excludeDurian = cleanRecipient.includes('không sầu riêng') || cleanPurpose.includes('không sầu riêng');
+
+  // Helpers to resolve items by canonical or numeric IDs
+  const findProd = (idPart: string, fallbackIdx: number) => {
+    return products.find((p: any) => p.id === idPart || p.id.includes(idPart) || p.id === String(fallbackIdx + 1)) || products[fallbackIdx] || products[0];
+  };
+
+  const buoiDuongLaCam = findProd('prod-buoi-duong-la-cam', 0);
+  const buoiDaXanh = findProd('prod-buoi-da-xanh', 1);
+  const sauRieng = findProd('prod-sau-rieng', 2);
+  const chomChom = findProd('prod-chom-chom', 3);
+  const hatDieu = findProd('prod-hat-dieu', 4);
 
   if (isGift) {
-    title = `Combo Quà Biếu Đặc Sản Đồng Nai Tinh Hoa (${new Intl.NumberFormat('vi-VN').format(budget)}đ)`;
+    title = `Combo Quà Biếu Nông Sản Đồng Nai Tuyển Chọn (${new Intl.NumberFormat('vi-VN').format(budget)}đ)`;
     if (budget >= 450000) {
-      // Premium gift: Rượu bưởi + Bưởi Tân Triều OCOP 4 sao + Hộp hạt điều
-      const ruou = products.find(p => p.id === '6') || products[5];
-      const buoi = products.find(p => p.id === '1') || products[0];
-      const dieu = products.find(p => p.id === '5') || products[4];
-
-      selectedItems = [
-        { id: ruou.id, name: ruou.name, price: ruou.price, unit: ruou.unit, quantity: 1, total: ruou.price, imageUrl: ruou.imageUrl, cooperativeName: ruou.farmName },
-        { id: buoi.id, name: buoi.name, price: buoi.price, unit: buoi.unit, quantity: 2, total: buoi.price * 2, imageUrl: buoi.imageUrl, cooperativeName: buoi.farmName },
-        { id: dieu.id, name: dieu.name, price: dieu.price, unit: dieu.unit, quantity: 1, total: dieu.price, imageUrl: dieu.imageUrl, cooperativeName: dieu.farmName }
-      ];
-      reasoning = 'Set quà sang trọng chuẩn OCOP Đồng Nai kết hợp bình gốm Rượu bưởi Tân Triều truyền thống, 2 quả bưởi đường lá cam tuyển chọn biếu trang trọng, và hộp hạt điều rang củi giòn bùi.';
+      if (excludeNuts) {
+        selectedItems = [
+          { id: buoiDuongLaCam.id, name: buoiDuongLaCam.name, price: buoiDuongLaCam.price, unit: buoiDuongLaCam.unit, quantity: 2, total: buoiDuongLaCam.price * 2, imageUrl: buoiDuongLaCam.imageUrl, cooperativeName: buoiDuongLaCam.farmName },
+          { id: buoiDaXanh.id, name: buoiDaXanh.name, price: buoiDaXanh.price, unit: buoiDaXanh.unit, quantity: 2, total: buoiDaXanh.price * 2, imageUrl: buoiDaXanh.imageUrl, cooperativeName: buoiDaXanh.farmName },
+          { id: chomChom.id, name: chomChom.name, price: chomChom.price, unit: chomChom.unit, quantity: 3, total: chomChom.price * 3, imageUrl: chomChom.imageUrl, cooperativeName: chomChom.farmName }
+        ];
+        reasoning = 'Set quà thanh lịch từ các nhà vườn Đồng Nai gồm 2 quả bưởi đường lá cam Tân Triều, 2 quả bưởi da xanh ruột hồng và 3kg chôm chôm nhãn Long Khánh (đã loại trừ hạt điều theo yêu cầu).';
+      } else {
+        selectedItems = [
+          { id: buoiDuongLaCam.id, name: buoiDuongLaCam.name, price: buoiDuongLaCam.price, unit: buoiDuongLaCam.unit, quantity: 2, total: buoiDuongLaCam.price * 2, imageUrl: buoiDuongLaCam.imageUrl, cooperativeName: buoiDuongLaCam.farmName },
+          { id: buoiDaXanh.id, name: buoiDaXanh.name, price: buoiDaXanh.price, unit: buoiDaXanh.unit, quantity: 1, total: buoiDaXanh.price, imageUrl: buoiDaXanh.imageUrl, cooperativeName: buoiDaXanh.farmName },
+          { id: hatDieu.id, name: hatDieu.name, price: hatDieu.price, unit: hatDieu.unit, quantity: 1, total: hatDieu.price, imageUrl: hatDieu.imageUrl, cooperativeName: hatDieu.farmName }
+        ];
+        reasoning = 'Set quà sang trọng phù hợp biếu tặng đối tác và người thân gồm cặp bưởi đường lá cam Tân Triều thanh tao tài lộc, 1 quả bưởi da xanh hữu cơ mọng nước và 1 hộp hạt điều rang củi vỏ lụa Đồng Nai (không chứa thức uống có cồn).';
+      }
     } else if (budget >= 250000) {
-      // Medium gift: 2 bưởi OCOP + 1 hộp điều
-      const buoi = products.find(p => p.id === '1') || products[0];
-      const dieu = products.find(p => p.id === '5') || products[4];
-
-      selectedItems = [
-        { id: buoi.id, name: buoi.name, price: buoi.price, unit: buoi.unit, quantity: 2, total: buoi.price * 2, imageUrl: buoi.imageUrl, cooperativeName: buoi.farmName },
-        { id: dieu.id, name: dieu.name, price: dieu.price, unit: dieu.unit, quantity: 1, total: dieu.price, imageUrl: dieu.imageUrl, cooperativeName: dieu.farmName }
-      ];
-      reasoning = 'Cặp bưởi đường lá cam Tân Triều thanh tao tài lộc cùng hộp hạt điều vỏ lụa thượng hạng, rất thích hợp biếu người thân và đối tác.';
+      if (excludeNuts) {
+        selectedItems = [
+          { id: buoiDuongLaCam.id, name: buoiDuongLaCam.name, price: buoiDuongLaCam.price, unit: buoiDuongLaCam.unit, quantity: 2, total: buoiDuongLaCam.price * 2, imageUrl: buoiDuongLaCam.imageUrl, cooperativeName: buoiDuongLaCam.farmName },
+          { id: buoiDaXanh.id, name: buoiDaXanh.name, price: buoiDaXanh.price, unit: buoiDaXanh.unit, quantity: 1, total: buoiDaXanh.price, imageUrl: buoiDaXanh.imageUrl, cooperativeName: buoiDaXanh.farmName }
+        ];
+        reasoning = 'Cặp bưởi đường lá cam Tân Triều kết hợp cùng bưởi da xanh hữu cơ, thanh ngọt giải nhiệt, an toàn và trang trọng.';
+      } else {
+        selectedItems = [
+          { id: buoiDuongLaCam.id, name: buoiDuongLaCam.name, price: buoiDuongLaCam.price, unit: buoiDuongLaCam.unit, quantity: 2, total: buoiDuongLaCam.price * 2, imageUrl: buoiDuongLaCam.imageUrl, cooperativeName: buoiDuongLaCam.farmName },
+          { id: hatDieu.id, name: hatDieu.name, price: hatDieu.price, unit: hatDieu.unit, quantity: 1, total: hatDieu.price, imageUrl: hatDieu.imageUrl, cooperativeName: hatDieu.farmName }
+        ];
+        reasoning = 'Cặp bưởi đường lá cam Tân Triều OCOP cùng 1 hộp hạt điều rang củi vỏ lụa thượng hạng chuẩn ATTP Đồng Nai.';
+      }
     } else {
-      // Compact gift: 2 bưởi Tân Triều hoặc 1 bưởi + 1 điều
-      const buoi = products.find(p => p.id === '1') || products[0];
-      const dieu = products.find(p => p.id === '5') || products[4];
       selectedItems = [
-        { id: buoi.id, name: buoi.name, price: buoi.price, unit: buoi.unit, quantity: 1, total: buoi.price, imageUrl: buoi.imageUrl, cooperativeName: buoi.farmName },
-        { id: dieu.id, name: dieu.name, price: dieu.price, unit: dieu.unit, quantity: 1, total: dieu.price, imageUrl: dieu.imageUrl, cooperativeName: dieu.farmName }
+        { id: buoiDuongLaCam.id, name: buoiDuongLaCam.name, price: buoiDuongLaCam.price, unit: buoiDuongLaCam.unit, quantity: 1, total: buoiDuongLaCam.price, imageUrl: buoiDuongLaCam.imageUrl, cooperativeName: buoiDuongLaCam.farmName }
       ];
-      reasoning = 'Gói quà tinh tế, nhỏ gọn nhưng đầy đủ phong vị Đồng Nai với bưởi Tân Triều chuẩn OCOP 4 sao và hạt điều rang muối.';
+      reasoning = 'Gói quà nhỏ gọn tinh tế với 1 quả bưởi đường lá cam Tân Triều tuyển chọn thu hoạch từ cù lao Tân Triều.';
     }
   } else {
     title = `Combo Trái Cây & Nông Sản Sinh Thái Thưởng Thức (${new Intl.NumberFormat('vi-VN').format(budget)}đ)`;
     if (budget >= 400000) {
-      // Family feast: 1 Sầu riêng chín cây (2.5kg = ~337k) + 1kg Chôm chôm nhãn (45k)
-      const sauRieng = products.find(p => p.id === '3') || products[2];
-      const chomChom = products.find(p => p.id === '4') || products[3];
-      const buoi = products.find(p => p.id === '2') || products[1];
-
-      selectedItems = [
-        { id: buoi.id, name: buoi.name, price: buoi.price, unit: buoi.unit, quantity: 2, total: buoi.price * 2, imageUrl: buoi.imageUrl, cooperativeName: buoi.farmName },
-        { id: chomChom.id, name: chomChom.name, price: chomChom.price, unit: chomChom.unit, quantity: 3, total: chomChom.price * 3, imageUrl: chomChom.imageUrl, cooperativeName: chomChom.farmName },
-        { id: products[4].id, name: products[4].name, price: products[4].price, unit: products[4].unit, quantity: 1, total: products[4].price, imageUrl: products[4].imageUrl, cooperativeName: products[4].farmName }
-      ];
-      reasoning = 'Thực đơn hoa quả tươi sạch cho cả gia đình gồm 2 quả bưởi da xanh giải nhiệt, 3kg chôm chôm nhãn giòn ngọt và 1 hộp hạt điều nhâm nhi.';
+      if (excludeDurian) {
+        selectedItems = [
+          { id: buoiDaXanh.id, name: buoiDaXanh.name, price: buoiDaXanh.price, unit: buoiDaXanh.unit, quantity: 2, total: buoiDaXanh.price * 2, imageUrl: buoiDaXanh.imageUrl, cooperativeName: buoiDaXanh.farmName },
+          { id: chomChom.id, name: chomChom.name, price: chomChom.price, unit: chomChom.unit, quantity: 3, total: chomChom.price * 3, imageUrl: chomChom.imageUrl, cooperativeName: chomChom.farmName },
+          { id: buoiDuongLaCam.id, name: buoiDuongLaCam.name, price: buoiDuongLaCam.price, unit: buoiDuongLaCam.unit, quantity: 1, total: buoiDuongLaCam.price, imageUrl: buoiDuongLaCam.imageUrl, cooperativeName: buoiDuongLaCam.farmName }
+        ];
+        reasoning = 'Thực đơn hoa quả tươi sạch cho cả gia đình gồm 2 quả bưởi da xanh giải nhiệt, 3kg chôm chôm nhãn giòn ngọt và 1 quả bưởi đường lá cam Tân Triều (đã loại trừ sầu riêng).';
+      } else {
+        selectedItems = [
+          { id: buoiDaXanh.id, name: buoiDaXanh.name, price: buoiDaXanh.price, unit: buoiDaXanh.unit, quantity: 2, total: buoiDaXanh.price * 2, imageUrl: buoiDaXanh.imageUrl, cooperativeName: buoiDaXanh.farmName },
+          { id: chomChom.id, name: chomChom.name, price: chomChom.price, unit: chomChom.unit, quantity: 3, total: chomChom.price * 3, imageUrl: chomChom.imageUrl, cooperativeName: chomChom.farmName },
+          { id: hatDieu.id, name: hatDieu.name, price: hatDieu.price, unit: hatDieu.unit, quantity: 1, total: hatDieu.price, imageUrl: hatDieu.imageUrl, cooperativeName: hatDieu.farmName }
+        ];
+        reasoning = 'Thực đơn hoa quả tươi sạch cho cả gia đình gồm 2 quả bưởi da xanh mọng nước, 3kg chôm chôm nhãn hái tươi trong ngày và 1 hộp hạt điều nhâm nhi.';
+      }
     } else if (budget >= 200000) {
-      const buoi = products.find(p => p.id === '2') || products[1];
-      const chomChom = products.find(p => p.id === '4') || products[3];
       selectedItems = [
-        { id: buoi.id, name: buoi.name, price: buoi.price, unit: buoi.unit, quantity: 1, total: buoi.price, imageUrl: buoi.imageUrl, cooperativeName: buoi.farmName },
+        { id: buoiDaXanh.id, name: buoiDaXanh.name, price: buoiDaXanh.price, unit: buoiDaXanh.unit, quantity: 1, total: buoiDaXanh.price, imageUrl: buoiDaXanh.imageUrl, cooperativeName: buoiDaXanh.farmName },
         { id: chomChom.id, name: chomChom.name, price: chomChom.price, unit: chomChom.unit, quantity: 2, total: chomChom.price * 2, imageUrl: chomChom.imageUrl, cooperativeName: chomChom.farmName }
       ];
-      reasoning = 'Bộ đôi giải nhiệt tươi mát gồm bưởi da xanh Tân Triều mọng nước và 2kg chôm chôm nhãn hái tươi tại vườn Long Khánh.';
+      reasoning = 'Bộ đôi hoa quả tươi mát gồm bưởi da xanh Tân Triều và 2kg chôm chôm nhãn hái tươi tại vùng chuyên canh Xuân Lập.';
     } else {
-      const buoi = products.find(p => p.id === '1') || products[0];
       selectedItems = [
-        { id: buoi.id, name: buoi.name, price: buoi.price, unit: buoi.unit, quantity: 1, total: buoi.price, imageUrl: buoi.imageUrl, cooperativeName: buoi.farmName }
+        { id: buoiDuongLaCam.id, name: buoiDuongLaCam.name, price: buoiDuongLaCam.price, unit: buoiDuongLaCam.unit, quantity: 1, total: buoiDuongLaCam.price, imageUrl: buoiDuongLaCam.imageUrl, cooperativeName: buoiDuongLaCam.farmName }
       ];
-      reasoning = '1 quả bưởi đường lá cam Tân Triều chuẩn OCOP 4 sao thu hoạch từ cù lao Tân Triều.';
+      reasoning = '1 quả bưởi đường lá cam Tân Triều tuyển chọn thu hoạch từ cù lao Tân Triều.';
     }
   }
 
-  // Ensure total cost never exceeds budget
+  // Strictly enforce budget ceiling (totalCost <= budget)
   let totalCost = selectedItems.reduce((sum, item) => sum + item.total, 0);
   while (totalCost > budget && selectedItems.length > 0) {
     const lastItem = selectedItems[selectedItems.length - 1];
@@ -266,8 +287,9 @@ export const processAiConsultation = async (
   const hasMedical = medicalWords.some(w => lowerQuery.includes(w));
   if (hasMedical) {
     return {
-      reply: 'Dạ, nông sản như Bưởi đường lá cam Tân Triều và Chôm chôm Long Khánh rất giàu Vitamin C, chất xơ tự nhiên và chất chống oxy hóa tốt cho sức khỏe và hệ miễn dịch. Tuy nhiên, theo quy định an toàn và y khoa, nông sản tươi là thực phẩm dinh dưỡng bổ dưỡng hàng ngày, không thể thay thế thuốc chữa bệnh hay phác đồ điều trị của bác sĩ ạ!',
+      reply: 'Dạ, nông sản tươi như Bưởi đường lá cam Tân Triều và Chôm chôm Long Khánh rất giàu Vitamin C, chất xơ tự nhiên và chất chống oxy hóa tốt cho sức khỏe và hệ miễn dịch. Tuy nhiên, theo quy định an toàn thực phẩm và y khoa, nông sản là thực phẩm dinh dưỡng bổ dưỡng hàng ngày, không thể thay thế thuốc chữa bệnh hay phác đồ điều trị y tế của bác sĩ ạ!',
       intent: 'MEDICAL_SAFETY_GUARDRAIL',
+      mode: 'verified_rules',
       toolsUsed: ['safety_guidelines'],
       suggestedPrompts: [
         'Hàm lượng dinh dưỡng của Bưởi Tân Triều?',
@@ -296,25 +318,26 @@ export const processAiConsultation = async (
     }
 
     const recipient = lowerQuery.includes('đối tác') || lowerQuery.includes('sếp') || lowerQuery.includes('công ty') ? 'đối tác' : (lowerQuery.includes('biếu') ? 'quà biếu' : 'gia đình');
-    const combo = await optimizeBudgetCombo(budgetAmount, recipient, lowerQuery.includes('biếu') ? 'quà biếu' : 'tiêu dùng');
+    const combo = await optimizeBudgetCombo(budgetAmount, recipient, lowerQuery);
 
     const formattedBudget = new Intl.NumberFormat('vi-VN').format(budgetAmount);
     const formattedTotal = new Intl.NumberFormat('vi-VN').format(combo.totalCost);
     const formattedRemaining = new Intl.NumberFormat('vi-VN').format(combo.remainingBudget);
 
-    let replyText = `Dạ chào bạn! Với ngân sách ${formattedBudget}đ dành cho ${recipient}, CropNet Đồng Nai AI xin gợi ý gói sản phẩm tối ưu nhất:\n\n`;
+    let replyText = `Dạ chào bạn! Dựa trên danh mục nông sản Đồng Nai đã xác thực, với ngân sách ${formattedBudget}đ dành cho ${recipient}, CropNet gợi ý gói sản phẩm tối ưu nhất:\n\n`;
     replyText += `**${combo.comboTitle}**\n`;
     replyText += `* ${combo.reasoning}\n\n`;
-    replyText += `**Chi tiết giỏ hàng:**\n`;
+    replyText += `**Chi tiết sản phẩm:**\n`;
     combo.items.forEach((item, index) => {
-      replyText += `${index + 1}. **${item.name}** x ${item.quantity} ${item.unit} (${new Intl.NumberFormat('vi-VN').format(item.total)}đ)\n   Nguồn gốc: ${item.cooperativeName}\n`;
+      replyText += `${index + 1}. **${item.name}** x ${item.quantity} ${item.unit} (${new Intl.NumberFormat('vi-VN').format(item.total)}đ)\n   Nguồn: ${item.cooperativeName}\n`;
     });
-    replyText += `\n**Tổng thanh toán:** ${formattedTotal}đ (Còn dư ${formattedRemaining}đ trong hạn mức)\n`;
-    replyText += `*Cam kết:* Toàn bộ sản phẩm đều có tem QR truy xuất nguồn gốc và giấy chứng nhận OCOP / VietGAP chính thống tại Thành phố Đồng Nai. Bạn có thể bấm thêm vào giỏ hàng ngay bên dưới nhé!`;
+    replyText += `\n**Tổng giá trị:** ${formattedTotal}đ (Còn dư ${formattedRemaining}đ trong ngân sách)\n`;
+    replyText += `*Ghi chú minh bạch:* Sản phẩm được lựa chọn từ các hợp tác xã tại Thành phố Đồng Nai. Thông tin chứng nhận OCOP/VietGAP hoặc tiêu chuẩn canh tác được đối chiếu cụ thể theo từng sản phẩm và mã lô truy xuất. Bạn có thể bấm thêm vào giỏ hàng bên dưới!`;
 
     return {
       reply: replyText,
       intent: 'BUDGET_RECOMMENDATION',
+      mode: 'verified_rules',
       toolsUsed: ['optimizeBudgetCombo', 'getFactProducts'],
       recommendedProducts: combo.items,
       actionLink: {
@@ -322,7 +345,7 @@ export const processAiConsultation = async (
         url: '/products'
       },
       suggestedPrompts: [
-        'Có bưởi OCOP 4 sao Tân Triều không?',
+        'Có bưởi OCOP Tân Triều không?',
         'Thời gian giao hàng tại Đồng Nai?',
         'Xem nguồn gốc lô bưởi Tân Triều'
       ]
@@ -336,16 +359,17 @@ export const processAiConsultation = async (
     const searchedCode = batchCodeMatch ? batchCodeMatch[0].toUpperCase() : null;
 
     if (searchedCode) {
-      const found = batches.find(b => b.batchCode.toUpperCase() === searchedCode);
+      const found = batches.find((b: any) => b.batchCode.toUpperCase() === searchedCode);
       if (found) {
         return {
-          reply: `Dạ mã lô **${found.batchCode}** đã được xác thực thành công trên hệ thống CropNet Đồng Nai AI!\n\n` +
+          reply: `Dạ mã lô **${found.batchCode}** đã được xác thực trên hệ thống truy xuất nguồn gốc CropNet Đồng Nai AI:\n\n` +
             `- **Sản phẩm:** ${found.product?.name || 'Nông sản Đồng Nai'}\n` +
-            `- **Nhà vườn canh tác:** ${found.farmingArea}\n` +
+            `- **Nhà vườn / Vùng canh tác:** ${found.farmingArea}\n` +
             `- **Quy trình:** ${found.farmingProcess}\n` +
-            `- **Chứng nhận:** ${(found.certifications || []).map((c: any) => c.name).join(', ') || 'Đang cập nhật'}\n\n` +
-            `Bạn có thể bấm vào liên kết bên dưới để xem trọn vẹn chứng thư số và báo cáo kiểm định chất lượng phòng lab!`,
+            `- **Chứng nhận / Tiêu chuẩn:** ${(found.certifications || []).map((c: any) => c.name).join(', ') || 'Đang cập nhật'}\n\n` +
+            `Bạn có thể bấm vào liên kết bên dưới để xem chi tiết nhật ký chăm sóc và chứng thư số của lô hàng này!`,
           intent: 'TRACEABILITY_VERIFICATION',
+          mode: 'verified_rules',
           toolsUsed: ['getFactBatches'],
           actionLink: {
             label: `Xem chứng thư lô ${found.batchCode}`,
@@ -358,11 +382,12 @@ export const processAiConsultation = async (
         };
       } else {
         return {
-          reply: `Cảnh báo an toàn: Mã lô **${searchedCode}** không tìm thấy trên hệ thống cơ sở dữ liệu nông nghiệp Thành phố Đồng Nai 2026. Để bảo vệ quyền lợi người tiêu dùng và thương hiệu HTX, CropNet khuyến cáo bạn không sử dụng các sản phẩm có tem QR không xác thực hoặc nghi vấn làm giả.`,
+          reply: `Cảnh báo an toàn: Mã lô **${searchedCode}** không tìm thấy trên hệ thống cơ sở dữ liệu nông nghiệp Thành phố Đồng Nai. Để bảo vệ quyền lợi người tiêu dùng và thương hiệu đặc sản địa phương, CropNet khuyến cáo bạn kiểm tra kỹ tem nhãn hoặc liên hệ trực tiếp nhà vườn.`,
           intent: 'TRACEABILITY_NOT_FOUND',
+          mode: 'verified_rules',
           toolsUsed: ['getFactBatches'],
           suggestedPrompts: [
-            'Xem danh sách mã lô đã xác thực',
+            'Xem danh sách mã lô mẫu đã xác thực',
             'Hướng dẫn quét tem QR chính hãng'
           ]
         };
@@ -370,12 +395,13 @@ export const processAiConsultation = async (
     }
 
     return {
-      reply: `Dạ toàn bộ sản phẩm trên CropNet Đồng Nai AI đều được gắn mã QR truy xuất nguồn gốc fail-closed, liên kết trực tiếp với HTX Nông nghiệp Tân Triều (Vĩnh Cửu) và HTX Long Khánh. Các mã lô mẫu đang hoạt động:\n\n` +
-        `1. **BATCH-BUOI-TANTRIEU-2026-01**: Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao, VietGAP)\n` +
+      reply: `Dạ các sản phẩm trên CropNet Đồng Nai AI đều hỗ trợ truy xuất nguồn gốc liên kết với HTX Nông nghiệp Dịch vụ Tân Triều (Phường Tân Triều) và HTX Nông nghiệp Sinh Thái Long Khánh (Phường Xuân Lập). Các mã lô mẫu đang có trên hệ thống:\n\n` +
+        `1. **BATCH-BUOI-TANTRIEU-2026-01**: Bưởi Đường Lá Cam Tân Triều (OCOP, VietGAP)\n` +
         `2. **BATCH-SAURIENG-LONGKHANH-2026-01**: Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)\n` +
-        `3. **BATCH-HATDIEU-DONGNAI-2026-01**: Hạt Điều Rang Muối Vỏ Lụa (HACCP, OCOP)\n\n` +
+        `3. **BATCH-HATDIEU-DONGNAI-2026-01**: Hạt Điều Rang Muối Vỏ Lụa (HACCP)\n\n` +
         `Bạn có thể truy cập Cổng Truy Xuất Nguồn Gốc để quét camera hoặc tra cứu chi tiết nhé!`,
       intent: 'TRACEABILITY_GENERAL',
+      mode: 'verified_rules',
       toolsUsed: ['getFactBatches'],
       actionLink: {
         label: 'Mở Cổng Truy Xuất QR',
@@ -391,15 +417,16 @@ export const processAiConsultation = async (
   // Intent 3: Seasonal Calendar Query
   if (lowerQuery.includes('mùa') || lowerQuery.includes('tháng mấy') || lowerQuery.includes('vụ') || lowerQuery.includes('thu hoạch')) {
     const calendar = getSeasonalCalendarData();
-    let replyText = `Dạ CropNet Đồng Nai AI xin cung cấp lịch mùa vụ nông sản chính thức năm 2026 tại Thành phố Đồng Nai:\n\n`;
+    let replyText = `Dạ CropNet Đồng Nai AI xin cung cấp lịch mùa vụ nông sản tham khảo tại Thành phố Đồng Nai:\n\n`;
     calendar.forEach((item, idx) => {
       replyText += `${idx + 1}. **${item.crop}**\n   - **Địa bàn:** ${item.location}\n   - **Thời điểm rộ:** ${item.peakSeason}\n   - **Hiện trạng:** ${item.status}\n\n`;
     });
-    replyText += `Bạn quan tâm đến loại trái cây nào để mình tư vấn nhà vườn thu hoạch tươi trong ngày nhé!`;
+    replyText += `Bạn quan tâm đến loại trái cây nào để mình tư vấn mùa vụ và thời điểm thưởng thức ngon nhất nhé!`;
 
     return {
       reply: replyText,
       intent: 'SEASONAL_CALENDAR',
+      mode: 'verified_rules',
       toolsUsed: ['getSeasonalCalendarData'],
       actionLink: {
         label: 'Xem Lịch Mùa Vụ & Đặt Trước',
@@ -416,15 +443,16 @@ export const processAiConsultation = async (
   // Intent 4: Cooperatives & Locations
   if (lowerQuery.includes('hợp tác xã') || lowerQuery.includes('htx') || lowerQuery.includes('ở đâu') || lowerQuery.includes('vườn') || lowerQuery.includes('tân triều') || lowerQuery.includes('long khánh')) {
     const coops = await getFactCooperatives();
-    let replyText = `Dạ nền tảng CropNet Đồng Nai AI hiện liên kết độc quyền với 2 Hợp Tác Xã nông nghiệp sinh thái nòng cốt:\n\n`;
+    let replyText = `Dạ nền tảng CropNet Đồng Nai AI hiện hợp tác trưng bày sản phẩm của các Hợp Tác Xã nông nghiệp sinh thái nòng cốt:\n\n`;
     coops.forEach((c: any, idx: number) => {
-      replyText += `${idx + 1}. **${c.farmName}**\n   - **Địa chỉ:** ${c.address}\n   - **Tọa độ GIS:** ${c.latitude}° N, ${c.longitude}° E\n   - **Đặc sản chính:** ${c.description}\n   - **Chứng nhận:** ${(c.certifications || []).join(', ')}\n\n`;
+      replyText += `${idx + 1}. **${c.farmName}**\n   - **Địa chỉ:** ${c.address}\n   - **Tọa độ GIS:** ${c.latitude}° N, ${c.longitude}° E\n   - **Đặc sản chính:** ${c.description}\n   - **Chứng nhận/Tiêu chuẩn:** ${(c.certifications || []).join(', ')}\n\n`;
     });
-    replyText += `Bạn có thể xem trực quan vị trí địa lý của từng nhà vườn trên Bản Đồ Nông Nghiệp Số Đồng Nai ạ!`;
+    replyText += `Bạn có thể xem trực quan vị trí địa lý của từng nhà vườn trên Bản Đồ Nông Nghiệp Số Đồng Nai!`;
 
     return {
       reply: replyText,
       intent: 'COOPERATIVE_INFO',
+      mode: 'verified_rules',
       toolsUsed: ['getFactCooperatives'],
       actionLink: {
         label: 'Xem Bản Đồ Vườn Số',
@@ -440,14 +468,15 @@ export const processAiConsultation = async (
   // Default: General Product Knowledge & Assistance
   const products = await getFactProducts();
   return {
-    reply: `Chào bạn! Mình là Trợ lý AI Bán Hàng & Nông Sản Thông Minh trực thuộc nền tảng **CropNet Đồng Nai AI** (DiGiFest 2026).\n\n` +
-      `Mình có thể hỗ trợ bạn:\n` +
-      `1. **Tư vấn giỏ hàng theo ngân sách** (Ví dụ: "Tư vấn quà biếu 500k", "Combo hoa quả gia đình 300k")\n` +
-      `2. **Truy xuất nguồn gốc QR** từng quả bưởi Tân Triều, sầu riêng Long Khánh, hạt điều Xuân Lộc\n` +
-      `3. **Tra cứu lịch mùa vụ & độ chín sinh lý**\n` +
-      `4. **Lập yêu cầu báo giá sỉ (RFQ)** trực tiếp cho công ty & nhà hàng\n\n` +
-      `Hiện các vườn đang có sẵn Bưởi Đường Lá Cam Tân Triều (OCOP 4 sao), Sầu riêng Ri6 chín cây Long Khánh và Rượu bưởi truyền thống. Bạn cần mình tư vấn mục nào ạ?`,
+    reply: `Chào bạn! Mình là Trợ lý Nông Sản & Bán Hàng Thông Minh trực thuộc nền tảng **CropNet Đồng Nai AI** (AI Digital Business Challenge 2026).\n\n` +
+      `Hệ thống sử dụng bộ quy tắc và dữ liệu nông sản đã xác minh để hỗ trợ bạn:\n` +
+      `1. **Tối ưu gói sản phẩm theo ngân sách** (Ví dụ: "Tư vấn quà biếu 500k", "Combo hoa quả gia đình 300k, không hạt điều")\n` +
+      `2. **Tra cứu tem QR truy xuất nguồn gốc** từng lô bưởi Tân Triều, sầu riêng Long Khánh, hạt điều Đồng Nai\n` +
+      `3. **Tra cứu lịch mùa vụ & thời điểm thu hoạch**\n` +
+      `4. **Soạn bản nháp yêu cầu báo giá sỉ (RFQ)** cho tổ chức và doanh nghiệp\n\n` +
+      `Bạn cần mình tư vấn nông sản nào của Thành phố Đồng Nai hôm nay ạ?`,
     intent: 'GENERAL_GREETING',
+    mode: 'verified_rules',
     toolsUsed: ['getFactProducts'],
     suggestedPrompts: [
       'Tư vấn combo quà biếu 500k',

@@ -184,39 +184,40 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
               name: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)',
               supplier: {
                 farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều',
-                address: 'Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai',
+                address: 'Phường Tân Triều, Thành phố Đồng Nai (vùng Cù lao Tân Triều lịch sử)',
                 latitude: 11.0267,
                 longitude: 106.8835,
                 representative: 'Ban Quản Trị HTX Tân Triều'
               }
             },
+            verificationTier: 'demo',
             certifications: [
               {
                 id: 'cert-vietgap-tantrieu',
                 name: 'Chứng nhận VietGAP Trồng trọt Đồng Nai',
-                issuer: 'Chi cục Trồng trọt và Bảo vệ Thực vật Đồng Nai',
+                issuer: 'Chi cục Trồng trọt và Bảo vệ Thực vật Đồng Nai (Hồ sơ tham khảo)',
                 validUntil: '2028-12-31T00:00:00.000Z',
                 imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
                 status: 'APPROVED'
               },
               {
                 id: 'cert-ocop-tantrieu',
-                name: 'Giấy chứng nhận OCOP 4 Sao Tỉnh Đồng Nai',
-                issuer: 'UBND Tỉnh Đồng Nai - Hội đồng Phân hạng OCOP',
+                name: 'Giấy chứng nhận OCOP Tỉnh Đồng Nai',
+                issuer: 'UBND Tỉnh Đồng Nai - Hội đồng Phân hạng OCOP (Dữ liệu minh họa)',
                 validUntil: '2028-06-30T00:00:00.000Z',
                 imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
                 status: 'APPROVED'
               }
             ],
             logisticsTimeline: [
-              { status: 'REGISTERED', title: 'Khởi tạo thông tin lô bưởi', description: 'HTX Tân Triều đăng ký mã vùng trồng và lô thu hoạch vụ mùa 2026', timestamp: '2026-06-15T07:00:00.000Z', location: 'Xã Tân Bình, Vĩnh Cửu, TP Đồng Nai' },
-              { status: 'CULTIVATION', title: 'Bón phân hữu cơ vi sinh đợt 2 & Bao trái', description: 'Hoàn tất bao 5.000 trái bằng túi màng thoáng khí chống côn trùng', timestamp: '2026-07-20T08:30:00.000Z', location: 'Vườn mẫu A1 Tân Triều' },
+              { status: 'REGISTERED', title: 'Khởi tạo thông tin lô bưởi', description: 'HTX Tân Triều đăng ký mã vùng trồng và lô thu hoạch vụ mùa 2026', timestamp: '2026-06-15T07:00:00.000Z', location: 'Phường Tân Triều, TP Đồng Nai' },
+              { status: 'CULTIVATION', title: 'Bón phân hữu cơ vi sinh đợt 2 & Bao trái', description: 'Hoàn tất bao 5.000 trái bằng túi màng thoáng khí chống côn trùng', timestamp: '2026-07-20T08:30:00.000Z', location: 'Vườn mẫu A1 Cù lao Tân Triều' },
               { status: 'PRE_HARVEST', title: 'Kiểm tra độ chín sinh lý & độ Brix', description: 'Đo độ ngọt đạt 11.8 Brix, vỏ chuyển sang vàng sáng đạt chuẩn thu hái', timestamp: '2026-09-28T09:15:00.000Z', location: 'Trạm kỹ thuật HTX Tân Triều' },
               { status: 'HARVESTED', title: 'Thu hoạch cắt cuống & Dán tem QR', description: 'Thu hoạch quả loại 1, lau sạch bằng nước nano bạc, dán tem truy xuất nguồn gốc', timestamp: '2026-10-10T06:30:00.000Z', location: 'Kho sơ chế HTX Tân Triều' }
             ],
             inspectionReports: [
               {
-                inspector: 'Trung tâm Phân tích & Kiểm định Nông sản Đồng Nai',
+                inspector: 'Trung tâm Phân tích & Kiểm định Nông sản Đồng Nai (Mẫu mô phỏng)',
                 status: 'PASSED',
                 checkDate: '2026-10-08T10:00:00.000Z',
                 comments: 'Mẫu bưởi đường lá cam đạt toàn bộ chỉ tiêu an toàn thực phẩm. Không phát hiện dư lượng kim loại nặng và hóa chất BVTV.',
@@ -232,22 +233,23 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
           'BATCH-SAURIENG-LONGKHANH-2026-01': {
             batchCode: 'BATCH-SAURIENG-LONGKHANH-2026-01',
             harvestDate: '2026-10-12T05:30:00.000Z',
-            farmingArea: 'Vườn sầu riêng mẫu B2 - Phường Xuân Lập, TP Long Khánh, TP Đồng Nai',
+            farmingArea: 'Vườn sầu riêng mẫu B2 - Phường Xuân Lập, Thành phố Đồng Nai',
             farmingProcess: 'Canh tác trên nền đất đỏ bazan tự nhiên. Bón phân trùn quế hữu cơ, cam kết neo trái chín già trên cây và tự rụng/gõ bộng thu hoạch, không ngâm thuốc ép chín.',
             product: {
               name: 'Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)',
               supplier: {
                 farmName: 'Hợp Tác Xã Nông Nghiệp Sinh Thái Long Khánh',
-                address: 'Phường Xuân Lập, Thành phố Long Khánh, Thành phố Đồng Nai',
+                address: 'Phường Xuân Lập, Thành phố Đồng Nai',
                 latitude: 10.9258,
                 longitude: 107.2412,
                 representative: 'Ban Giám Đốc HTX Long Khánh'
               }
             },
+            verificationTier: 'demo',
             certifications: [
               {
                 id: 'cert-vietgap-longkhanh',
-                name: 'Cam kết Chuẩn canh tác sinh thái Long Khánh',
+                name: 'Cam kết Chuẩn canh tác sinh thái Long Khánh (Hồ sơ mẫu)',
                 issuer: 'Hội Nông Dân TP Long Khánh',
                 validUntil: '2027-12-31T00:00:00.000Z',
                 imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
@@ -440,14 +442,19 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
           <ShieldCheck className="w-80 h-80 text-white" />
         </div>
         <div className="space-y-3 z-10">
-          <Badge className="bg-white/20 text-white border-0 font-bold px-3 py-1 text-xs">
-            Xác thực chuỗi cung ứng trực tiếp D2C
-          </Badge>
+          <div className="flex flex-wrap gap-2">
+            <Badge className="bg-white/20 text-white border-0 font-bold px-3 py-1 text-xs">
+              Minh Bạch Nông Sản D2C
+            </Badge>
+            <Badge className="bg-amber-400 text-emerald-950 border-0 font-bold px-3 py-1 text-xs">
+              DỮ LIỆU MINH HỌA KHẢO SÁT 2026
+            </Badge>
+          </div>
           <h2 className="text-3xl font-black tracking-tight leading-tight">
             Chứng Thư Nguồn Gốc Điện Tử
           </h2>
           <p className="text-emerald-50 text-sm">
-            Nông sản đã hoàn thành kiểm nghiệm chất lượng và lưu trữ nhiệt độ khép kín.
+            Hồ sơ lô hàng nông sản Thành phố Đồng Nai phục vụ kiểm chứng minh bạch số và đối chiếu thực tế.
           </p>
         </div>
         <div className="bg-white/10 backdrop-blur-md border border-white/25 rounded-2xl p-4 text-sm z-10 flex flex-col items-start gap-1 flex-shrink-0">

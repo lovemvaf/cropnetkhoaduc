@@ -53,6 +53,8 @@ export default function ProductDetailPageClient() {
         const allMockProducts = [
           {
             id: '1',
+            slug: 'prod-buoi-duong-la-cam',
+            idAlias: ['1', 'prod-buoi-duong-la-cam'],
             name: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)',
             price: 85000,
             unit: 'quả (1.1kg - 1.3kg)',
@@ -60,7 +62,7 @@ export default function ProductDetailPageClient() {
             categoryId: 'cat-fruits',
             tags: ['OCOP', 'Bưởi Tân Triều', 'VietGAP', 'Đặc sản Đồng Nai'],
             farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều',
-            address: 'Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai',
+            address: 'Phường Tân Triều, Thành phố Đồng Nai (vùng Cù lao Tân Triều lịch sử)',
             imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format',
             images: [
               { url: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' }
@@ -71,19 +73,21 @@ export default function ProductDetailPageClient() {
               { name: 'Cặp quả biếu Tết Tân Triều', price: 195000 }
             ],
             batches: [
-              { id: 'batch-buoi-tantrieu-01', batchCode: 'BATCH-BUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-10-10'), farmingArea: 'Vườn mẫu A1 - Xã Tân Bình, Vĩnh Cửu, TP Đồng Nai', farmingProcess: 'Canh tác sinh thái VietGAP, nước ngọt phù sa sông Đồng Nai bồi đắp, bao trái an toàn vi sinh.' }
+              { id: 'batch-buoi-tantrieu-01', batchCode: 'BATCH-BUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-10-10'), farmingArea: 'Vườn mẫu A1 - Phường Tân Triều, TP Đồng Nai', farmingProcess: 'Canh tác sinh thái VietGAP, nước ngọt phù sa sông Đồng Nai bồi đắp, bao trái an toàn vi sinh.' }
             ]
           },
           {
             id: '2',
+            slug: 'prod-buoi-da-xanh',
+            idAlias: ['2', 'prod-buoi-da-xanh'],
             name: 'Bưởi Da Xanh Tân Triều Hữu Cơ',
             price: 75000,
             unit: 'quả (1.3kg - 1.5kg)',
-            description: 'Bưởi da xanh ruột hồng giòn ngọt, vỏ xanh bóng, ít hạt, canh tác theo quy chuẩn an toàn sinh thái tại Vĩnh Cửu, vị ngọt đậm thơm mát.',
+            description: 'Bưởi da xanh ruột hồng giòn ngọt, vỏ xanh bóng, ít hạt, canh tác theo quy chuẩn an toàn sinh thái tại Phường Tân Triều, vị ngọt đậm thơm mát.',
             categoryId: 'cat-fruits',
             tags: ['VietGAP', 'Bưởi Tân Triều', 'Hữu cơ'],
             farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều',
-            address: 'Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai',
+            address: 'Phường Tân Triều, Thành phố Đồng Nai',
             imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format',
             images: [
               { url: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' }
@@ -98,6 +102,8 @@ export default function ProductDetailPageClient() {
           },
           {
             id: '3',
+            slug: 'prod-sau-rieng-ri6',
+            idAlias: ['3', 'prod-sau-rieng-ri6'],
             name: 'Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)',
             price: 135000,
             unit: 'kg (quả 2.5kg - 3.5kg)',
@@ -105,7 +111,7 @@ export default function ProductDetailPageClient() {
             categoryId: 'cat-fruits',
             tags: ['VietGAP', 'Sầu riêng Long Khánh', 'Chín tự nhiên'],
             farmName: 'Hợp Tác Xã Nông Nghiệp Sinh Thái Long Khánh',
-            address: 'Phường Xuân Lập, Thành phố Long Khánh, Thành phố Đồng Nai',
+            address: 'Phường Xuân Lập, Thành phố Đồng Nai',
             imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=800&auto=format',
             images: [
               { url: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=800&auto=format' }
@@ -115,11 +121,13 @@ export default function ProductDetailPageClient() {
               { name: 'Hộp cơm sầu bóc sẵn hút chân không 500g', price: 185000 }
             ],
             batches: [
-              { id: 'batch-saurieng-longkhanh-01', batchCode: 'BATCH-SAURIENG-LONGKHANH-2026-01', harvestDate: new Date('2026-10-12'), farmingArea: 'Vườn sầu riêng mẫu B2 - Phường Xuân Lập, TP Long Khánh, TP Đồng Nai', farmingProcess: 'Đất đỏ bazan màu mỡ, bón phân trùn quế vi sinh, neo trái già tự rụng' }
+              { id: 'batch-saurieng-longkhanh-01', batchCode: 'BATCH-SAURIENG-LONGKHANH-2026-01', harvestDate: new Date('2026-10-12'), farmingArea: 'Vườn sầu riêng mẫu B2 - Phường Xuân Lập, TP Đồng Nai', farmingProcess: 'Đất đỏ bazan màu mỡ, bón phân trùn quế vi sinh, neo trái già tự rụng' }
             ]
           },
           {
             id: '4',
+            slug: 'prod-chom-chom-nhan',
+            idAlias: ['4', 'prod-chom-chom-nhan'],
             name: 'Chôm Chôm Nhãn Long Khánh',
             price: 45000,
             unit: 'kg (chùm quả tươi)',
@@ -127,7 +135,7 @@ export default function ProductDetailPageClient() {
             categoryId: 'cat-fruits',
             tags: ['Đặc sản Long Khánh', 'Đang mùa vụ'],
             farmName: 'Hợp Tác Xã Nông Nghiệp Sinh Thái Long Khánh',
-            address: 'Phường Xuân Lập, Thành phố Long Khánh, Thành phố Đồng Nai',
+            address: 'Phường Xuân Lập, Thành phố Đồng Nai',
             imageUrl: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format',
             images: [
               { url: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format' }
@@ -137,11 +145,13 @@ export default function ProductDetailPageClient() {
               { name: 'Thùng quà 5kg tuyển chọn', price: 210000 }
             ],
             batches: [
-              { id: 'batch-chomchom-longkhanh-01', batchCode: 'BATCH-CHOMCHOM-LONGKHANH-2026-01', harvestDate: new Date('2026-10-11'), farmingArea: 'Vườn chôm chôm hữu cơ Xuân Lập, Long Khánh', farmingProcess: 'Tưới nước suối ngầm tự nhiên, bón phân hữu cơ vi sinh' }
+              { id: 'batch-chomchom-longkhanh-01', batchCode: 'BATCH-CHOMCHOM-LONGKHANH-2026-01', harvestDate: new Date('2026-10-11'), farmingArea: 'Vườn chôm chôm hữu cơ Phường Xuân Lập, TP Đồng Nai', farmingProcess: 'Tưới nước suối ngầm tự nhiên, bón phân hữu cơ vi sinh' }
             ]
           },
           {
             id: '5',
+            slug: 'prod-hat-dieu-dong-nai',
+            idAlias: ['5', 'prod-hat-dieu-dong-nai'],
             name: 'Hạt Điều Rang Muối Vỏ Lụa Đồng Nai (Hộp 500g)',
             price: 120000,
             unit: 'hộp 500g',
@@ -149,7 +159,7 @@ export default function ProductDetailPageClient() {
             categoryId: 'cat-processed',
             tags: ['OCOP', 'Hạt điều Đồng Nai', 'Chế biến sạch'],
             farmName: 'Hợp Tác Xã Nông Nghiệp Sinh Thái Long Khánh',
-            address: 'Huyện Xuân Lộc / TP Long Khánh, Thành phố Đồng Nai',
+            address: 'Vùng trồng Xuân Lộc & Xuân Lập, Thành phố Đồng Nai',
             imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&auto=format',
             images: [
               { url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&auto=format' }
@@ -164,14 +174,16 @@ export default function ProductDetailPageClient() {
           },
           {
             id: '6',
+            slug: 'prod-ruou-buoi-tan-trieu',
+            idAlias: ['6', 'prod-ruou-buoi-tan-trieu'],
             name: 'Rượu Bưởi Tân Triều Truyền Thống (Bình Gốm 750ml)',
             price: 195000,
             unit: 'bình gốm 750ml',
-            description: 'Đặc sản trứ danh lên men tự nhiên từ nước cốt bưởi đường lá cam Tân Triều và men thảo mộc cổ truyền, hương vị êm dịu, vị ngọt hậu thanh tao.',
+            description: 'Đặc sản trứ danh lên men tự nhiên từ nước cốt bưởi đường lá cam Tân Triều và men thảo mộc cổ truyền, hương vị êm dịu, vị ngọt hậu thanh tao. Sản phẩm có cồn có điều kiện (15% vol).',
             categoryId: 'cat-processed',
             tags: ['OCOP', 'Quà biếu tặng', 'Rượu bưởi Tân Triều'],
             farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều',
-            address: 'Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai',
+            address: 'Phường Tân Triều, Thành phố Đồng Nai',
             imageUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format',
             images: [
               { url: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format' }
@@ -181,31 +193,34 @@ export default function ProductDetailPageClient() {
               { name: 'Cặp bình quà biếu hộp gỗ sang trọng', price: 420000 }
             ],
             batches: [
-              { id: 'batch-ruoubuoi-tantrieu-01', batchCode: 'BATCH-RUOUBUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-09-20'), farmingArea: 'Cơ sở ủ rượu truyền thống làng bưởi Tân Triều, Vĩnh Cửu', farmingProcess: 'Lên men tự nhiên từ tép bưởi đường lá cam và gạo nếp cái hoa vàng trong vò sành 6 tháng' }
+              { id: 'batch-ruoubuoi-tantrieu-01', batchCode: 'BATCH-RUOUBUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-09-20'), farmingArea: 'Cơ sở ủ rượu truyền thống làng bưởi Tân Triều, Phường Tân Triều', farmingProcess: 'Lên men tự nhiên từ tép bưởi đường lá cam và gạo nếp cái hoa vàng trong vò sành 6 tháng' }
             ]
           }
         ];
 
-        const matchedProduct = allMockProducts.find(p => p.id === id) || allMockProducts[0];
+        // Fail-closed match: never fallback to allMockProducts[0] if ID is invalid
+        const matchedProduct = allMockProducts.find((p: any) => p.id === id || p.slug === id || p.idAlias?.includes(String(id))) || null;
         setProduct(matchedProduct);
-        if (matchedProduct.variants && matchedProduct.variants.length > 0) {
-          setSelectedVariant(matchedProduct.variants[0]);
-        } else {
-          setSelectedVariant(null);
+        if (matchedProduct) {
+          if (matchedProduct.variants && matchedProduct.variants.length > 0) {
+            setSelectedVariant(matchedProduct.variants[0]);
+          } else {
+            setSelectedVariant(null);
+          }
+
+          // Mock related products
+          const related = allMockProducts.filter((p: any) => p.id !== matchedProduct.id && p.categoryId === matchedProduct.categoryId);
+          const finalRelated = related.length > 0 ? related : allMockProducts.filter((p: any) => p.id !== matchedProduct.id);
+
+          setRelatedProducts(finalRelated.map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            unit: p.unit,
+            farmName: p.farmName,
+            imageUrl: p.images?.[0]?.url || p.imageUrl
+          })));
         }
-
-        // Mock related products
-        const related = allMockProducts.filter(p => p.id !== matchedProduct.id && p.categoryId === matchedProduct.categoryId);
-        const finalRelated = related.length > 0 ? related : allMockProducts.filter(p => p.id !== matchedProduct.id);
-
-        setRelatedProducts(finalRelated.map(p => ({
-          id: p.id,
-          name: p.name,
-          price: p.price,
-          unit: p.unit,
-          farmName: p.farmName,
-          imageUrl: p.images?.[0]?.url || p.imageUrl
-        })));
       } finally {
         setLoading(false);
       }
@@ -231,8 +246,20 @@ export default function ProductDetailPageClient() {
 
   if (!product) {
     return (
-      <Container className="py-20 text-center text-gray-500">
-        Không tìm thấy nông sản.
+      <Container className="py-20 text-center space-y-4 max-w-md mx-auto">
+        <div className="w-16 h-16 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-2">
+          <ShieldCheck className="w-8 h-8" />
+        </div>
+        <h3 className="text-xl font-black text-gray-900">Không Tìm Thấy Sản Phẩm</h3>
+        <p className="text-sm text-gray-500">
+          Mã sản phẩm truy vấn không tồn tại trong CSDL nông sản Thành phố Đồng Nai 2026.
+        </p>
+        <Link
+          href="/products"
+          className="inline-block bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs px-6 py-3 rounded-2xl transition-colors"
+        >
+          Quay lại danh sách sản phẩm
+        </Link>
       </Container>
     );
   }
