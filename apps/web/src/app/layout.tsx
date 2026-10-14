@@ -2,14 +2,22 @@ import React from 'react';
 import '../styles/globals.css';
 import Header from '@/shared/components/Header';
 import Footer from '@/shared/components/Footer';
-import { Inter } from 'next/font/google';
+import { Be_Vietnam_Pro, Playfair_Display } from 'next/font/google';
 
 import FloatingAiWidget from '@/shared/components/FloatingAiWidget';
 
-const inter = Inter({
-  subsets: ['latin'],
+const beVietnamPro = Be_Vietnam_Pro({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin', 'vietnamese'],
   display: 'swap',
   variable: '--font-sans',
+});
+
+const playfair = Playfair_Display({
+  weight: ['600', '700'],
+  subsets: ['latin', 'vietnamese'],
+  display: 'swap',
+  variable: '--font-serif',
 });
 
 export const metadata = {
@@ -26,8 +34,8 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi" className={inter.variable} suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen font-sans bg-slate-50/50 text-gray-900 antialiased selection:bg-primary-100 selection:text-primary-900">
+    <html lang="vi" className={`${beVietnamPro.variable} ${playfair.variable}`} suppressHydrationWarning>
+      <body className="flex flex-col min-h-screen font-sans bg-[#FAF9F5] text-[#253129] antialiased selection:bg-[#E6EAE4] selection:text-[#2C4939]">
         <Header />
         <main className="flex-grow">{children}</main>
         <Footer />

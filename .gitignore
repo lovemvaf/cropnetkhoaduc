@@ -95,3 +95,7 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+.vercel
+.env*
+!.env.example
+!apps/**/.env.example

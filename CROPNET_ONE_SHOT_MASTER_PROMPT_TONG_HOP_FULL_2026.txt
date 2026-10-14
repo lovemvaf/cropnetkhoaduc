@@ -1,0 +1,505 @@
+================================================================================
+CROPNET ĐỒNG NAI AI — ONE-SHOT MASTER PROMPT THỐNG NHẤT TOÀN DIỆN
+BẢN DUY NHẤT ĐỂ GỬI AI CODING AGENT | 15/10/2026
+================================================================================
+
+ĐÂY LÀ LỆNH THỰC THI TRỌN GÓI, KHÔNG PHẢI YÊU CẦU VIẾT PROMPT/KẾ HOẠCH KHÁC.
+BẠN PHẢI TỰ ĐỌC SOURCE, SỬA CODE, TEST, DEPLOY, VERIFY, BÀN GIAO THEO CÁC GATE.
+
+Phạm vi được HỢP NHẤT thành MỘT nguồn chỉ đạo duy nhất:
+(1) sửa forum, bài viết/bình luận và font tiếng Việt;
+(2) triển khai ứng dụng thật Vercel + Supabase/PostgreSQL, Upstash khi cần;
+(3) tự tích hợp DeepSeek API của nhóm bằng bí mật server-side theo ủy quyền;
+(4) thay bản đồ giả bằng bản đồ số đúng địa lý, bao phủ đầy đủ địa bàn Đồng Nai hiện hành;
+(5) thiết kế lại TẤT CẢ giao diện tự nhiên, tinh tế, không gradient/AI-template, responsive xuất sắc;
+(6) sửa QR camera/ảnh thực, catalog/ảnh/dữ liệu/OCOP/VietGAP và AI bán hàng thật;
+(7) bảo vệ auth, đơn hàng, dashboard, diễn đàn, dữ liệu thật, không tạo chứng thư/lời hứa giả;
+(8) giữ bản GitHub Pages showcase và cấu hình Vercel full app KHÔNG xung đột;
+(9) tích hợp Google Forms/Sheets/Cloud khi đã có quyền OAuth và có nhu cầu;
+(10) CI, quality gates, E2E, screenshots, hiệu năng, security, quota free và báo cáo minh bạch.
+
+BẠN LÀ: Lead Engineer (Next.js + Express/Prisma), Product Designer, AI Engineer,
+GIS Engineer, Database Engineer, Security Engineer và QA/Release Engineer.
+Chỉ coi đầu ra là hoàn thành khi chứng minh được trên URL LIVE thực tế, không phải ảnh mockup.
+
+SỰ THẬT QUAN TRỌNG:
+- Repository: https://github.com/lovemvaf/cropnetkhoaduc ; dùng HEAD hiện tại, tuyệt đối không giả định SHA lịch sử còn đúng.
+- GitHub Pages showcase: https://lovemvaf.github.io/cropnetkhoaduc/
+- Vercel: team người dùng muốn dùng là visionary19; username trong ảnh là lovemvaf.
+- Địa chỉ email/tên team trong tin nhắn KHÔNG tạo ra quyền đăng nhập, quyền thao tác hay quyền cấp bí mật.
+- API key DeepSeek của nhóm đã được chủ nhóm cho phép tích hợp, nhưng từng xuất hiện trong chat.
+  ĐỪNG đưa chuỗi secret vào tài liệu hoặc GitHub. Phải khuyến cáo xoay vòng trước public production.
+  Nếu có kênh riêng tư + quyền được cấp, tự cài secret và hoàn thành tích hợp; nếu KHÔNG có
+  thì chỉ yêu cầu người dùng MỘT THAO TÁC cấp secret trực tiếp trong secret manager và làm tiếp.
+- Không tự đăng ký dịch vụ bằng email người dùng, không bật gói phí, không cam kết trả tiền,
+  không dùng thủ thuật vượt quota/hobby noncommercial. Tất cả tài nguyên thuộc tài khoản chủ dự án.
+- Quy trình thực thi một lượt = làm liên tục theo các gate; có checkpoint/PR và bước phê duyệt bảo mật
+  khi thực sự cần. Không gom thành một commit rủi ro hoặc bỏ QA cho nhanh.
+
+ĐIỀU KIỆN TỐI CAO: Không bỏ bất kỳ chức năng hiện có đang chạy đúng nào chỉ vì redesign.
+Nếu hướng dẫn ở phần khác nhau có vẻ xung đột, thứ tự ưu tiên là:
+  AN TOÀN, TUÂN THỦ PHÁP LÝ > DỮ LIỆU THẬT VÀ TOÀN VẸN > P0 LIVE FUNCTIONALITY >
+  REGRESSION + RESPONSIVE > ĐẸP/TỐI ƯU > TÍNH NĂNG MỞ RỘNG TÙY CHỌN.
+
+================================================================================
+I. NỀN TẢNG, API, BẢN ĐỒ, FORUM & TRIỂN KHAI — LỆNH BẮT BUỘC
+================================================================================
+
+ĐÍCH ĐẾN
+- Source: https://github.com/lovemvaf/cropnetkhoaduc
+- GitHub Pages hiện có: https://lovemvaf.github.io/cropnetkhoaduc/
+- Forum bị lỗi: https://lovemvaf.github.io/cropnetkhoaduc/forum/
+- Vercel: tài khoản được người dùng cung cấp qua ảnh chụp màn hình: username lovemvaf; team mặc định visionary19. Không suy đoán tài khoản Vercel đang được kết nối với GitHub hay đã tạo project.
+- Dịch vụ mong muốn: Vercel, Supabase (PostgreSQL/Auth/Storage khi phù hợp), Upstash Redis (chỉ khi cần), Google Cloud/Forms/Sheets (OAuth do chủ tài khoản cấp), DeepSeek API, nền tảng bản đồ số có dữ liệu thực.
+- Giữ nguyên toàn bộ chức năng đã hoạt động của CropNet; xử lý hết lỗi thực sự, đặc biệt diễn đàn, tiếng Việt, bản đồ và triển khai.
+
+LƯU Ý BẢO MẬT P0 — KEY NHÓM ĐƯỢC ỦY QUYỀN, TÍCH HỢP TỰ ĐỘNG NHƯNG KHÔNG LỘ KEY
+Người dùng xác nhận API key DeepSeek đã cung cấp trước đó là KEY CỦA NHÓM và CHO PHÉP sử dụng để tích hợp CropNet. ĐÂY LÀ YÊU CẦU THỰC THI, không được chỉ trả về hướng dẫn tự nhập .env rồi kết thúc. Nếu agent nhận được giá trị key từ ngữ cảnh riêng tư đã được người dùng cung cấp và có kênh quản lý secrets được cấp quyền, hãy tự cấu hình nó vào server-side secret của project do người dùng sở hữu, tự triển khai và kiểm thử API thật. KHÔNG bao giờ chép lại giá trị key trong prompt, chat trả lời, mã nguồn, commit, issue, PR, artifact, log, screenshot, shell history, .env.example, biến NEXT_PUBLIC_* hoặc bundle trình duyệt.
+CẢNH BÁO: Khóa đã được chia sẻ qua hội thoại nên có nguy cơ bị lộ. Khuyến nghị xoay vòng/revoke key cũ trước khi bật môi trường production hoặc kinh doanh thật; không giả định khóa an toàn chỉ vì thuộc sở hữu nhóm. Không được khiến việc chuẩn bị code/test mock bị đình trệ trong lúc chờ quyền secret. Nếu hệ thống/connector không cho phép đọc hoặc truyền key an toàn, TUYỆT ĐỐI không bịa kết quả đã tích hợp: dừng đúng một bước cấp quyền, mở trang bí mật/CLI input thích hợp để người dùng nhập trực tiếp rồi tự thực hiện tiếp, không bắt người dùng gõ key vào cửa sổ chat. Tuyệt đối không chuyển key sang dịch vụ khác không liên quan hoặc chia sẻ với bên thứ ba ngoài DeepSeek và hạ tầng server cần vận hành.
+
+NGUYÊN TẮC CHỦ QUYỀN TÀI KHOẢN VÀ CHI PHÍ
+1. Dùng tài khoản của NGƯỜI DÙNG; không mở tài khoản bằng email của họ nếu chưa có phiên đăng nhập ủy quyền/chấp thuận tương tác thật. Không đoán mật khẩu, không mượn danh, không tự bật billing hay xác thực giao dịch.
+2. Với Vercel, Supabase, Upstash, Google Cloud, GitHub, DeepSeek: ưu tiên kết nối chính thức bằng OAuth/GitHub App/CLI login/approval trong trình duyệt hoặc API token phạm vi tối thiểu do người dùng tự cấp. Khi chưa có quyền, dừng chính xác tại bước quyền truy cập, cung cấp link/deep link và hướng dẫn ngắn rõ ràng, tiếp tục phần code/test không cần quyền.
+3. Chủ sở hữu tất cả project, database, Google Form/Sheet, secret và dữ liệu phải là tài khoản người dùng. Agent có thể yêu cầu người dùng xác nhận team, vùng dữ liệu, chi phí và điều khoản. Không tự động mua gói, đăng ký trả phí, thêm phương thức thanh toán, chấp nhận hợp đồng thay người dùng.
+4. Mặc định ngân sách hạ tầng 0 đồng; chỉ tạo tài nguyên có free tier khi phù hợp và cần thiết. Có giới hạn usage/rate limit/circuit breaker, cảnh báo khi vượt quota; không hứa “miễn phí mãi mãi”. Không tìm cách lách fair use, free tier hoặc điều khoản nhà cung cấp.
+5. Cực kỳ quan trọng: Vercel Hobby chỉ cho dự án cá nhân PHI THƯƠNG MẠI. Nếu CropNet vận hành nhận đơn hàng/doanh thu thực, phải dùng gói/hạ tầng cho phép thương mại được người dùng phê duyệt. Có thể triển khai demo không giao dịch trên Hobby nếu phù hợp điều khoản. GitHub Pages cũng chỉ nên là showcase tĩnh, không thu thập thông tin giao dịch nhạy cảm.
+
+A. PHÂN TÍCH HIỆN TRẠNG VÀ BẰNG CHỨNG ĐÃ KIỂM TRA
+Trước khi sửa hãy pull/fetch mới nhất main, đọc HISTORY và ghi SHA đang sửa, không dựa commit cũ. Các phát hiện cần xác nhận lại tại HEAD:
+- apps/web/src/app/forum/page.tsx: fetchPosts() gọi apiClient.get('/forum?...'); catch đặt 'Không thể tải các bài viết lúc này. Vui lòng thử lại sau.'; chức năng tạo bài, sửa, like, bookmark, bình luận, report, upload đều dựa vào backend.
+- apps/web/src/shared/services/api.ts: khi production thiếu NEXT_PUBLIC_API_URL, API_BASE_URL='', interceptor từ chối với SHOWCASE_MODE_NO_BACKEND. GitHub Pages là static export, không chạy backend động. Đây là nguyên nhân rất có khả năng của lỗi forum trên GitHub Pages.
+- apps/server/src/modules/forum/forum.routes.ts: GET /forum public; POST/PUT/DELETE, like, comment, report yêu cầu xác thực. Cần endpoint HTTPS triển khai thật.
+- apps/server/src/modules/forum/forum.repository.ts có DB Prisma và mock fallback dùng bộ nhớ. Phải phân biệt dữ liệu demo read-only và dữ liệu thật; không coi mock in-memory là forum production và không cam kết ghi thành công nếu refresh là mất.
+- apps/web/src/app/forum/page.tsx: heading 'Cộng Đồng Nông Nghiệp Đồng Nai' dùng font-serif; apps/web/src/app/layout.tsx cấu hình next/font/google Inter chỉ subsets ['latin']. Phải kiểm tra font-family thực sự áp dụng, subset Vietnamese, Unicode NFC, font fallback, encoding UTF-8 và CSS font weight.
+- apps/web/src/app/ban-do/page.tsx hiện mô phỏng bản đồ bằng ảnh Unsplash, SVG, 2 pin CSS (Tân Triều, Long Khánh), KHÔNG phải bản đồ địa lý thật; một nhãn nói tọa độ GIS VN-2000 dù đang dùng lat/lon độ. Phải sửa triệt để.
+- apps/web/next.config.ts đặt output:'export' cho tất cả production và basePath '/cropnetkhoaduc'; triển khai Vercel không thể chỉ copy cấu hình này nếu muốn Next.js Server Actions/API/SSR. Phải có 2 target cấu hình rõ ràng.
+- apps/web/src/shared/utils/path.ts có fallback dựa NODE_ENV production dẫn đến có nguy cơ thêm '/cropnetkhoaduc' sai khi chạy Vercel. Phải thống nhất định tuyến asset/router.
+- GitHub Actions các run mới gần đây đã SUCCESS; không báo là CI vẫn fail dựa run lịch sử. Cần kiểm tra run mới tại thời điểm triển khai.
+
+B. MỤC TIÊU CUỐI CÙNG — 2 ĐƯỜNG TRIỂN KHAI KHÔNG XUNG ĐỘT
+B1. GitHub Pages: giữ https://lovemvaf.github.io/cropnetkhoaduc/ làm bản showcase tĩnh với catalog, thông tin vùng trồng, AI demo có ghi nhãn hoặc nút dẫn đến Vercel. Với forum trên Pages: hoặc hiển thị bản snapshot có nguồn + thông báo 'Bản xem trước, muốn đăng bài hãy mở CropNet Live' và link Vercel, hoặc sử dụng API HTTPS công khai chỉ đọc từ backend CORS đúng. Không để lỗi generic lặp lại; không thu thập dữ liệu nhạy cảm trong giao dịch trên github.io. Tuyệt đối không giả vờ diễn đàn đã đăng/sửa bài khi chỉ lưu localStorage/mock.
+B2. Vercel: triển khai bản CropNet có frontend Next.js đúng basePath '/', giao diện đầy đủ, forum động thực sự và AI server-side. Xác minh sở hữu team visionary19, xác nhận project do người dùng kiểm soát, kết nối GitHub repo main. Dùng Vercel project settings Root Directory và workspace monorepo chính xác; test CI ở môi trường sạch. Chọn 1 trong 2 kiến trúc sau bằng ADR kỹ thuật:
+  (i) Next.js app trên Vercel + Next route handlers/serverless functions chuyển/mapping các API cần thiết + Supabase Postgres/Storage; giữ nguyên logic services, Prisma và API contract; hoặc
+  (ii) Next.js app trên Vercel + Express backend HTTPS trên hạ tầng Node phù hợp, có domain/API URL rõ; chuyển forum/auth/upload/chat sang backend đó, không giả định Express chạy 24/7 trong Vercel Functions và không phụ thuộc WebSocket/socket.io kết nối dài ở serverless. Nếu buộc phải thay kiến trúc API, tạo adapter, regression tests và migration an toàn.
+B3. Không đổi toàn bộ code base một lần nếu có thể giải quyết bằng cách tích hợp tối thiểu. Tách branch/PR, checkpoint trước migration, backup DB, rollback. Không xóa lịch sử Git, dữ liệu users, order, forum thật, bảng Prisma, secrets hiện có trong dashboard, hoặc tính năng được dùng.
+B4. Build gh-pages: DEPLOY_TARGET=github-pages => output export, basePath '/cropnetkhoaduc', assetPrefix/routing đúng; build Vercel: DEPLOY_TARGET=vercel => KHÔNG output export, basePath '' và chạy SSR/API theo cấu hình. Không dùng NODE_ENV='production' để suy ra đang ở Pages. Link/asset/QR/auth callback phải biết deployment target; tránh double basePath và 404 refresh route. Vercel domain chỉ lấy từ deployment thật, không đoán URL.
+
+C. HOTFIX DIỄN ĐÀN — PHẢI HOẠT ĐỘNG THẬT
+C1. Trace tận gốc: Network request URL, HTTP status, response, CORS, cookies, auth, backend health, prisma connectivity, DNS, cache và error logs; phân biệt URL GitHub Pages với Vercel. Viết RCA ngắn, ảnh/screenshot Network hoặc test request, tuyệt đối không lộ token. Không sửa bằng cách nuốt lỗi rồi đổ dữ liệu fake.
+C2. Các tính năng đọc công khai: xem bài, phân trang cursor hoặc page/limit, tìm kiếm tiếng Việt có dấu/không dấu, lọc tag/chủ đề, sắp xếp mới nhất/nổi bật, bài ghim, chi tiết, bình luận phân cấp tối đa phù hợp, empty state/timeout/retry, skeleton responsive. Trả đúng HTTP 200/4xx/5xx, JSON schema, pagination metadata. Có test người dùng chưa đăng nhập.
+C3. Các tính năng đăng nhập: tạo, sửa, xóa bài theo role và ownership, lưu bản nháp, upload ảnh có kiểm soát, like/unlike, lưu bài, bình luận, trả lời, chỉnh/xóa bình luận nếu rule cho phép, report abuse, admin review/report/pin/hide. Giữ hành vi hiện có nếu đúng; bổ sung fail-safe. Sau refresh, bài và tương tác phải tồn tại trong Postgres.
+C4. XSS/Markdown: sanitize nội dung rich-text hoặc Markdown, không dùng innerHTML không kiểm soát; escape user generated content; bảo vệ URL images, XSS, CSRF, SQL injection, object-level authorization (IDOR), spam, brute force, rate limit, 429 rõ nghĩa.
+C5. Thuộc tính bài: author thật, timestamp timezone đúng, lượt thích từ database chứ không dựa global in-memory; trạng thái PUBLISHED/DRAFT/HIDDEN; bookmark theo user; xử lý concurrency duplicate likes bằng unique constraints/transaction.
+C6. Nếu chưa có bài thật, hiển thị empty state thân thiện và một vài bài mẫu CHỈ nếu ghi DEMO/SAMPLE rõ ràng, không gắn tên nhà vườn hoặc tài khoản có vẻ thật mà không được phép. Không tự seed dữ liệu fake lên DB production.
+C7. Upload ảnh: kiểm tra MIME thực, extension, size, chống file nguy hiểm, đường dẫn storage qua Supabase Storage/managed object storage; phân quyền bucket, URL phù hợp, không lưu tệp ở local filesystem serverless.
+C8. Tách chính xác lỗi 'No backend configured', 'Database connection unavailable', 'Not authorized', 'No posts yet'. Nếu Pages read-only, chỉ chuyển hướng user đến Vercel thật và ghi rõ.
+C9. Viết end-to-end test: khách mở xem 20 bài, tìm kiếm, đăng nhập, tạo bài, refresh, bình luận, like/bookmark, upload, báo cáo, admin xử lý; kiểm tra dữ liệu persist và quyền giữa 2 users.
+
+D. SỬA FONT TIẾNG VIỆT VÀ TOÀN BỘ UI
+D1. Kiểm tra 'Cộng Đồng Nông Nghiệp Đồng Nai' trên Safari iOS, Chrome Android/Windows/macOS, font tải chưa, fallback và weight. Với next/font/google: khai báo subsets hợp lệ có 'vietnamese' nếu font hỗ trợ, preloading và fallback đúng; font serif tiêu đề phải chọn family có glyph tiếng Việt hoàn chỉnh thay vì serif hệ thống không nhất quán. Hoặc self-host font có giấy phép đúng (không dùng font lạ bản quyền).
+D2. Đọc CSS runtime / computed style / network font; đảm bảo charset=utf-8, html lang=vi, NFC, không xảy ra tofu, dấu lệch, kerning/line-height bị cắt, font weight thiếu. Thử từ khóa 'Cộng Đồng Nông Nghiệp Đồng Nai', 'Bưởi đường lá cam Tân Triều', 'sầu riêng Ri6', 'hữu cơ – truy xuất nguồn gốc', chữ ơ/ư/â/ă/ê/ô/đ và chuỗi nhiều dấu.
+D3. Audit toàn bộ trang: homepage, forum, catalog/detail, cart, checkout, QR, AI chat, dashboard, signup/login, map, season, footer, toast, modal. Dùng visual regression screenshots trước-sau ở 320, 360, 375, 390, 414, 768, 1024, 1280, 1440px; test desktop mouse, mobile touch, keyboard, focus and screen reader labels.
+D4. Giữ định hướng human-designed đã yêu cầu: không gradient, neon, glow, lạm dụng shadow/badge, phối trắng ngà/xanh trầm/đất nhẹ, spacing tốt; không làm font nặng quá mức hoặc thiếu contrast. WCAG 2.2 AA cho nội dung quan trọng, tap targets, alt text, reduced motion.
+
+
+================================================================================
+II. GATE THIẾT KẾ LẠI GIAO DIỆN ĐỒNG BỘ — KHÔNG AI-TEMPLATE, KHÔNG GRADIENT
+================================================================================
+
+Đây là yêu cầu BẮT BUỘC ĐÃ ĐƯỢC HỢP NHẤT từ bản master redesign CropNet trước.
+Không được chỉ sửa forum hoặc trang chủ; kiểm tra toàn bộ site và dashboard theo vai trò.
+Tuyệt đối không xem đây là tùy chọn sau cùng; UI phải được hoàn thành trước nghiệm thu final.
+
+GATE DESIGN PRE-AUDIT:
+- Tại HEAD mới: kiểm tra Header, Footer, FloatingAiWidget, Home, Products, ProductCard,
+  Forum, AI chat, Traceability, Map, Seasons, Cart/Checkout, Auth, dashboards, packages/ui.
+- Chụp màn hình hiện trạng trước khi đổi UI (desktop và mobile), lưu lỗi theo route; đo
+  font glitch, menu tràn, heading bị cắt, thao tác chạm, phản hồi loading/error/empty.
+- Sau khi sửa API/forum/bản đồ, dùng cùng design tokens cho tất cả màn hình. Không xóa tính năng.
+- "Xóa giao diện giống AI" KHÔNG có nghĩa xóa năng lực AI nghiệp vụ của CropNet.
+
+DESIGN GATE 1 — XÂY HỆ THỐNG THIẾT KẾ BIÊN TẬP CAO CẤP
+
+Hướng art direction: “Vietnamese Agricultural Editorial Commerce”, nông sản tươi, mộc mạc có chọn lọc, đáng tin cậy, ảnh thật là nhân vật chính; gần với một thương hiệu thực phẩm/đặc sản chỉn chu hơn là dashboard AI hay landing page crypto.
+
+2.1 Màu sắc gợi ý (có quyền tinh chỉnh theo kiểm tra contrast, nhưng giữ tinh thần)
+- Canvas: #FAF9F5 (trắng ngà ấm)
+- Surface: #FFFFFF
+- Deep forest / hành động chính: #2C4939
+- Forest hover: #233C2F
+- Primary ink: #253129
+- Secondary text: #647067
+- Muted olive: #7B876C
+- Clay accent: #A46C49 (dùng rất tiết chế)
+- Warm neutral surface: #F1EFE8
+- Border/divider: #E2E5DC
+- Danger/Warning/Success: bộ màu ngữ nghĩa có tương phản đạt chuẩn, không dùng màu để truyền đạt thông tin một mình.
+
+Nguyên tắc: 80% neutral, 15% xanh thương hiệu, tối đa 5% accent; mỗi màn hình 1 CTA primary rõ ràng; không dùng quá nhiều màu chỉ để nhấn mạnh mọi thứ. Không biến mọi card thành nền xanh. Không tự tạo nhiều shades không có quy ước.
+
+2.2 Typography
+- Ưu tiên font hỗ trợ dấu tiếng Việt đầy đủ như Be Vietnam Pro hoặc font đang có nếu kết quả tốt; chỉ thêm font nếu không làm GitHub Pages build mất ổn định. Có fallback system, display swap.
+- Phân cấp rõ: heading trang 34–48px desktop, 26–34px mobile; section heading 24–30px; body 15–16px; caption/metadata tối thiểu 12–13px khi có thể; line-height phù hợp 1.45–1.7.
+- Hạn chế font-black, chữ HOA TOÀN BỘ, tracking-widest, in đậm mọi dòng; ưu tiên normal/medium/semibold, chỉ title chủ đạo mới bold. Sử dụng số tiền dễ đọc, nhãn đơn vị rõ ràng.
+- Chú ý chữ dài tiếng Việt, tách dòng tự nhiên, không cắt tên sản phẩm quan trọng chỉ còn một dòng.
+
+2.3 Layout / Component system
+- Desktop content 1160–1240px; gutters responsive 16/20/24/32px tùy breakpoint; spacing nhất quán theo hệ 4/8px.
+- Corner radius: controls 8–10px; card 12–14px; hero/photo 12–18px nếu cần; đừng bo rounded-3xl mọi nơi.
+- Card: border nhẹ hoặc shadow rất mỏng, không đồng thời nhiều lớp shadow. Hover chỉ đổi border/shadow nhẹ, tránh card nhảy lên hay phóng ảnh mạnh.
+- Icon chỉ dùng khi tăng khả năng nhận biết; stroke đồng nhất, kích cỡ ~18–20px; không lạm dụng icon trong mọi heading.
+- Interaction có trạng thái hover, focus-visible, active, selected, disabled, loading, empty, error, success. Motion 120–200ms có chủ đích, tôn trọng prefers-reduced-motion, không chạy liên tục.
+- Định nghĩa CSS variables/design tokens tại đúng lớp hiện có (apps/web/src/styles/globals.css, apps/web/tailwind.config.ts, packages/ui) và refactor hệ Button, Card, Badge, Input, Modal, Table dùng chung. Không làm mất props/variant cũ: hỗ trợ tương thích hoặc sửa mọi consumer có test.
+- Tối thiểu hóa dependency mới; ưu tiên Tailwind và component sẵn có. Không chèn một UI framework mới chỉ để đổi giao diện.
+- Đưa ví dụ logo/wordmark CropNet có cảm giác thương hiệu nông sản: wordmark rõ, một biểu tượng lá nhỏ có chủ đích, không phát sáng, không chữ gradient. Không dùng nhãn “AI” quá lố.
+
+DESIGN GATE 2 — THIẾT KẾ LẠI THEO JOURNEY THƯƠNG MẠI
+
+A. Header / Navigation (apps/web/src/shared/components/Header.tsx)
+- Loại bỏ thanh nền gradient DiGiFest chiếm nhiều chú ý; nếu cần thông báo demo thì dùng một dòng phẳng, trung tính, ngắn, không nhấp nháy.
+- Logo đơn giản, navigation ưu tiên: Sản phẩm, Nhà vườn/Bản đồ, Mùa vụ, Truy xuất, Tư vấn; giỏ hàng/đăng nhập rõ ràng. Dashboard theo role chỉ hiện khi hợp lệ.
+- Mobile: header cao vừa đủ; menu toggle dễ sử dụng, esc/backdrop, focus/scroll-lock đúng, điều hướng đóng sau khi chọn, không che giỏ hàng; không nhồi 7–10 nav vào một hàng.
+- Header sticky chỉ nếu không chiếm diện tích quá lớn; xử lý safe-area và anchor offsets.
+
+B. Trang chủ (apps/web/src/app/page.tsx)
+- Tạo bố cục như một thương hiệu biên tập: 1 headline tiếng Việt súc tích, 1 đoạn giới thiệu ngắn, 1 CTA “Khám phá nông sản”, 1 text link “Truy xuất nguồn gốc”; 1 ảnh nông sản Đồng Nai phù hợp được cấp phép và ghi nguồn; không làm hero có 5 nút.
+- Bỏ blurry glows, nền gradient, những hộp thông tin nổi chồng chéo lên ảnh, 3–4 số liệu phóng đại chưa xác minh và các thẻ biểu tượng đồng dạng.
+- Gợi ý cấu trúc: (1) Hero editorial + ảnh đẹp, (2) Đặc sản theo mùa (data-driven), (3) Danh mục sản phẩm nổi bật, (4) Nhà vườn / câu chuyện nguồn gốc với dữ liệu xác minh, (5) Quy trình truy xuất 3 bước đơn giản, (6) AI giúp chọn sản phẩm như một tiện ích thiết thực, (7) Footer. Sắp xếp hierarchy khoa học, ít section nhưng chất lượng.
+- Trên mobile: hero ảnh tỷ lệ phù hợp, headline không tràn, 1 CTA dễ thấy, không có layout gãy.
+
+C. Danh mục và Card sản phẩm (/products, ProductCard.tsx)
+- Desktop 3–4 cột tùy độ rộng và sidebar; tablet 2 cột; mobile ưu tiên 2 cột khi đủ 360–430px và nội dung vẫn đọc được; ở 320px cho phép 1 cột nếu cần. Không bóp card chỉ để đạt 2 cột.
+- Ảnh sản phẩm đồng nhất aspect ratio (ví dụ 4:5 hoặc 1:1), object-fit hợp lý. Rà soát từng ảnh; không dùng ảnh minh họa khác chủng loại hoặc ảnh sai địa phương như ảnh sản phẩm thật.
+- Name 2 dòng khi cần; đơn vị, giá, nhà cung cấp rõ; 1 CTA sản phẩm nhất quán. Tối đa 1–2 badge có giá trị thật; không hiển thị đánh giá giả cứng 4.9, OCOP/VietGAP khi chưa được xác minh.
+- Search/filter/sort sử dụng được trên điện thoại: filter dạng drawer, button “Lọc” rõ, số bộ lọc, clear filters, trạng thái empty/error tốt.
+- Ảnh lỗi phải có placeholder thiết kế riêng, alt phù hợp; không tải ảnh Unsplash ngẫu nhiên thay sản phẩm mà không thông báo.
+
+D. Trang chi tiết sản phẩm và nguồn gốc (/products/[id], /traceability)
+- Product gallery, mô tả thực tế, đơn vị và giá, nguồn gốc, thông tin lô đã xác minh, nút xem QR và CTA mua hàng rõ. Không tạo thẻ chứng nhận giả.
+- QR scanner, form nhập mã, trạng thái loading/error/unknown, ảnh vườn và nhật ký lô phải dễ theo dõi; không che giấu khác biệt giữa demo và dữ liệu xác minh.
+- Mobile: CTA giỏ hàng dễ thấy; nếu sticky bottom CTA thì không che thanh điều hướng và không chồng Floating AI.
+
+E. AI tư vấn (/ai-tu-van, FloatingAiWidget.tsx)
+- AI vẫn hoạt động nếu backend khả dụng; chỉ đổi giao diện. Không xóa AI business logic.
+- Biến trải nghiệm từ “chatbot neon” thành “Trợ lý chọn nông sản”: giao diện đơn giản, bảng gợi ý nhập nhu cầu, lịch sử, danh sách sản phẩm gợi ý có giá/tồn kho và nút thêm giỏ rõ.
+- Bỏ sparkles/ping/bounce, gradient neon, lời hứa “24/7” khi không có service thật. Chat composer cố định hợp lý, bàn phím mobile không che input; bubble thanh lịch, không chiều cao cố định 750px trên màn nhỏ; có trạng thái lỗi / demo rõ.
+- Floating widget nhỏ, không che nội dung, không che cart/checkout, không hiện overlay nhiều tầng; có thể ẩn trên checkout/mobile hoặc đổi vị trí để tránh va chạm. Nếu form nhập nhanh không truyền message đi thật thì phải sửa logic hoặc loại form giả.
+
+F. Bản đồ + Lịch mùa vụ (/ban-do, /mua-vu)
+- Bản đồ ưu tiên không gian xem, legend và các filter gọn, cards nhà vườn ít màu, ảnh cùng tỷ lệ và điểm ghim có nhãn; responsive panel dưới map trên mobile.
+- Lịch mùa vụ trình bày như calendar/timeline dùng được, dễ đọc, không phải grid card đủ màu. Hiển thị “ước tính”, “do nhà vườn cập nhật” nếu chưa có dữ liệu kiểm chứng.
+
+G. Cart, Checkout, Order tracking, Login/Register
+- Thiết kế commerce chuẩn: checkout có tiến trình rõ, form validation ngay cạnh field, tổng tiền dễ nhìn, button hành động nổi bật bằng màu phẳng; lỗi API rõ nhưng không xóa giỏ khi request thất bại.
+- Các màn xác thực, tài khoản, đơn hàng cần cùng visual language, không phải style khác với trang chủ.
+- Không biến showcase GitHub Pages thành thanh toán thực; giữ gating/backend-status đúng điều khoản và thực tế deploy.
+
+H. Dashboard theo vai trò (/admin, /dashboard/customer, /dashboard/supplier, /dashboard/inspector, /dashboard/logistics, /forum)
+- Ưu tiên data density tốt: typography 13–16px, số liệu đủ nổi bật, filter, tables và status chips có hệ thống; bảng trên mobile dùng horizontal scroll có chỉ dẫn hoặc card rows; không để overflow toàn trang.
+- Sidebar/drawer có điều hướng keyboard và mobile; loading/empty/error rõ; biểu đồ dễ đọc, không nhiều màu tùy tiện.
+- Forum gọn như cộng đồng nhà vườn thực tế, không nhồi gradient/card/chat UI.
+- Chỉ can thiệp dữ liệu demo/claim khi cần sửa thông tin sai; không xóa logic backend, permission, analytics.
+
+I. Footer
+- Tối giản: thương hiệu, liên kết hữu ích, thông tin liên hệ đã xác minh, chính sách demo/dữ liệu; không gọi số hotline giả hoặc tên HTX chưa đối chiếu là đối tác chính thức. Địa chỉ hành chính phải xác minh trước khi công bố.
+
+DESIGN GATE 3 — RESPONSIVE VÀ ACCESSIBILITY BẮT BUỘC
+
+Kiểm thử 320, 360, 375, 390, 430, 768, 1024, 1280, 1440px và ít nhất Chrome desktop + Chromium mobile; nếu môi trường có sẵn thử Firefox/WebKit. Không chỉ điều chỉnh theo devtools một lần.
+
+Chấp nhận khi:
+- Không có horizontal overflow toàn trang tại mọi viewport; không có văn bản/button bị che, ảnh méo, modal vượt màn.
+- Menu mobile thao tác được bằng ngón tay, input không bị bàn phím ảo che, filter dùng được, AI input và kết quả không tràn.
+- Touch targets khoảng >= 44×44 CSS px cho thao tác quan trọng (khi khả thi); focus-visible, labels, keyboard navigation, Escape close, aria state, alt ảnh, contrast WCAG AA 4.5:1 cho chữ thường.
+- Không dùng chỉ màu để báo trạng thái; nội dung loading/error/empty có thông báo tiếng Việt dễ hiểu.
+- Tôn trọng reduced motion và không thêm animation loop vô nghĩa.
+- Thử với tên sản phẩm dài, thiếu ảnh, giá dài, không có chứng nhận, dữ liệu rỗng, API lỗi và quyền truy cập thiếu.
+
+DESIGN GATE 4 — PERFORMANCE, HÌNH ẢNH VÀ CODE CLEANUP
+
+- Ưu tiên ảnh địa phương được cấp phép và đúng đối tượng; tối ưu dung lượng, width/height hoặc aspect-ratio để tránh CLS, lazy-load dưới fold, ảnh hero ưu tiên tải phù hợp. Quản lý nguồn và attribution khi cần; không dùng link ảnh hỏng/stock sai sản phẩm.
+- Ưu tiên font loading ít nặng. Không biến việc làm đẹp thành thêm thư viện animation, carousel, chart không cần thiết.
+- Chỉ loại bỏ CSS/component/import/dependency sau khi kiểm tra không được route/logic nào sử dụng; kiểm tra toàn bộ ref và test, không đại trà rm theo tên.
+- Tạo token và component tái sử dụng; loại duplication trong phạm vi hợp lý, không rewrite backend để làm UI.
+- Tìm và xử lý class bg-gradient, from-, via-, to- theo ngữ cảnh UI; kiểm tra cả style inline, style CSS, pseudo-element và layout components. Không dùng !important tràn lan.
+- Nếu phát hiện lỗi nghiệp vụ nằm trên UI (button vô tác dụng, dummy QR, placeholder loading vô hạn), ghi rõ là BUG và sửa có kiểm chứng hoặc báo blocker; không lấp bằng mock âm thầm.
+
+
+
+E. SUPABASE — BACKEND / POSTGRES / STORAGE / AUTH CÓ THẬT
+E1. Người dùng muốn sử dụng https://supabase.com/ trên tài khoản chính chủ; nếu chưa kết nối hãy yêu cầu OAuth/đăng nhập tương tác và quyền tối thiểu, không tạo tài khoản âm thầm, không bật billing. Chọn region gần người dùng/khách, ghi rõ resource thuộc project nào và chi phí/quota.
+E2. Ưu tiên tái sử dụng schema hiện tại apps/server/prisma/schema.prisma với migration versioned. Prisma phải dùng chính xác chuỗi kết nối pooled/transaction/Direct phù hợp các phiên bản; Prisma generate ở CI; migration dùng kết nối phù hợp và không auto reset/drop database prod. Backup data và verify migrate, rollback path, tránh lock/race.
+E3. Kiểm tra liệu Supabase Auth có thực sự cần không; nếu chọn migrate từ JWT hiện có sang Supabase Auth phải có tài liệu chuyển người dùng/role/session/password-reset tránh logout toàn bộ và thay đổi access control không kiểm soát. Không dùng đồng thời hai nguồn xác thực thiếu đồng bộ. Ưu tiên sửa auth cũ cho an toàn nếu migration gây rủi ro vượt mức.
+E4. Supabase RLS: nếu dùng Supabase client trực tiếp từ browser, bắt buộc kiểm soát RLS từng bảng và Storage policy; anon key không là secret nhưng service_role tuyệt đối không đưa ra client. Nếu chỉ truy cập bằng backend Prisma, bảo vệ quyền tại API và hạn chế DB credentials cho server. Kiểm tra upload, users, products, supplier, trace, forum, cart/order.
+E5. Kết nối healthcheck có read-only test, tránh truy vấn DB quá mức và tránh service làm database ngủ ngoài ý muốn. Free project có giới hạn/idle pause; thiết kế thông báo sự cố và backup phù hợp, không hứa dịch vụ luôn hoạt động 24/7 với free tier.
+
+F. UPSTASH — CHỈ TÍCH HỢP NẾU LÀM TĂNG ĐỘ ỔN ĐỊNH
+F1. https://console.upstash.com/home dùng tài khoản người dùng, dự án miễn phí theo quota thực tế; dùng Redis cho rate limiting IP/user trên chat, login, tạo bài, upload; idempotency, caching dữ liệu ít thay đổi và short-lived session data nếu phù hợp.
+F2. Không dùng Redis làm nơi lưu lâu dài thay PostgreSQL cho forum, order hoặc hồ sơ QR. Không lưu dữ liệu nhạy cảm hoặc API key trong key dễ đoán, không log raw chat/PII quá mức.
+F3. TTL/circuit breaker, predictable key naming, quota usage monitoring, graceful degradation. Đừng gọi Upstash mỗi lần render một icon; fallback an toàn khi Redis lỗi (auth/write phải fail appropriately; đọc public có thể dùng cache cũ đã gắn thời gian).
+
+G. DEEPSEEK AI CHAT HOẠT ĐỘNG THỰC — SERVER SIDE
+G1. TÍCH HỢP TỰ ĐỘNG KEY DEEPSEEK ĐÃ ĐƯỢC NHÓM CẤP (KHÔNG BẮT NGƯỜI DÙNG TỰ CODE). Người dùng đã ủy quyền sử dụng key xuất hiện trong cuộc hội thoại trước. Nếu agent có quyền truy cập bí mật đó bằng phương thức riêng tư và có kết nối hạ tầng được chủ tài khoản phê duyệt, hãy tự tạo/cập nhật các biến server-side DEEPSEEK_API_KEY và DEEPSEEK_MODEL trong Vercel/backend secret manager, trên môi trường cần dùng, không hiện hoặc log giá trị. Sau đó deploy và gọi thử API thật. Giá trị DEEPSEEK_MODEL người dùng yêu cầu là 'deepseek-v4-flash': xác minh model này tồn tại trong danh sách model của tài khoản tại thời điểm triển khai; nếu không khả dụng, chọn model DeepSeek thay thế *được API chính thức hỗ trợ*, ghi rõ lý do và tên model đã dùng, không giả vờ model cũ hoạt động. Không để sai model làm toàn chat 500. Khuyến nghị đổi khóa trước khi đưa production ra công cộng do khóa đã xuất hiện trong cuộc trò chuyện. Không đưa key hay system prompt chứa secrets vào frontend.
+G2. Chỉ gọi DeepSeek từ backend HTTPS '/api/ai/chat' hoặc endpoint bảo vệ, qua base URL chính thức https://api.deepseek.com. Có timeout, bounded retries/backoff, max input/output tokens, quotas, token/cost logs đã khử dữ liệu nhạy cảm, structured error, streaming nếu hỗ trợ runtime và thấy hữu ích.
+G3. Implement knowledge tools truy cập dữ liệu THẬT đã xác thực: tìm sản phẩm, kiểm tra giá, tồn kho, hợp tác xã, địa chỉ, mùa vụ, tình trạng QR, bài forum public; dữ liệu nguồn phải có timestamp/verified status. Không tin AI tự bịa sản phẩm, giao hàng, chứng nhận, giá và lời cam kết của đối tác.
+G4. AI tư vấn ngân sách, combo, thắc mắc, hỗ trợ nông sản, hướng dẫn QR, gợi ý link trang chính xác; kết quả thương mại phải validate ở server qua code, không tin phép tính/tồn kho do LLM bịa. AI không tự xác nhận đặt hàng hoặc RFQ nếu DB không lưu được. Với UI showroom thì ghi 'Bản tư vấn tham khảo/demo' phù hợp.
+G5. Guardrails: prompt injection qua bài forum, hình ảnh/URL, hỏi cách phá hệ thống, nội dung giả mạo chứng nhận, y tế không có bằng chứng, lộ private data, spam, nội dung không phù hợp. Moderation tối thiểu với bài do user đăng; tránh dùng AI moderation làm người kiểm duyệt cuối cho quyết định nhạy cảm.
+G6. Tạo test tiếng Việt thực tế (30–50 case), đánh giá hallucination, citation groundedness, đúng ngân sách, chống prompt injection, 401/429/500, fallback thông báo trung thực và UI loading/streaming.
+
+
+G7. THỦ TỤC TỰ CÀI ĐẶT KEY KHÔNG LỘ GIÁ TRỊ (BẮT BUỘC THỰC HIỆN, KHÔNG CHỈ VIẾT DOC):
+  a) Xác định chính xác nơi chạy AI backend (Next.js route handlers trên Vercel hoặc backend Express ở host khác). Secret phải đặt tại nơi thật sự thực thi lời gọi HTTPS tới DeepSeek. Không cấu hình sai vào Vercel nếu AI gọi từ một host Express khác, trừ khi cả hai cần và được cho phép.
+  b) Dùng phiên đăng nhập người dùng đã ủy quyền, connector provider, Vercel project Environment Variables hoặc lệnh Vercel CLI có chế độ nhập bảo mật (không truyền giá trị qua tham số CLI, command echo, terminal transcript, logs hay source code). Không yêu cầu người dùng dán key vào prompt lần nữa. Nếu quyền chưa có, trình bày đúng cửa sổ xác thực hoặc thao tác cấp quyền tối thiểu, dừng tại bước đó.
+  c) Set DEEPSEEK_API_KEY chỉ phía server, DEEPSEEK_MODEL=deepseek-v4-flash là lựa chọn đầu tiên cần xác minh; không dùng NEXT_PUBLIC_DEEPSEEK_API_KEY. Áp dụng secret đúng môi trường Production/Preview/Development theo sự cho phép, không sao chép sang dự án hoặc tài khoản khác. Giữ cấu hình .env.example ở dạng DEEPSEEK_API_KEY=<set-in-secret-manager> (KHÔNG chứa key thật).
+  d) Chỉ backend đọc process.env.DEEPSEEK_API_KEY; endpoint frontend gọi /api/ai/chat hoặc API backend thích hợp. Kiểm tra phiên auth, hạn mức token, giới hạn chiều dài input, timeout, 429, retry có giới hạn, chi phí và quyền gọi; không để endpoint thành API proxy công khai không giới hạn.
+  e) Thử kết nối /models nếu cần để xác nhận model, thử hội thoại tối thiểu với prompt tiếng Việt, đánh giá HTTP status, latency, phản hồi có cấu trúc và lỗi trả về. KHÔNG hiện body chứa secret trong log; dữ liệu cá nhân và prompt nhạy cảm không đưa vào output bằng chứng. Khi lỗi 401/403/404/429, sửa cấu hình thích hợp hoặc báo blocker cụ thể thay vì chuyển sang chatbot giả.
+  f) Triển khai lại runtime sau khi set biến, kiểm thử production bằng trình duyệt: chat hỏi về bưởi Tân Triều có phản hồi từ API thật, câu hỏi chưa có dữ liệu trả lời trung thực, nút gửi và loading/streaming hoạt động, kiểm tra request phía trình duyệt KHÔNG chứa API key. Đánh giá thêm khi mất mạng/hết quota, báo lỗi rõ thay vì trả chuỗi cứng như AI thật.
+  g) Bảo đảm không còn dấu vết khóa trong git diff, static JS chunks, source maps, screenshot, CI logs, Vercel deployment output hay tài liệu bàn giao. Thực thi key rotation trước khi public production nếu chủ khóa có thể cung cấp khóa mới; tiến độ cài đặt AI không bị tính là hoàn tất khi key chỉ nằm trong máy local.
+G8. ĐỊNH NGHĨA 'ĐÃ TÍCH HỢP ĐẦY ĐỦ' = secret đã cài trong đúng tài khoản/dự án + backend trả kết quả DeepSeek thực tế + endpoint ứng dụng kết nối + kiểm thử giao diện người dùng + quota/rate limit + bằng chứng deploy public (đã khử dữ liệu nhạy cảm). Mọi phần chưa làm phải báo BLOCKED và cần hành động nào để mở khóa; cấm ghi 'hoàn thành' khi chỉ thêm biến vào ví dụ cấu hình.
+
+H. BẢN ĐỒ ĐỒNG NAI THẬT — THAY HOÀN TOÀN MAP GIẢ
+H1. XÓA bản đồ ảnh nền Unsplash + SVG dòng sông + pin theo pixel/% trong '/ban-do'. Thay MapLibre GL JS hoặc Leaflet tương thích Next.js SSR/client với basemap thực được cấp quyền sử dụng. Có pan, zoom, fit bounds, clusters, geolocate chỉ khi user cấp quyền, marker click, tìm kiếm tiếng Việt, lớp nông nghiệp và vùng trồng; mobile gestures mượt, cache và error fallback.
+H2. Bản đồ phải bao trùm TOÀN BỘ địa giới hiện hành Thành phố Đồng Nai, gồm cả không gian tỉnh Đồng Nai và Bình Phước trước sáp nhập năm 2025; không chỉ hai điểm Tân Triều, Long Khánh. Dữ liệu địa giới dựa cơ quan nhà nước/OSM có nguồn và ngày cập nhật. Phân biệt tọa độ WGS84 (EPSG:4326 lat/lon) với VN-2000; không ghi 'VN-2000' lên bản đồ nếu dữ liệu chưa chuyển đổi tọa độ đúng.
+H3. Xây 'bản đồ lớp dữ liệu' với 3 cấp KHÁC NHAU:
+  - Cấp 1: vùng nông nghiệp/lãnh thổ có thể chứng minh (ranh giới, tên vùng sản xuất truyền thống) được ghi nguồn, không gắn là đối tác đã ký.
+  - Cấp 2: đối tượng kinh tế xác minh được như HTX, nhà vườn, doanh nghiệp nông sản: chỉ hiển thị tên, tọa độ, chứng nhận khi có bằng chứng/chấp thuận; nếu chưa xác minh thì 'Chưa xác minh' và không coi là đối tác.
+  - Cấp 3: lô hàng QR thuộc hệ thống CropNet thực với trạng thái kiểm chứng, liên kết product/batch, không hiện chi tiết nhạy cảm từ một trang demo.
+H4. Các vùng cần tìm dữ liệu khi nghiên cứu: Tân Triều/Vĩnh Cửu lịch sử, Long Khánh, Xuân Lộc, Cẩm Mỹ, Định Quán, Tân Phú, Cát Tiên, Trị An, Biên Hòa; và các vùng Bình Phước trước đây như Phú Riềng, Lộc Ninh, Bù Đăng, Bù Gia Mập, Bù Đốp, Hớn Quản, Chơn Thành, Phước Long, Bình Long, Đồng Xoài. Đây là GỢI Ý PHỦ VÙNG, không khẳng định tất cả đã có đối tác CropNet.
+H5. Phải khảo sát nhiều nhóm sản phẩm địa phương đúng chứng cứ: bưởi Tân Triều, trái cây Long Khánh, sầu riêng, chôm chôm, hạt điều, tiêu, cao su và nhóm khác nếu phù hợp hồ sơ kinh tế địa phương. Không gắn xuất xứ Đồng Nai cho ảnh/sản phẩm tỉnh khác. Không gán chứng nhận OCOP/VietGAP/HACCP trừ khi chứng minh đúng lô và chủ thể.
+H6. Popup bản đồ: tên, địa chỉ hành chính hiện hành, ảnh thật đúng địa điểm khi được phép, tọa độ, sản phẩm, trạng thái xác minh, nguồn, ngày cập nhật, route maps external đúng link, liên hệ nếu được công khai và đồng ý. Show empty/unverified areas thay vì bịa số lượng HTX hoặc random coordinates.
+H7. Basemap/tiles: ghi nguồn và tuân thủ tile policy; OSM data có thể dùng nhưng OSM public tile server KHÔNG phải CDN miễn phí không giới hạn cho app thương mại. Nếu dùng MapTiler/Stadia/Google Maps/Mapbox hoặc nhà cung cấp khác, kiểm tra free quota, license và billing; yêu cầu user cấp API key qua secrets khi cần. Satellite/3D nếu có provider hợp lệ, không hứa 'đầy đủ vệ tinh HD' miễn phí cho mọi vùng.
+H8. Test định vị và performance: click marker -> đúng vị trí Google Maps/OSM, bounds phủ đủ các vùng, không chỉ hai marker, lọc vùng/sản phẩm, zoom ở mobile, lỗi load tile, khu vực không internet; có legend trạng thái, attribution, SEO phù hợp và accessibility keyboard.
+
+I. GOOGLE CLOUD / GOOGLE FORMS / GOOGLE SHEETS — NGƯỜI DÙNG TỰ CẤP QUYỀN
+I1. Người dùng muốn tích hợp form đăng ký/liên hệ/hợp tác doanh nghiệp/đề nghị báo giá; trước hết ưu tiên form native trên CropNet lưu trong Postgres, vì dữ liệu có thể quản trị, kiểm soát xác thực và bảo mật.
+I2. Nếu cần tạo Google Form, Google Sheet hoặc đồng bộ dữ liệu qua Google Cloud APIs, phải dùng project thuộc tài khoản Google do USER chọn; trình bày OAuth consent, scope tối thiểu (Forms body/response hoặc Sheets/Drive.file nếu thật sự cần), chọn nơi lưu tokens an toàn ở server. Chỉ tạo form/sheet sau khi user ủy quyền rõ ràng và xác nhận nội dung sẽ ghi dữ liệu gì.
+I3. Ví dụ form: đăng ký làm nhà vườn/HTX, đăng ký đối tác phân phối, phản hồi diễn đàn, phản ánh thông tin sản phẩm, yêu cầu mua sỉ/nhận demo. Hiển thị chính sách riêng tư, mục đích sử dụng, chống spam; không yêu cầu CCCD/số định danh trừ phi có căn cứ cần thiết.
+I4. Agent không thể suy từ một địa chỉ Gmail là đã có quyền Google Cloud; không tự thêm bản thân vào project, không tự bật billing hoặc cấp quyền rộng, không xuất refresh token ra repo/log.
+
+
+================================================================================
+III. GATE SỬA SAI NỘI DUNG, TRUY XUẤT QR VÀ AI BÁN HÀNG — BẮT BUỘC
+================================================================================
+
+THỰC TRẠNG TỪ CÁC LẦN AUDIT TRƯỚC: TỰ ĐỐI CHIẾU HEAD VÀ KHÔNG MẶC ĐỊNH ĐÃ SỬA.
+Các nguồn phải xem cùng lúc: apps/server/src/database/seed.ts,
+apps/server/src/database/dbFallback.ts, apps/server/src/modules/ai/ai.service.ts,
+apps/server/src/modules/traceability/*, apps/web/src/app/traceability/*,
+apps/web/src/app/ai-tu-van/*, apps/web/src/app/products/*,
+apps/web/src/features/products/components/ProductCard.tsx, docs/AI_EVALUATION.md.
+
+DATA INTEGRITY GATE — SẢN PHẨM ĐỒNG NAI:
+1. Rà soát toàn bộ sản phẩm trong seed, mock fixture, DB, trang sản phẩm, AI, forum, bản đồ,
+   mùa vụ, tags, hình ảnh, chứng thư, số điện thoại, tên HTX và trạng thái đối tác.
+2. Bưởi đường lá cam Tân Triều và bưởi da xanh Tân Triều LÀ nhóm nông sản có thật ở Đồng Nai;
+   không xóa do nhầm nguồn gốc. Long Khánh có trái cây, Xuân Lộc và các vùng khác có
+   nông sản đặc trưng; chỉ khẳng định thuộc tỉnh/thành phố và nhà sản xuất nếu có bằng chứng.
+3. Mỗi SKU phải có ID ổn định, tên, đơn vị tính, trạng thái, ảnh đúng loại có nguồn/giấy phép,
+   nguồn gốc khai báo, trạng thái xác minh, giá + ngày cập nhật, tồn kho theo DB hoặc UNKNOWN.
+   Không dùng cùng một ảnh Unsplash sai loại cho các sản phẩm khác nhau.
+4. Không gắn OCOP 4 sao, VietGAP, hữu cơ, HACCP, địa chỉ, giấy kiểm nghiệm hoặc kết quả
+   dư lượng hóa chất cho TỪNG SẢN PHẨM/LÓ HÀNG chỉ vì vùng đó nổi tiếng. Gắn chính xác
+   chứng cứ: cơ quan cấp, chủ thể được cấp, mã/sản phẩm/lô áp dụng, ngày hiệu lực và đường dẫn.
+   Mẫu chứng nhận/phiếu lab giả lập phải ghi rõ DEMO, không khoác nhãn VERIFIED.
+5. Không bịa tỉ lệ đánh giá 4.9, hotline 1900, đối tác độc quyền, tổng lượt giao dịch, giảm
+   99.5% thời gian, tỷ lệ chuyển đổi 48.2% nếu không có dữ liệu và phương pháp đo độc lập.
+   Gỡ/sửa cả website, metadata, tài liệu cuộc thi, chatbot và báo cáo AI.
+6. Kiểm tra địa giới hành chính mới nhất từ nguồn chính thức; phân biệt địa danh lịch sử
+   Vĩnh Cửu/Long Khánh với đơn vị hành chính hiện hành. Với HTX cụ thể phải xác minh
+   nơi đăng ký và quyền sử dụng hình ảnh/thông tin trước khi đưa lên bản đồ đối tác.
+7. Hạt điều, hạt tiêu, trái cây và các vùng Bình Phước cũ thuộc địa bàn Đồng Nai hiện hành:
+   cần cơ chế mở rộng catalog có nguồn, nhưng KHÔNG tự tạo sản phẩm ảo hoặc gắn nhãn HTX ảo.
+8. Không để một câu 'đang vào mùa', 'đang sẵn hàng', 'giao nội thành miễn phí' hardcode
+   toàn năm hoặc tất cả địa bàn. Có metadata về nguồn, thời hạn thông tin và quy tắc cập nhật.
+9. Sản phẩm có cồn không tự đưa vào quà tặng mặc định cho mọi người; đánh giá quy định
+   độ tuổi, nội dung quảng cáo và kênh phân phối nếu còn hiện diện trong catalog demo/live.
+
+QR GATE — PHẢI THỰC SỰ ĐỌC MÃ:
+1. Không chấp nhận nút 'Quét camera' hoặc 'Tải ảnh QR' dùng setTimeout rồi tự chuyển mã
+   định sẵn; scan được mã A/B khác nhau mới đạt. Dùng decoder QR thật hỗ trợ camera,
+   ảnh upload, quyền micro/camera chính xác, lựa chọn camera, stop stream khi rời trang,
+   thông báo không có camera/quyền và fallback nhập tay.
+2. Chuẩn hóa route cho Pages: /cropnetkhoaduc/traceability/?batch=<encoded-code>;
+   Vercel live: /traceability/?batch=<encoded-code>, phù hợp tách deployment.
+3. Một mã lô thật truy xuất từ DB theo batchCode, không được fallback lấy mẫu đầu tiên rồi
+   thay tên mã; mã không có -> NOT_FOUND; backend down -> UNAVAILABLE, không tự gọi là hàng giả.
+4. Traceability thể hiện mức chứng cứ (khai báo, quản trị duyệt, chứng thư bên thứ ba, demo).
+   Không tự đưa timeline logistics 'delivered' hoặc kiểm định PASSED nếu dữ liệu chưa tồn tại.
+5. Test: camera quét QR A/B cho ra hai kết quả khác nhau; upload A/B; mã lạ; API lỗi;
+   trực tiếp mở link từ điện thoại; refresh; QR từ Pages sang Vercel/website chính chủ.
+
+REAL AI BUSINESS GATE — DEEPSEEK + CATALOG TOOLS + VALIDATED BUSINESS LOGIC:
+1. DeepSeek làm hiểu ngôn ngữ và đề xuất có giải thích; tool read-only lấy sản phẩm,
+   giá, tồn kho, vùng trồng, mùa vụ, trạng thái lô và bài diễn đàn public từ database.
+   LLM KHÔNG tự là nguồn chứng cứ và KHÔNG tự cập nhật dữ liệu kinh doanh.
+2. Combo theo ngân sách dùng sản phẩm trong catalog, mã SKU thật, giá/đơn vị chuẩn,
+   kiểm tra lại trên server và tối ưu ràng buộc bằng code có test. Không dùng ID giả
+   '1..6' trong khi Prisma có ID dạng prod-*. Không cho LLM ghi giá/tổng tiền vào đơn.
+3. AI hoạt động ở mode minh bạch: LIVE_AI, VERIFIED_RULES, DEMO_EXAMPLE, UNAVAILABLE.
+   Có lỗi provider hoặc hết quota thì báo đúng; không tự trả lời hardcode 'đang sẵn hàng'.
+4. RFQ: nếu muốn hiện SUBMITTED phải ghi DB, có mã duy nhất, quyền khách/nhân viên,
+   trạng thái xử lý và màn admin; nếu chưa gửi là DRAFT, cho sao chép/xuất PDF văn bản.
+   Không hứa '4 giờ nhận báo giá' khi chưa có hợp đồng SLA.
+5. Test: budget 100k/300k/500k/1 triệu và tiền nhập '500k'/'500.000đ'; loại trừ
+   sản phẩm theo yêu cầu; hàng hết; mã QR lạ; không có chứng nhận; prompt injection;
+   AI gọi API lỗi; 401/429; dữ liệu lịch mùa vụ thay đổi.
+6. Đánh giá AI bằng case có nhãn, độ chính xác SKU, adherence ngân sách, tỉ lệ trả lời
+   không có nguồn, latency trung vị/p95, giá thành/tokens. Dùng dữ liệu và raw log ẩn danh.
+   Không lập báo cáo '100% PASS' nếu mới chạy vài unit test hoặc gọi API một lần.
+
+FULL-STACK FUNCTIONAL GATE:
+- Forum và auth; upload ảnh và lưu URL thật; toàn bộ trang sản phẩm/chi tiết, giỏ hàng,
+  checkout demo/live tùy hosting, order, roles admin/customer/supplier/inspector/logistics,
+  mùa vụ, trace, dashboard, AI chat, forum; không có nút click giả hoặc thông báo thành công ảo.
+- Nếu muốn thanh toán thật: chỉ khi có merchant account và nhà cung cấp hợp lệ, user duyệt,
+  webhook có chữ ký, chống trùng; tuyệt đối không làm giả cổng thanh toán nhận tiền.
+- Không xóa account/order/forum thật, không reset DB production, không dùng JWT secret
+  mặc định/OTP Math.random, không ghi token hay dữ liệu nhạy cảm vào log.
+- Audit permission upload, giới hạn dung lượng/MIME/magic bytes, quyền truy cập Storage,
+  CSRF, CORS, CSP, session/cookie, rate limit và phân quyền object-level.
+
+
+
+J. CÁC CHỨC NĂNG KHÁC CẦN REGRESSION TEST
+Trang chủ/catalog/product detail/ảnh thật, search/filter/sort, QR/camera/file upload/unknown batch fail-closed, AI tư vấn, cart/checkout (phân biệt demo và thật), đơn hàng, email verify/reset, đăng nhập/đăng xuất/token refresh, admin, supplier, logistics, inspector, forum, bản đồ, mùa vụ, privacy/mobile. Với Vercel full app không được có nút tương tác chết hoặc success ảo.
+Nếu checkout/payment thực: chỉ bật khi có nhà cung cấp thanh toán và tài khoản merchant hợp lệ, được user phê duyệt, có webhook signing/idempotency; không sử dụng giả lập Momo để thu tiền thật. Đối với bản demo, thông báo sandbox rõ ràng và tuyệt đối không yêu cầu thẻ thanh toán thật.
+
+K. CHẤT LƯỢNG, BẢO MẬT VÀ CI/CD
+K1. Dùng Node version tương thích Next 15/React 19, Prisma version, npm workspaces và Vercel runtime; Prisma generate trước TypeScript; không tắt TS strict hoặc eslint/lint để che lỗi. CI chạy unit, integration, Playwright E2E với mock/sandbox phù hợp và production smoke tests.
+K2. Không để secrets trong NEXT_PUBLIC_*, nhánh git, CSS bundle, sourcemap public, Google Form response; tách staging/prod env và rotated tokens, .env.example chỉ tên biến placeholder.
+K3. CORS exact origins, cookie SameSite/Secure/httpOnly phù hợp deployment, CSRF khi dùng cookie, RBAC policy, rate limits, input validation, HTML sanitize, upload scanning/size, content security policy, logging không PII, 404/500 safe errors.
+K4. Supabase quota, Upstash quota, Vercel usage, DeepSeek tokens đều đo và có hướng dẫn giới hạn phí. Mọi phụ thuộc dịch vụ ngoài phải có health state; khi hệ thống lỗi, trả thông báo đúng, không tạo dữ liệu giả cho được vẻ hoàn chỉnh.
+K5. Performance targets tham khảo: Core Web Vitals đạt mức Good trên representative pages/mobiles khi mạng thực tế cho phép; ảnh tối ưu, lazy load map, tránh tải marker hàng nghìn bản ghi một lần, pagination, cluster; không tự ghi 100/100 khi chưa đo.
+K6. Cập nhật README .env.example, diagram deploy hai mode, kiến trúc thông báo lỗi, hướng dẫn auth account consent và docs rollback. Bỏ hardcode 'localhost' khỏi production; tránh gh-pages base path lọt vào Vercel.
+
+L. QUY TRÌNH THỰC THI BẮT BUỘC — KHÔNG CHỈ VIẾT BÁO CÁO
+Gate 0: Đọc code tại HEAD, backup, audit hiện trạng, danh sách lỗi P0/P1/P2 và test tái hiện. Dùng ảnh chụp màn hình Vercel do người dùng gửi để nhận biết đúng team (KHÔNG coi đã có token quyền).
+Gate 1: Fix font tiếng Việt, API config, forum public read, thông báo rõ Pages vs Vercel, E2E test cơ bản.
+Gate 2: Chọn backend path, kết nối Supabase user-owned và chứng minh read/write forum persistent trên HTTPS; kiểm tra auth/upload/permissions.
+Gate 3: TỰ ĐỘNG tích hợp DeepSeek bằng key nhóm đã được người dùng cấp qua kênh bí mật và môi trường được phép; kiểm tra mô hình, gọi API chat thực và test E2E; hạn chế việc người dùng phải thao tác thủ công. Nếu thiếu quyền tiếp cận secret thì chỉ yêu cầu một bước nhập trong Vercel/backend secret settings, sau đó agent làm tiếp; rate limit Upstash nếu có căn cứ.
+Gate 4: Thay bản đồ giả, địa giới toàn Đồng Nai, lớp vùng/đối tác đã xác minh, mobile/desktop.
+Gate 5: Tích hợp Google Forms/Sheets nếu user cấp OAuth và tính năng thực sự cần; phần này không được chặn các chức năng trọng tâm khác.
+Gate 6: CI/build/test/e2e đều xanh. Deploy GitHub Pages static demo và Vercel live theo quyền và plan phù hợp. Kiểm tra Vercel site tại URL thật, dùng browser trực tiếp, lưu evidence network 200/cors/font/map/forum/chat.
+Gate 7: Bàn giao tài nguyên thuộc tài khoản user, danh sách ENV (tên biến, không có giá trị), usage quotas, logs, rollback và báo cáo các blocker còn lại.
+
+M. ACCEPTANCE CHECKLIST — THIẾU MỤC NÀO KHÔNG ĐƯỢC GHI '100% DONE'
+[ ] Trang forum public mở trên GitHub Pages hoặc thông báo demo rõ + link live; không còn generic failed state vô nghĩa.
+[ ] Forum live trên Vercel GET posts trả 200 và content thật; create/like/comment/upload/refresh giữ dữ liệu; auth/roles hoạt động.
+[ ] Heading 'Cộng Đồng Nông Nghiệp Đồng Nai' và mọi chữ Việt không lỗi font/dấu trên iOS/Android/Windows/macOS.
+[ ] Vercel site deploy thành công từ repo GitHub, đúng tài khoản/team do người dùng duyệt, root/build/runtime đúng.
+[ ] GitHub Pages cũ tiếp tục hoạt động; routing/assets không sai basePath; CI xanh với SHA hiện hành.
+[ ] Supabase Postgres data persistent, RLS/permissions và backup/migrate an toàn; không reset dữ liệu thật.
+[ ] Nếu dùng Upstash, rate limiting hoạt động, không vượt free quota theo load thử.
+[ ] DeepSeek key của nhóm được cấu hình THẬT trong secret manager backend do người dùng sở hữu, không có plaintext trong repo/bundle/log; key xuất hiện trong hội thoại được gắn cảnh báo nguy cơ và đã được khuyến nghị rotate trước production; model ID chạy được với API; có E2E test và bằng chứng chat DeepSeek thực tế, không bịa dữ liệu nông sản. Nếu thiếu quyền cấu hình secrets, ghi BLOCKED BY SECURE CREDENTIAL ACCESS, không báo PASS.
+[ ] Map không còn ảnh Unsplash giả làm bản đồ, không dùng 2 marker theo phần trăm; có bản đồ pan/zoom thực và layers bao phủ toàn Thành phố Đồng Nai.
+[ ] Đúng nguồn GIS và nội dung; tách nhà vườn đối tác verified / khu vực tham khảo; ghi địa giới hiện hành và data freshness.
+[ ] Google Forms/Sheets được kết nối nếu chủ tài khoản có OAuth consent và nhu cầu thật; nếu chưa được cấp quyền, ghi BLOCKED BY CONSENT, không báo đã tích hợp.
+[ ] Mobile 320–430, tablet 768, desktop 1440 không overflow, có screenshot và kiểm tra thao tác thật.
+[ ] Regression tests sản phẩm, QR, AI, giỏ, order, dashboard, auth, forum và bản đồ PASS; hoặc từng lỗi còn lại có issue minh bạch.
+[ ] Rõ ràng giới hạn free tier/hobby non-commercial, không thực hiện chi phí nếu chưa được đồng ý.
+
+N. BÁO CÁO CUỐI CÙNG BẮT BUỘC
+1. Current SHA, commit/PR và danh sách file đã thay đổi, lý do từng nhóm.
+2. Root cause forum/font/map và cách xác minh đã sửa.
+3. Hạ tầng đã kết nối: Vercel project URL thật, team ID/name, Supabase project ref (chỉ định danh không secret), Upstash database identifier khi đã tạo, Google Cloud project khi đã cấp quyền; không được nói đã tạo nếu chưa có.
+4. Mọi URL chạy thật, phân biệt GitHub Pages demo / Vercel live, status CI và screenshot/browser evidence, responsive breakpoints.
+5. Kiểm thử API: GET /forum, POST create, comment, like, upload, chat, map markers với status và kết quả database persistence; test 401/403/429/500.
+6. Báo cáo AGENT ĐÃ TỰ CẤU HÌNH môi trường nào (production/preview/development), tên các biến DEEPSEEK_API_KEY và DEEPSEEK_MODEL, model thực tế, kết quả E2E DeepSeek, quota/cost controls và hướng dẫn rotate; tuyệt đối không lộ giá trị. Nếu chưa thể tự cài secret vì thiếu quyền truy cập, yêu cầu người dùng một thao tác an toàn cụ thể, sau đó tiếp tục tự chạy toàn bộ phần còn lại.
+7. Quota free + chi phí dự kiến + cảnh báo plan, phân biệt demo phi thương mại và app kinh doanh.
+8. Danh sách blockers cần người dùng cấp quyền: hiện rõ LINK, hành động chính xác, scope và mức chi phí; chờ người dùng xác nhận trước khi tác động đến tài khoản.
+9. Những điều chưa làm/không thể xác minh; tuyệt đối không ngụy tạo screenshot, test PASS, giấy chứng nhận hoặc việc deploy.
+
+CÁC NGUỒN KỸ THUẬT THAM KHẢO ĐỂ TRA CỨU LẠI TẠI THỜI ĐIỂM TRIỂN KHAI
+- Vercel monorepos: https://vercel.com/docs/monorepos
+- Vercel Hobby non-commercial: https://vercel.com/docs/plans/hobby
+- Supabase + Prisma: https://supabase.com/docs/guides/database/prisma
+- Supabase Pricing: https://supabase.com/pricing
+- Upstash Redis Pricing: https://upstash.com/pricing/redis
+- DeepSeek models API: https://api-docs.deepseek.com/api/list-models/
+- DeepSeek changelog: https://api-docs.deepseek.com/updates/
+- MapLibre: https://maplibre.org/maplibre-gl-js/docs/
+- Google Forms API/OAuth: https://developers.google.com/workspace/forms/api/reference/rest/v1/forms/create
+- Nghị quyết địa giới 2026: https://xaydungchinhsach.chinhphu.vn/nghi-quyet-so-30-2026-qh16-thanh-lap-thanh-pho-dong-nai-119260430102336551.htm
+
+CHỈ THỊ THỐNG NHẤT: Hoàn thành tất cả các phần I–V theo thứ tự gate và định nghĩa nghiệm thu của tài liệu duy nhất này. Không sử dụng các prompt cũ để ghi đè mục tiêu hoặc nới lỏng bảo mật. Mọi phần thiếu quyền phải báo BLOCKED có lý do và bước xin phép cụ thể.
+
+
+================================================================================
+IV. GATE ĐẢM BẢO KHÔNG HỎNG WEB KHI CHUYỂN VERCEL / GITHUB PAGES
+================================================================================
+
+1. Không chấp nhận chỉ một cấu hình Next.js output:'export' để chạy Vercel SSR/API.
+   Tách DEPLOY_TARGET=vercel / github-pages, giữ link/assets/route/QR đúng basePath.
+2. Site Pages có vai trò showcase tĩnh an toàn, không thu giao dịch thương mại nhạy cảm.
+   Link rõ ràng tới Vercel live nếu công nghệ/điều khoản cho phép. Forum Pages nên
+   read-only qua API HTTPS được kiểm soát hoặc snapshot có nhãn, không hiện lỗi generic.
+3. Vercel app phải có backend API HTTPS + PostgreSQL persistent; làm thật login/forum/chat/
+   upload; không dùng mock-in-memory làm chứng cứ sự thành công sau refresh.
+4. Vercel Free/Hobby có điều kiện phi thương mại; Supabase/Upstash có quota;
+   DeepSeek API có thể tính tiền. Mặc định không kích hoạt chi phí nào thiếu phê duyệt.
+   Nếu điều khoản free không phù hợp kinh doanh thật, công bố blocker/phương án khác.
+5. Sau deploy test trực tiếp cả URL Vercel thực tế và GitHub Pages: home, forum,
+   products/detail, map, AI, QR, seasons, auth (đúng mode), cart, 404, hard reload.
+6. Phải có RELEASE STATE thật: LIVE / SHOWCASE / DEMO / BLOCKED và lý do cụ thể.
+
+================================================================================
+V. ONE-SHOT TASK ORDER (KHÔNG CHỈ VIẾT PLAN)
+================================================================================
+
+- GATE 0: Re-fetch main HEAD + test baseline + RCA forum/font/map + chụp màn hình before.
+- GATE 1: Cấu hình CI clean, Prisma generate, typecheck/lint/test; bảo vệ secret.
+- GATE 2: Chốt kiến trúc hai deployment, kết nối hạ tầng user-owned có quyền;
+          tạo migration Supabase không wipe dữ liệu, backend phục vụ forum/auth/upload.
+- GATE 3: Forum persistence + font Vietnamese ở mọi trình duyệt.
+- GATE 4: DEEPSEEK LIVE server-side tự tích hợp qua secret hợp lệ + quota/rate limits;
+          tools có nguồn, tư vấn combo, RFQ đúng trạng thái.
+- GATE 5: Thay bản đồ giả -> tiles/vector map thật, toàn bộ địa giới Đồng Nai,
+          vùng trồng được kiểm chứng, filtering/search/mobile, photo attributions.
+- GATE 6: QR scan thật + truy xuất fail-closed; catalog/ảnh/chứng nhận sạch dữ liệu;
+          bảo toàn các module cũ.
+- GATE 7: DESIGN GATE: chỉnh toàn bộ giao diện về human-designed, zero gradients,
+          UI library/tokens nhất quán, font đẹp và responsive 320..1440.
+- GATE 8: Google Forms/Sheets/Cloud chỉ sau OAuth/consent và khi nghiệp vụ có ích;
+          không cho phép phần này chặn vận hành forum/AI/map chính.
+- GATE 9: QA E2E desktop/mobile, accessibility, functional, security, performance,
+          AI eval và dữ liệu; khắc phục lỗi thực chứ không chấp nhận lệnh test xanh giả.
+- GATE 10: Commit/PR an toàn, deploy hai mục tiêu, browser smoke tests trên URL
+           công khai, chụp screenshot trước/sau, kiểm tra secrets không lộ.
+- GATE 11: Bàn giao đầy đủ cùng blocker/pending consents; không tuyên bố đã tạo tài khoản
+           hoặc đã tích hợp provider nào nếu chưa có kết quả thực tế.
+
+CÁC QUYỀN NẾU CÒN THIẾU:
+Chỉ yêu cầu người dùng những quyền thật sự cần; nêu URL cấp quyền chính thức, phạm vi
+(scope) tối thiểu, tài khoản/project nhận quyền, liệu có chi phí hay không; sau khi chủ
+thể xác nhận thì chủ động hoàn thành phần còn lại. Nếu không có connector/browser
+hoặc công cụ tương ứng, đừng hứa tự tạo tài khoản hoặc tự deploy bằng công cụ không có.
+Không bao giờ yêu cầu dán API key/OTP/mật khẩu vào chat. Không vượt qua MFA/CAPTCHA.
+
+TIÊU CHÍ HOÀN THÀNH CUỐI:
+[ ] Forum công khai GET 200 và dữ liệu thật trên Vercel, mọi tương tác phù hợp role lưu DB.
+[ ] Không còn lỗi font Cộng Đồng Nông Nghiệp Đồng Nai hay bất cứ chữ dấu Việt nào.
+[ ] DeepSeek trả lời qua server được chứng minh, key không có trong JS, git, logs.
+[ ] Bản đồ địa lý thật toàn Đồng Nai, không còn 2 pin giả trên ảnh nền.
+[ ] QR camera/ảnh quét thật và không bịa kết quả kiểm định.
+[ ] Sản phẩm/ảnh, nguồn gốc, chứng nhận, địa chỉ, đối tác trung thực có source.
+[ ] Vercel full app và GH Pages showcase đều hoạt động, URL và SHA có chứng cứ.
+[ ] Giao diện mọi trang hoàn toàn không gradient trang trí, mobile xuất sắc.
+[ ] Lint/typecheck/unit/integration/E2E/AI eval và basic security tests có kết quả thật.
+[ ] Không có secret leak, chi phí trái phép, production reset, gói free vi phạm điều khoản.
+[ ] Báo cáo cái đã làm, chưa làm, URL, quyền đang chờ, và rollback cụ thể.
+
+BÁO CÁO BÀN GIAO DUY NHẤT:
+- Base SHA + release SHA, PR/commits + workflow run IDs, status thực tế và URLs.
+- Các file đã sửa/theo module, RCA trước/sau, screenshots 360px/390px/768px/1440px.
+- Danh sách API paths status/response mẫu đã khử PII, kiểm chứng DB sau reload.
+- Công cụ và tài nguyên user-owned thực tế đã tạo/kết nối (không suy đoán):
+  Vercel team + project, Supabase project, Upstash Redis nếu dùng, Google nếu OAuth cấp.
+- Provider DeepSeek và model thực tế đã xác minh; môi trường secret được cài (chỉ TÊN biến),
+  test token quota/rate limit và triệu chứng khi provider down.
+- Báo cáo audit dữ liệu Đồng Nai, ảnh, QR, claim chứng nhận, mapping GIS, phone/email.
+- Bảng chức năng status PASS / FAIL / BLOCKED / SHOWCASE_ONLY cùng bằng chứng thực.
+- Các blocker có một bước phê duyệt rõ ràng, tuyệt đối không tự báo DONE 100%.
+
+CHỈ THỊ CUỐI CÙNG: THỰC THI TẤT CẢ CÁC GATE LIÊN TỤC THEO QUYỀN ĐƯỢC CẤP.
+ĐỪNG SINH RA MỘT PROMPT MỚI, ĐỪNG CHỈ VIẾT KẾ HOẠCH, ĐỪNG TẠO MOCKUP RỒI DỪNG.
+CHỈ NGHIỆM THU SAU KHI BẢN WEB PUBLIC ĐẸP, CHẠY THẬT, THỬ ĐƯỢC VÀ CÓ EVIDENCE.

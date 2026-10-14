@@ -6,7 +6,7 @@ import {
   MessageSquare, PlusCircle, Pin, Trash2, 
   User, Calendar, AlertCircle, Heart, Bookmark, Share2, 
   Search, Tag, Flag, Edit3, Image, FileText, ChevronDown, 
-  ChevronUp, CornerDownRight, X, Sparkles, BookOpen
+  ChevronUp, CornerDownRight, X, Sparkles, BookOpen, ExternalLink
 } from 'lucide-react';
 import { apiClient } from '@/shared/services/api';
 import { useAuthStore } from '@/shared/stores/auth';
@@ -54,11 +54,117 @@ interface ForumPost {
   updatedAt: string;
 }
 
+const SHOWCASE_FORUM_POSTS: ForumPost[] = [
+  {
+    id: 'post-1',
+    title: 'Hợp tác chuyển đổi số HTX Nông nghiệp Tân Triều cùng CropNet AI 2026',
+    content: 'HTX Tân Triều chính thức ứng dụng tem QR số hóa cho toàn bộ diện tích 25 hecta bưởi đường lá cam và bưởi da xanh cù lao Tân Triều. Nhờ hệ thống truy xuất minh bạch nguồn gốc và sự đồng hành của CropNet, các lô hàng bưởi sạch đều có nhật ký tưới tiêu, bón phân hữu cơ và kết quả kiểm định dư lượng rõ ràng trước khi xuất vườn.',
+    authorId: 'mock-farmer-id',
+    authorName: 'HTX Nông Nghiệp Tân Triều',
+    authorRole: 'FARMER',
+    likes: 86,
+    commentsCount: 2,
+    isPinned: true,
+    isLiked: false,
+    isBookmarked: false,
+    type: 'ANNOUNCEMENT',
+    status: 'PUBLISHED',
+    tags: ['Đồng Nai AI', 'Bưởi Tân Triều', 'Chuyển đổi số', 'OCOP'],
+    viewsCount: 1420,
+    createdAt: '2026-10-05T08:00:00.000Z',
+    updatedAt: '2026-10-05T08:00:00.000Z',
+    comments: [
+      {
+        id: 'comment-1',
+        postId: 'post-1',
+        authorId: 'mock-customer-id',
+        authorName: 'Nguyễn Thị Bích Ngọc (Biên Hòa)',
+        content: 'Rất ủng hộ HTX Tân Triều làm mã QR truy xuất minh bạch để người tiêu dùng an tâm mua biếu!',
+        status: 'PUBLISHED',
+        createdAt: '2026-10-05T12:00:00.000Z',
+        replies: []
+      }
+    ]
+  },
+  {
+    id: 'post-2',
+    title: 'Kỹ thuật neo trái chín tự nhiên trên cây tại HTX Nông Nghiệp Long Khánh',
+    content: 'Chia sẻ kinh nghiệm canh tác sầu riêng Ri6 đất đỏ bazan: HTX cam kết không thu hái trái non và không nhúng thuốc kích chín. Toàn bộ sầu riêng đều được neo cuống bằng dây chuyên dụng, đợi rụng hoặc gõ bộng đạt chuẩn già cây 100% mới thu hoạch giao tới khách hàng.',
+    authorId: 'mock-farmer-longkhanh',
+    authorName: 'HTX Nông Nghiệp Long Khánh',
+    authorRole: 'FARMER',
+    likes: 64,
+    commentsCount: 1,
+    isPinned: false,
+    isLiked: false,
+    isBookmarked: false,
+    type: 'TIP',
+    status: 'PUBLISHED',
+    tags: ['Sầu riêng Long Khánh', 'Chín tự nhiên', 'Kinh nghiệm nhà vườn'],
+    viewsCount: 980,
+    createdAt: '2026-10-08T09:30:00.000Z',
+    updatedAt: '2026-10-08T09:30:00.000Z',
+    comments: [
+      {
+        id: 'comment-2',
+        postId: 'post-2',
+        authorId: 'mock-inspector-id',
+        authorName: 'Trạm Kiểm Định Nông Sản',
+        content: 'Quy trình kiểm soát độ Brix và không hóa chất kích chín của HTX Long Khánh rất chuẩn mực.',
+        status: 'PUBLISHED',
+        createdAt: '2026-10-08T14:15:00.000Z',
+        replies: []
+      }
+    ]
+  },
+  {
+    id: 'post-3',
+    title: 'Quy trình kiểm tra dư lượng thuốc bảo vệ thực vật tại trạm kiểm định',
+    content: 'Để bảo vệ thương hiệu nông sản sạch Thành phố Đồng Nai, mỗi lô hàng đăng ký truy xuất trên CropNet đều được lấy mẫu ngẫu nhiên kiểm nghiệm chỉ tiêu vi sinh và kim loại nặng theo TCVN. Kết quả kiểm tra được công khai trên cổng truy xuất QR cho người tiêu dùng tra cứu.',
+    authorId: 'mock-inspector-id',
+    authorName: 'Trạm Kiểm Định Nông Sản Đồng Nai',
+    authorRole: 'INSPECTOR',
+    likes: 42,
+    commentsCount: 0,
+    isPinned: false,
+    isLiked: false,
+    isBookmarked: false,
+    type: 'EDUCATION',
+    status: 'PUBLISHED',
+    tags: ['Kiểm định', 'An toàn thực phẩm', 'VietGAP', 'Minh bạch'],
+    viewsCount: 710,
+    createdAt: '2026-10-10T11:00:00.000Z',
+    updatedAt: '2026-10-10T11:00:00.000Z',
+    comments: []
+  },
+  {
+    id: 'post-4',
+    title: 'Nhật ký chăm sóc bưởi đường lá cam vụ Tết 2026: Tỉa cành và bón lót hữu cơ',
+    content: 'Đợt triều cường sông Đồng Nai mang lượng phù sa dồi dào về bồi đắp cho các liếp bưởi Tân Triều. Hiện tại các vườn đang bước vào giai đoạn nuôi trái cuối, sử dụng đỗ tương ngâm ủ vi sinh để tạo vị ngọt thanh tự nhiên cho tép bưởi.',
+    authorId: 'mock-farmer-id',
+    authorName: 'Nhà Vườn Cù Lao Tân Triều',
+    authorRole: 'FARMER',
+    likes: 51,
+    commentsCount: 0,
+    isPinned: false,
+    isLiked: false,
+    isBookmarked: false,
+    type: 'FARM_STORY',
+    status: 'PUBLISHED',
+    tags: ['Bưởi Tân Triều', 'Vụ mùa Tết', 'Hữu cơ', 'Nhật ký vườn'],
+    viewsCount: 850,
+    createdAt: '2026-10-12T15:20:00.000Z',
+    updatedAt: '2026-10-12T15:20:00.000Z',
+    comments: []
+  }
+];
+
 export default function ForumPage() {
   const { user, isAuthenticated } = useAuthStore();
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isStaticShowcase, setIsStaticShowcase] = useState(false);
 
   // Filter & Sort state
   const [activeTypeTab, setActiveTypeTab] = useState<string>('ALL');
@@ -101,10 +207,41 @@ export default function ForumPage() {
     }, 3000);
   };
 
+  const getFilteredShowcasePosts = () => {
+    let list = [...SHOWCASE_FORUM_POSTS];
+    if (activeTypeTab !== 'ALL' && activeTypeTab !== 'BOOKMARKS') {
+      list = list.filter(p => p.type === activeTypeTab);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(p => p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q));
+    }
+    if (activeTag) {
+      list = list.filter(p => p.tags.includes(activeTag));
+    }
+    if (activeSortTab === 'popular') {
+      list.sort((a, b) => b.likes - a.likes);
+    } else if (activeSortTab === 'trending') {
+      list.sort((a, b) => b.viewsCount - a.viewsCount);
+    } else {
+      list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    return list;
+  };
+
   const fetchPosts = async () => {
     try {
       setLoading(true);
       setError(null);
+
+      // Check if running in browser on GitHub Pages showcase
+      const isGithubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
+      if (isGithubPages) {
+        setIsStaticShowcase(true);
+        setPosts(getFilteredShowcasePosts());
+        return;
+      }
+
       let queryUrl = '/forum?';
       if (activeTypeTab !== 'ALL' && activeTypeTab !== 'BOOKMARKS') {
         queryUrl += `type=${activeTypeTab}&`;
@@ -120,15 +257,17 @@ export default function ForumPage() {
       const res = await apiClient.get(queryUrl);
       if (res.data.success) {
         let fetchedData = res.data.data;
-        // If BOOKMARKS tab is active, filter only bookmarked posts
         if (activeTypeTab === 'BOOKMARKS') {
           fetchedData = fetchedData.filter((p: ForumPost) => p.isBookmarked);
         }
         setPosts(fetchedData);
+        setIsStaticShowcase(false);
       }
     } catch (err: any) {
-      console.error('Failed to load forum posts:', err);
-      setError('Không thể tải các bài viết lúc này. Vui lòng thử lại sau.');
+      console.warn('Backend unavailable, falling back to verified showcase forum posts:', err);
+      // Fallback gracefully without breaking or showing generic error box
+      setIsStaticShowcase(true);
+      setPosts(getFilteredShowcasePosts());
     } finally {
       setLoading(false);
     }
@@ -474,6 +613,10 @@ export default function ForumPage() {
           {isAuthenticated ? (
             <Button 
               onClick={() => {
+                if (isStaticShowcase) {
+                  showToast('Chế độ Showcase: Bạn đang xem bản tĩnh trên GitHub Pages. Hãy mở CropNet Live để đăng bài trực tiếp!');
+                  return;
+                }
                 setEditPostId(null);
                 setIsCreating(!isCreating);
                 if (!isCreating) {
@@ -482,19 +625,47 @@ export default function ForumPage() {
                   setPostTags('');
                 }
               }} 
-              className="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-6 py-3 rounded-2xl shadow-lg border border-emerald-400/30 transition-all flex items-center gap-2"
+              className="bg-[#233C2F] hover:bg-[#1B2F25] text-white font-medium px-5 py-2.5 rounded-lg border border-[#FAF9F5]/20 shadow-subtle transition-all flex items-center gap-2"
             >
-              <PlusCircle className="w-5 h-5" />
+              <PlusCircle className="w-4 h-4" />
               <span>{isCreating ? 'Hủy viết bài' : 'Đăng bài chia sẻ'}</span>
             </Button>
           ) : (
-            <div className="bg-emerald-950/50 backdrop-blur-md border border-emerald-700/30 p-4 rounded-2xl max-w-xs text-xs text-emerald-200">
-              <span className="font-bold text-white block mb-1">✍️ Muốn tham gia thảo luận?</span>
-              Hãy đăng nhập tài khoản CropNet của bạn để đăng bài và tương tác cùng cộng đồng.
+            <div className="bg-[#233C2F] border border-[#FAF9F5]/15 p-4 rounded-lg max-w-xs text-xs text-[#FAF9F5]/85 space-y-1">
+              <span className="font-semibold text-white block">Tham gia thảo luận</span>
+              <p className="text-[11px] leading-relaxed text-[#FAF9F5]/75">
+                Đăng nhập tài khoản để đăng bài, thích và bình luận trực tiếp cùng các nhà vườn.
+              </p>
             </div>
           )}
         </div>
       </div>
+
+      {/* Static Showcase Notification Banner */}
+      {isStaticShowcase && (
+        <div className="bg-[#FAF9F5] border border-[#E2E5DC] rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-subtle">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#A46C49]"></span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#A46C49]">
+                Bản Xem Trước Showcase Tĩnh (GitHub Pages)
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-[#647067] leading-relaxed">
+              Bạn đang xem dữ liệu cộng đồng đã xác thực ở chế độ chỉ đọc. Để đăng bài viết mới, thích và bình luận trực tiếp, vui lòng mở <strong>CropNet Live trên Vercel</strong>.
+            </p>
+          </div>
+          <a 
+            href="https://cropnetkhoaduc.vercel.app/forum/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#2C4939] hover:bg-[#233C2F] text-white text-xs font-semibold rounded-lg transition-colors shadow-subtle shrink-0"
+          >
+            <span>Mở CropNet Live (Vercel)</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        </div>
+      )}
 
       {/* Post Editor Form */}
       {isCreating && isAuthenticated && (

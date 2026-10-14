@@ -36,6 +36,7 @@ jobs:
       - name: Build web application 🏗️
         env:
           NODE_ENV: production
+          DEPLOY_TARGET: github-pages
           GITHUB_REPOSITORY: ${{ github.repository }}
           NEXT_PUBLIC_BASE_PATH: /cropnetkhoaduc
         run: |

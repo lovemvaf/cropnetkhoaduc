@@ -8,10 +8,18 @@ export function getAssetPath(url?: string) {
     return cleanUrl;
   }
   
+  // If running on Vercel or local dev, never prepend /cropnetkhoaduc
+  const isVercel = process.env.NEXT_PUBLIC_DEPLOY_TARGET === 'vercel' || 
+                   process.env.DEPLOY_TARGET === 'vercel' ||
+                   (typeof window !== 'undefined' && (window.location.hostname.includes('vercel.app') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'));
+  if (isVercel) {
+    return cleanUrl;
+  }
+
   // On GitHub Pages, Next.js basePath is '/cropnetkhoaduc'
   const isGithubPages = typeof window !== 'undefined' 
     ? window.location.hostname.includes('github.io')
-    : process.env.NODE_ENV === 'production';
+    : (process.env.DEPLOY_TARGET === 'github-pages' || process.env.NODE_ENV === 'production');
 
   if (isGithubPages) {
     return `/cropnetkhoaduc${cleanUrl}`;

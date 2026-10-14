@@ -3,11 +3,16 @@ import { useAuthStore } from '@/shared/stores/auth';
 
 const isBrowser = typeof window !== 'undefined';
 const isProd = process.env.NODE_ENV === 'production';
-const isGithubPages = isBrowser && window.location.hostname.includes('github.io');
+const isGithubPages = isBrowser ? window.location.hostname.includes('github.io') : process.env.DEPLOY_TARGET === 'github-pages';
+const isVercelHost = isBrowser ? (window.location.hostname.includes('vercel.app') || window.location.hostname === 'localhost') : (process.env.DEPLOY_TARGET === 'vercel' || process.env.VERCEL === '1');
 
-// Production bundles on GitHub Pages must never connect to user's localhost
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || (isProd ? '' : 'http://localhost:5000/api');
-export const isShowcaseDemoMode = isGithubPages || (!process.env.NEXT_PUBLIC_API_URL && isProd);
+// Base API URL:
+// - If NEXT_PUBLIC_API_URL is provided, use it.
+// - On Vercel: use relative '/api' for Next.js Route Handlers.
+// - On GitHub Pages: empty string (showcase mode).
+// - On Local Dev: 'http://localhost:5000/api' or '/api'.
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || (isVercelHost ? '/api' : (isGithubPages ? '' : 'http://localhost:5000/api'));
+export const isShowcaseDemoMode = isGithubPages;
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL || undefined,
@@ -20,8 +25,8 @@ export const apiClient = axios.create({
 // Request Interceptor: Attach the short-lived access token to headers
 apiClient.interceptors.request.use(
   (config) => {
-    if (!API_BASE_URL && isProd) {
-      return Promise.reject(new Error('SHOWCASE_MODE_NO_BACKEND: Nền tảng đang chạy ở chế độ tĩnh Showcase'));
+    if (!API_BASE_URL && isShowcaseDemoMode) {
+      return Promise.reject(new Error('SHOWCASE_MODE_NO_BACKEND: Nền tảng đang chạy ở chế độ tĩnh Showcase trên GitHub Pages'));
     }
     const token = useAuthStore.getState().accessToken;
     if (token) {

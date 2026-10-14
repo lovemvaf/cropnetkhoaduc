@@ -1,15 +1,22 @@
 import type { NextConfig } from 'next';
 
+const isVercel = process.env.DEPLOY_TARGET === 'vercel' || process.env.VERCEL === '1';
 const isProd = process.env.NODE_ENV === 'production';
-// Base path calculation: prioritize NEXT_PUBLIC_BASE_PATH, then GitHub Actions GITHUB_REPOSITORY, then default to /cropnetkhoaduc on prod
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH !== undefined
-  ? process.env.NEXT_PUBLIC_BASE_PATH
-  : (process.env.GITHUB_REPOSITORY ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}` : (isProd ? '/cropnetkhoaduc' : ''));
+
+// Base path calculation:
+// On Vercel: basePath is strictly empty string ''
+// On GitHub Pages: basePath is '/cropnetkhoaduc'
+const basePath = isVercel
+  ? ''
+  : (process.env.NEXT_PUBLIC_BASE_PATH !== undefined
+      ? process.env.NEXT_PUBLIC_BASE_PATH
+      : (process.env.GITHUB_REPOSITORY ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}` : (isProd ? '/cropnetkhoaduc' : '')));
 
 const nextConfig: NextConfig = {
-  output: 'export',
+  // On Vercel: dynamic serverless runtime with API route handlers; On GitHub Pages: static HTML export
+  ...(isVercel ? {} : { output: 'export' }),
   basePath: basePath,
-  trailingSlash: true,
+  trailingSlash: !isVercel,
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true
