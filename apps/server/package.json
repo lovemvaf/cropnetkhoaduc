@@ -7,7 +7,7 @@
     "build": "tsc",
     "dev": "nodemon --exec ts-node src/server.ts",
     "start": "node dist/server.js",
-    "test": "tsc && node dist/tests/gate_m0_security.test.js && node dist/tests/gate_m3_ai.test.js",
+    "test": "tsc && node dist/tests/gate_m0_security.test.js && node dist/tests/gate_m3_ai.test.js && node dist/tests/gate_map_geospatial.test.js",
     "postinstall": "prisma generate --schema=prisma/schema.prisma",
     "db:generate": "prisma generate --schema=prisma/schema.prisma",
     "db:migrate": "prisma migrate dev --name init",

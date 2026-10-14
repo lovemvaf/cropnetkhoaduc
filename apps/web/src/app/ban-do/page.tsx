@@ -36,8 +36,8 @@ export default function CooperativeMapPage() {
             Vùng Trồng Nông Sản & Hợp Tác Xã Thành Phố Đồng Nai
           </h1>
           <p className="text-xs sm:text-sm text-[#647067] max-w-3xl leading-relaxed">
-            Hệ thống bản đồ số địa lý toàn diện bao phủ toàn bộ địa giới hiện hành Thành phố Đồng Nai (gồm không gian tỉnh Đồng Nai và Bình Phước trước sáp nhập 2025). 
-            Tích hợp phân tầng 3 cấp: Vùng lãnh thổ nông nghiệp truyền thống, Hợp tác xã/nhà vườn xác minh và Lô hàng truy xuất tem QR thực tế.
+            Hệ thống bản đồ số địa lý toàn diện bao phủ toàn bộ địa giới hiện hành Thành phố Đồng Nai (thành lập theo Nghị quyết 30/2026/QH16, bao gồm không gian tỉnh Đồng Nai và Bình Phước trước sáp nhập). 
+            Tích hợp phân tầng 3 cấp: Vùng lãnh thổ nông nghiệp truyền thống (Tâm tham khảo), Hợp tác xã/nhà vườn xác minh hồ sơ và Lô hàng truy xuất tem QR thực tế.
           </p>
         </div>
 
