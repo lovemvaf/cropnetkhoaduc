@@ -121,9 +121,9 @@ export const findTopProducts = async (limit: number, supplierId?: string) => {
   } catch (error: any) {
     if (isDatabaseError(error)) {
       return [
-        { name: 'Bưởi Da Xanh Bến Tre', value: 65 },
-        { name: 'Cà Chua Bi Đà Lạt', value: 40 },
-        { name: 'Rau Muống Hữu Cơ', value: 25 }
+        { name: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)', value: 85 },
+        { name: 'Sầu Riêng Ri6 Long Khánh (Chín Tự Nhiên)', value: 65 },
+        { name: 'Hạt Điều Rang Củi Muối Tinh Long Khánh', value: 45 }
       ];
     }
     throw error;

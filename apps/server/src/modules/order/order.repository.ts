@@ -4,6 +4,8 @@ import {
   updateMockOrderShipmentDetails, addMockOrderShipmentMilestone,
   disputeMockOrder, resolveMockOrderDispute, assignMockOrderItemBatch
 } from '../../database/dbFallback';
+import { isProduction } from '../../utils/security';
+import { logger } from '../../utils/logger';
 
 export const createOrderTransaction = async (customerId: string, data: {
   receiverName: string;
@@ -28,11 +30,20 @@ export const createOrderTransaction = async (customerId: string, data: {
           throw new Error(`Sản phẩm ${prod.name} không đủ số lượng tồn kho (Còn lại: ${stockNum} ${prod.unit})`);
         }
 
-        // Decrement product stock inside transaction
-        await tx.product.update({
-          where: { id: item.productId },
-          data: { stock: stockNum - item.quantity }
+        // Guarded atomic decrement: ensures stock is still >= quantity to avoid race condition/oversell
+        const updated = await tx.product.updateMany({
+          where: {
+            id: item.productId,
+            stock: { gte: item.quantity }
+          },
+          data: {
+            stock: { decrement: item.quantity }
+          }
         });
+
+        if (updated.count === 0) {
+          throw new Error(`Xung đột số lượng tồn kho cho sản phẩm ${prod.name}. Số lượng khả dụng không đủ.`);
+        }
 
         const itemPrice = Number(prod.price);
         totalAmount += itemPrice * item.quantity;
@@ -77,8 +88,17 @@ export const createOrderTransaction = async (customerId: string, data: {
     });
   } catch (error: any) {
     if (isDatabaseError(error)) {
+      if (isProduction()) {
+        logger.error('[DB_ERROR] Database connection failed while placing order in production', error);
+        throw error;
+      }
+
+      // Local dev mock order
       const orderItems = data.items.map((item, index) => {
-        const prod = MOCK_PRODUCTS.find(p => p.id === item.productId) || MOCK_PRODUCTS[0];
+        const prod = MOCK_PRODUCTS.find(p => p.id === item.productId);
+        if (!prod) {
+          throw new Error(`Sản phẩm với ID ${item.productId} không tồn tại`);
+        }
         return {
           id: `mock-item-${Date.now()}-${index}`,
           productId: item.productId,
@@ -311,7 +331,7 @@ export const addShipmentMilestoneInDb = async (orderId: string, milestone: { tit
     return order;
   } catch (error: any) {
     if (isDatabaseError(error)) {
-      return addMockOrderShipmentMilestone(orderId, milestone);
+      return addMockOrderShipmentMilestone(orderId, { status: 'IN_TRANSIT', ...milestone });
     }
     throw error;
   }

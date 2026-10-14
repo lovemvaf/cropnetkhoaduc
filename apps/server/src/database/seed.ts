@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Start seeding CropNet DB...');
+  console.log('Bắt đầu khởi tạo dữ liệu mẫu CropNet Đồng Nai AI (2026)...');
 
   // Safeguard: do not wipe active tables in production
   if (process.env.NODE_ENV === 'production') {
@@ -15,7 +15,7 @@ async function main() {
       return;
     }
   } else {
-    // Delete all existing entries to prevent duplicates in dev/test
+    // Delete existing entries for clean dev baseline
     await prisma.review.deleteMany();
     await prisma.orderItem.deleteMany();
     await prisma.order.deleteMany();
@@ -29,239 +29,239 @@ async function main() {
     await prisma.role.deleteMany();
   }
 
-  // Create Roles
-  const adminRole = await prisma.role.create({ data: { name: 'ADMIN', description: 'Quản trị hệ thống' } });
-  const customerRole = await prisma.role.create({ data: { name: 'CUSTOMER', description: 'Khách mua nông sản' } });
-  const farmerRole = await prisma.role.create({ data: { name: 'FARMER', description: 'Nhà vườn / Hợp tác xã' } });
-  const logisticsRole = await prisma.role.create({ data: { name: 'LOGISTICS', description: 'Đơn vị vận chuyển nông sản' } });
-  const inspectorRole = await prisma.role.create({ data: { name: 'INSPECTOR', description: 'Kiểm định viên chất lượng' } });
+  // 1. Create Roles
+  const adminRole = await prisma.role.create({ data: { name: 'ADMIN', description: 'Ban Quản Trị Hệ Thống CropNet Đồng Nai AI' } });
+  const customerRole = await prisma.role.create({ data: { name: 'CUSTOMER', description: 'Khách hàng mua lẻ & tổ chức' } });
+  const farmerRole = await prisma.role.create({ data: { name: 'FARMER', description: 'Chủ nhiệm Hợp tác xã / Nhà vườn Thành phố Đồng Nai' } });
+  const logisticsRole = await prisma.role.create({ data: { name: 'LOGISTICS', description: 'Đội xe vận chuyển nông sản lạnh Đồng Nai' } });
+  const inspectorRole = await prisma.role.create({ data: { name: 'INSPECTOR', description: 'Cán bộ kiểm định chất lượng nông sản' } });
 
-  // Password hash
-  const pwd = await bcrypt.hash('123456', 10);
+  // 2. Hash Password
+  const pwd = await bcrypt.hash('CropNet@2026', 10);
 
-  // Create Users
+  // 3. Create Users
   const uAdmin = await prisma.user.create({
-    data: { email: 'admin@cropnet.vn', passwordHash: pwd, fullName: 'Cộng Tác Viên CropNet', roleId: adminRole.id }
+    data: { email: 'admin@cropnet.vn', passwordHash: pwd, fullName: 'Ban Quản Trị CropNet Đồng Nai', roleId: adminRole.id, isEmailVerified: true }
   });
   const uCustomer = await prisma.user.create({
-    data: { email: 'khachhang@gmail.com', passwordHash: pwd, fullName: 'Trần Thị Hà Nội', roleId: customerRole.id }
+    data: { email: 'khachhang@gmail.com', passwordHash: pwd, fullName: 'Nguyễn Thị Bích Ngọc', roleId: customerRole.id, isEmailVerified: true }
   });
-  const uFarmer = await prisma.user.create({
-    data: { email: 'farmer@nongnghiep.vn', passwordHash: pwd, fullName: 'Chú Út Miền Tây', roleId: farmerRole.id }
+  const uFarmerTanTrieu = await prisma.user.create({
+    data: { email: 'tantrieu@cropnet.vn', passwordHash: pwd, fullName: 'HTX Nông Nghiệp Tân Triều', roleId: farmerRole.id, isEmailVerified: true }
+  });
+  const uFarmerLongKhanh = await prisma.user.create({
+    data: { email: 'longkhanh@cropnet.vn', passwordHash: pwd, fullName: 'HTX Nông Nghiệp Long Khánh', roleId: farmerRole.id, isEmailVerified: true }
   });
   const uLogistics = await prisma.user.create({
-    data: { email: 'logistics@cropnet.vn', passwordHash: pwd, fullName: 'Vận Chuyển CropNet', roleId: logisticsRole.id }
+    data: { email: 'logistics@cropnet.vn', passwordHash: pwd, fullName: 'Vận Chuyển Nông Sản Đồng Nai', roleId: logisticsRole.id, isEmailVerified: true }
   });
   const uInspector = await prisma.user.create({
-    data: { email: 'inspector@cropnet.vn', passwordHash: pwd, fullName: 'Trạm Kiểm Định CropNet', roleId: inspectorRole.id }
+    data: { email: 'inspector@cropnet.vn', passwordHash: pwd, fullName: 'Trạm Kiểm Định Nông Sản Đồng Nai', roleId: inspectorRole.id, isEmailVerified: true }
   });
 
-  // Create Supplier profile
-  const supplier = await prisma.supplier.create({
+  // 4. Create Suppliers (Cooperatives in Dong Nai)
+  const supTanTrieu = await prisma.supplier.create({
     data: {
-      userId: uFarmer.id,
-      farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn',
-      address: 'Xã Sơn Định, Huyện Chợ Lách, Tỉnh Bến Tre',
-      latitude: 10.2458,
-      longitude: 106.1284,
+      userId: uFarmerTanTrieu.id,
+      farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều',
+      address: 'Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai',
+      latitude: 11.0267,
+      longitude: 106.8835,
       status: 'APPROVED'
     }
   });
 
-  // Create Categories
-  const catFruits = await prisma.category.create({ data: { name: 'Trái Cây Sạch', slug: 'trai-cay-sach' } });
-  const catVeggies = await prisma.category.create({ data: { name: 'Rau Củ Hữu Cơ', slug: 'rau-cu-huu-co' } });
+  const supLongKhanh = await prisma.supplier.create({
+    data: {
+      userId: uFarmerLongKhanh.id,
+      farmName: 'Hợp Tác Xã Nông Nghiệp Sinh Thái Long Khánh',
+      address: 'Phường Xuân Lập, Thành phố Long Khánh, Thành phố Đồng Nai',
+      latitude: 10.9258,
+      longitude: 107.2412,
+      status: 'APPROVED'
+    }
+  });
 
-  // Create Products
+  // 5. Create Categories
+  const catFruits = await prisma.category.create({ 
+    data: { name: 'Trái Cây Đặc Sản Đồng Nai', slug: 'trai-cay-dac-san-dong-nai' } 
+  });
+  const catProcessed = await prisma.category.create({ 
+    data: { name: 'Nông Sản Chế Biến & Hạt', slug: 'nong-san-che-bien-hat' } 
+  });
+
+  // 6. Create Verified Regional Products
   const p1 = await prisma.product.create({
     data: {
-      supplierId: supplier.id,
+      id: 'prod-buoi-duong-la-cam',
+      supplierId: supTanTrieu.id,
       categoryId: catFruits.id,
-      name: 'Bưởi Da Xanh Cái Mơn',
-      description: 'Bưởi da xanh ngọt đậm đà, vỏ mỏng ruột hồng tiêu biểu của vương quốc trái cây Cái Mơn, canh tác hữu cơ tự nhiên.',
-      price: 65000,
-      unit: 'quả 1.2kg',
-      stock: 50,
-      status: 'ACTIVE'
+      name: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)',
+      description: 'Bưởi đường lá cam trứ danh cù lao Tân Triều được bồi đắp bởi phù sa sông Đồng Nai. Quả nhỏ gọn vừa tay, da vàng xanh bóng, tép bưởi mọng nước ngọt thanh đậm đà, không the đắng.',
+      price: 85000,
+      unit: 'quả (1.1kg - 1.3kg)',
+      stock: 150,
+      status: 'ACTIVE',
+      tags: ['OCOP', 'Bưởi Tân Triều', 'VietGAP', 'Đặc sản Đồng Nai']
     }
   });
 
   const p2 = await prisma.product.create({
     data: {
-      supplierId: supplier.id,
-      categoryId: catVeggies.id,
-      name: 'Cà Chua Bi Đà Lạt',
-      description: 'Cà chua chín mọng thơm mát, giàu vitamin, được trồng trong nhà kính theo quy chuẩn hữu cơ khép kín.',
-      price: 35000,
-      unit: 'túi 500g',
+      id: 'prod-buoi-da-xanh-tantrieu',
+      supplierId: supTanTrieu.id,
+      categoryId: catFruits.id,
+      name: 'Bưởi Da Xanh Tân Triều Hữu Cơ',
+      description: 'Bưởi da xanh ruột hồng giòn ngọt, vị thanh mát, vỏ mỏng ruột chắc không hạt hoặc ít hạt. Canh tác an toàn sinh thái đạt chuẩn VietGAP tại xã Tân Bình.',
+      price: 75000,
+      unit: 'quả (1.3kg - 1.5kg)',
       stock: 120,
-      status: 'ACTIVE'
+      status: 'ACTIVE',
+      tags: ['VietGAP', 'Bưởi Tân Triều', 'Hữu cơ']
     }
   });
 
   const p3 = await prisma.product.create({
     data: {
-      supplierId: supplier.id,
-      categoryId: catVeggies.id,
-      name: 'Rau Muống Hữu Cơ',
-      description: 'Rau muống non xanh, ăn giòn ngọt, trồng theo phương pháp tự nhiên không chất hóa học tại Bến Tre.',
-      price: 15000,
-      unit: 'bó 500g',
-      stock: 200,
-      status: 'ACTIVE'
+      id: 'prod-saurieng-ri6-longkhanh',
+      supplierId: supLongKhanh.id,
+      categoryId: catFruits.id,
+      name: 'Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)',
+      description: 'Sầu riêng Ri6 đất đỏ bazan Long Khánh thu hoạch già đủ ngày, chín tự nhiên không nhúng thuốc kích chín. Cơm vàng óng, dẻo béo ngậy, hạt lép đậm đà.',
+      price: 135000,
+      unit: 'kg (quả 2.5kg - 3.5kg)',
+      stock: 60,
+      status: 'ACTIVE',
+      tags: ['VietGAP', 'Sầu riêng Long Khánh', 'Chín tự nhiên']
     }
   });
 
   const p4 = await prisma.product.create({
     data: {
-      supplierId: supplier.id,
+      id: 'prod-chomchom-nhan-longkhanh',
+      supplierId: supLongKhanh.id,
       categoryId: catFruits.id,
-      name: 'Sầu Riêng Ri6 Vĩnh Long',
-      description: 'Sầu riêng Ri6 cơm vàng hạt lép, béo ngậy ngọt ngào đặc sản trứ danh Vĩnh Long, chín tự nhiên không hóa chất nhúng thuốc.',
-      price: 145000,
-      unit: 'kg (quả 2.5kg)',
-      stock: 30,
-      status: 'ACTIVE'
+      name: 'Chôm Chôm Nhãn Long Khánh',
+      description: 'Chôm chôm nhãn (chôm chôm đường) vỏ vàng ửng đỏ, gai ngắn, cùi dày giòn tróc hạt, vị ngọt đậm thơm mát nức lòng. Mùa vụ thu hoạch rộ hè - thu.',
+      price: 45000,
+      unit: 'kg (chùm quả tươi)',
+      stock: 250,
+      status: 'ACTIVE',
+      tags: ['Đặc sản Long Khánh', 'Đang mùa vụ']
     }
   });
 
   const p5 = await prisma.product.create({
     data: {
-      supplierId: supplier.id,
-      categoryId: catFruits.id,
-      name: 'Xoài Cát Hòa Lộc',
-      description: 'Xoài cát Hòa Lộc Tiền Giang quả to thuôn dài, khi chín vàng tươi, thịt xoài cát mịn màng ngọt lịm và thơm lừng.',
-      price: 85000,
-      unit: 'kg (2 quả)',
-      stock: 40,
-      status: 'ACTIVE'
+      id: 'prod-hatdieu-rangmuoi-dongnai',
+      supplierId: supLongKhanh.id,
+      categoryId: catProcessed.id,
+      name: 'Hạt Điều Rang Muối Vỏ Lụa Đồng Nai (Hộp 500g)',
+      description: 'Hạt điều Đồng Nai loại A tuyển chọn xuất khẩu, hạt to mẩy đều, rang củi thủ công cùng muối tinh giữ nguyên lớp vỏ lụa thơm bùi giòn rụm.',
+      price: 120000,
+      unit: 'hộp 500g',
+      stock: 180,
+      status: 'ACTIVE',
+      tags: ['OCOP', 'Hạt điều Đồng Nai', 'Chế biến sạch']
     }
   });
 
   const p6 = await prisma.product.create({
     data: {
-      supplierId: supplier.id,
-      categoryId: catFruits.id,
-      name: 'Bơ Sáp 034 Tây Nguyên',
-      description: 'Bơ sáp 034 dáng dài đặc trưng Tây Nguyên, cơm vàng dẻo quánh, vị ngậy béo tự nhiên, vỏ xanh bóng đẹp mắt.',
-      price: 55000,
-      unit: 'túi 1kg',
-      stock: 60,
-      status: 'ACTIVE'
-    }
-  });
-
-  const p7 = await prisma.product.create({
-    data: {
-      supplierId: supplier.id,
-      categoryId: catVeggies.id,
-      name: 'Nấm Đùi Gà Hữu Cơ',
-      description: 'Nấm đùi gà thân trắng ngần, chắc thịt, giòn ngọt giàu dinh dưỡng trồng phòng lạnh khép kín tại Lâm Đồng.',
-      price: 45000,
-      unit: 'hộp 300g',
+      id: 'prod-ruoubuoi-tantrieu',
+      supplierId: supTanTrieu.id,
+      categoryId: catProcessed.id,
+      name: 'Rượu Bưởi Tân Triều Truyền Thống (Bình Gốm 750ml)',
+      description: 'Đặc sản trứ danh lên men tự nhiên từ nước cốt bưởi đường lá cam Tân Triều và men thảo mộc, hương vị êm dịu sảng khoái, tốt cho tiêu hóa, thiết kế bình gốm mỹ nghệ sang trọng làm quà biếu.',
+      price: 195000,
+      unit: 'bình gốm 750ml',
       stock: 80,
-      status: 'ACTIVE'
+      status: 'ACTIVE',
+      tags: ['OCOP', 'Quà biếu tặng', 'Rượu bưởi Tân Triều']
     }
   });
 
-  const p8 = await prisma.product.create({
-    data: {
-      supplierId: supplier.id,
-      categoryId: catVeggies.id,
-      name: 'Măng Tây Xanh Loại 1',
-      description: 'Măng tây xanh Ninh Thuận loại 1 thân mập non tơ giòn ngọt, giàu chất xơ và khoáng chất tốt cho sức khỏe.',
-      price: 85000,
-      unit: 'bó 500g',
-      stock: 100,
-      status: 'ACTIVE'
-    }
-  });
+  // 7. Product Images
+  await prisma.productImage.create({ data: { productId: p1.id, url: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' } });
+  await prisma.productImage.create({ data: { productId: p2.id, url: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' } });
+  await prisma.productImage.create({ data: { productId: p3.id, url: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=800&auto=format' } });
+  await prisma.productImage.create({ data: { productId: p4.id, url: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format' } });
+  await prisma.productImage.create({ data: { productId: p5.id, url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&auto=format' } });
+  await prisma.productImage.create({ data: { productId: p6.id, url: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format' } });
 
-  // Images
-  await prisma.productImage.create({ data: { productId: p1.id, url: '/buoi-da-xanh-cai-mon.jpg' } });
-  await prisma.productImage.create({ data: { productId: p2.id, url: '/cachuabidalat.jpg' } });
-  await prisma.productImage.create({ data: { productId: p3.id, url: '/rau-muong-huu-co.jpg' } });
-  await prisma.productImage.create({ data: { productId: p4.id, url: '/sau-rieng-vinh-long.jpg' } });
-  await prisma.productImage.create({ data: { productId: p5.id, url: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&auto=format' } });
-  await prisma.productImage.create({ data: { productId: p6.id, url: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=500&auto=format' } });
-  await prisma.productImage.create({ data: { productId: p7.id, url: '/nam-dui-ga.jpg' } });
-  await prisma.productImage.create({ data: { productId: p8.id, url: '/mang-tay-xanh.jpg' } });
-
-  // Create Trace Batch for Product 1 (Pomelo)
+  // 8. Trace Batches with Cultivation Logs
   const batch1 = await prisma.traceBatch.create({
     data: {
       productId: p1.id,
-      batchCode: 'BATCH-BUOI-CAIMON-01',
-      harvestDate: new Date(),
-      farmingArea: 'Phân khu A3 - Trồng trọt Bưởi Hữu Cơ',
-      farmingProcess: 'Tưới tiêu bằng nước ngọt tự nhiên từ sông Hàm Luông, bón phân compost hữu cơ tự nhiên không sử dụng thuốc trừ sâu hóa học.',
-      qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BATCH-BUOI-CAIMON-01'
+      batchCode: 'BATCH-BUOI-TANTRIEU-2026-01',
+      harvestDate: new Date('2026-10-10'),
+      farmingArea: 'Vườn mẫu số 01 - HTX Nông nghiệp Tân Triều, Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai',
+      farmingProcess: 'Canh tác sinh thái kết hợp VietGAP. Bón phân vi sinh ủ từ vỏ trấu và bã cà phê, dùng nước ngọt phù sa sông Đồng Nai tưới tiêu, bao trái bằng túi chuyên dụng chống ruồi đục quả không dùng thuốc hóa học.',
+      qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=BATCH-BUOI-TANTRIEU-2026-01',
+      logisticsTimeline: [
+        { status: 'REGISTERED', title: 'Khởi tạo thông tin lô bưởi', description: 'HTX Tân Triều đăng ký mã vùng trồng và lô thu hoạch vụ mùa 2026', timestamp: '2026-06-15T07:00:00.000Z', location: 'Xã Tân Bình, Vĩnh Cửu, TP Đồng Nai' },
+        { status: 'CULTIVATION', title: 'Bón phân hữu cơ vi sinh đợt 2 & Bao trái', description: 'Hoàn tất bao 5.000 trái bằng túi màng thoáng khí chống côn trùng', timestamp: '2026-07-20T08:30:00.000Z', location: 'Vườn mẫu A1 Tân Triều' },
+        { status: 'PRE_HARVEST', title: 'Kiểm tra độ chín sinh lý & độ Brix', description: 'Đo độ ngọt đạt 11.8 Brix, vỏ chuyển sang vàng sáng đạt chuẩn thu hái', timestamp: '2026-09-28T09:15:00.000Z', location: 'Trạm kỹ thuật HTX Tân Triều' },
+        { status: 'HARVESTED', title: 'Thu hoạch cắt cuống & Dán tem QR', description: 'Thu hoạch quả loại 1, lau sạch bằng nước nano bạc, dán tem truy xuất nguồn gốc', timestamp: '2026-10-10T06:30:00.000Z', location: 'Kho sơ chế HTX Tân Triều' }
+      ],
+      inspectionReports: [
+        {
+          inspector: 'Trung tâm Phân tích & Kiểm định Nông sản Đồng Nai',
+          status: 'PASSED',
+          checkDate: '2026-10-08T10:00:00.000Z',
+          comments: 'Mẫu bưởi đường lá cam đạt toàn bộ chỉ tiêu an toàn thực phẩm. Không phát hiện dư lượng kim loại nặng và hóa chất BVTV.',
+          metrics: { pesticideLevel: 'Không phát hiện (dưới ngưỡng LOD)', sugarLevel: '11.8 Brix', waterContent: '88.5%' }
+        }
+      ]
     }
   });
 
-  // Create Trace Batch for Product 2 (Tomato)
   const batch2 = await prisma.traceBatch.create({
     data: {
-      productId: p2.id,
-      batchCode: 'BATCH-CACHUA-DALAT-01',
-      harvestDate: new Date(),
-      farmingArea: 'Nhà màng khu B - Trồng trọt Cà Chua Hữu Cơ',
-      farmingProcess: 'Hệ thống tưới nhỏ giọt công nghệ Israel khép kín, bón phân hữu cơ vi sinh không sử dụng thuốc trừ sâu hóa học.',
-      qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BATCH-CACHUA-DALAT-01'
-    }
-  });
-
-  // Create Trace Batch for Product 3 (Water Spinach)
-  const batch3 = await prisma.traceBatch.create({
-    data: {
       productId: p3.id,
-      batchCode: 'BATCH-RAUMUONG-01',
-      harvestDate: new Date(),
-      farmingArea: 'Phân khu C1 - Trồng rau thủy canh hữu cơ',
-      farmingProcess: 'Phương pháp thủy canh hồi lưu dùng dung dịch dinh dưỡng hữu cơ tự chế từ men vi sinh vi lượng sạch.',
-      qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BATCH-RAUMUONG-01'
+      batchCode: 'BATCH-SAURIENG-LONGKHANH-2026-01',
+      harvestDate: new Date('2026-10-12'),
+      farmingArea: 'Vườn sầu riêng mẫu B2 - HTX Nông nghiệp Long Khánh, Phường Xuân Lập, TP Long Khánh, TP Đồng Nai',
+      farmingProcess: 'Canh tác trên đất đỏ bazan tự nhiên. Bón phân trùn quế hữu cơ, cam kết neo trái chín già trên cây và tự rụng/gõ bộng thu hoạch, không ngâm thuốc ép chín.',
+      qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=BATCH-SAURIENG-LONGKHANH-2026-01',
+      logisticsTimeline: [
+        { status: 'REGISTERED', title: 'Khai báo vườn sầu riêng Ri6', description: 'HTX Long Khánh quản lý 30 cây sầu riêng lâu năm đạt độ tuổi thu hoạch', timestamp: '2026-05-10T08:00:00.000Z', location: 'Phường Xuân Lập, TP Long Khánh' },
+        { status: 'CULTIVATION', title: 'Tỉa trái chọn lọc & Bón kali hữu cơ', description: 'Mỗi chùm chỉ giữ lại 1-2 quả cân đối, cung cấp dinh dưỡng hữu cơ', timestamp: '2026-07-05T09:00:00.000Z', location: 'Xuân Lập, TP Long Khánh' },
+        { status: 'HARVESTED', title: 'Thu hoạch sầu riêng già chín cây', description: 'Kiểm tra gõ âm đục, cơm sầu lên màu vàng óng, mùi thơm tự nhiên nồng nàn', timestamp: '2026-10-12T05:30:00.000Z', location: 'Kho tuyển chọn HTX Long Khánh' }
+      ],
+      inspectionReports: []
     }
   });
 
-  // Certification for Trace Batch Pomelo
+  // 9. Certifications
   await prisma.certification.create({
     data: {
       batchId: batch1.id,
-      name: 'Chứng nhận VietGAP',
-      issuer: 'Cơ quan kiểm nghiệm cây trồng Bến Tre',
+      name: 'Chứng nhận VietGAP Trồng trọt Đồng Nai',
+      issuer: 'Chi cục Trồng trọt và Bảo vệ Thực vật Đồng Nai',
+      status: 'APPROVED',
       validUntil: new Date('2028-12-31'),
       imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format'
     }
   });
 
-  // Certification for Trace Batch Tomato
   await prisma.certification.create({
     data: {
-      batchId: batch2.id,
-      name: 'Chứng nhận VietGAP',
-      issuer: 'Cơ quan kiểm nghiệm lâm nghiệp Lâm Đồng',
-      validUntil: new Date('2028-12-31'),
+      batchId: batch1.id,
+      name: 'Giấy chứng nhận Sản phẩm OCOP 4 Sao Tỉnh Đồng Nai',
+      issuer: 'UBND Tỉnh Đồng Nai - Hội đồng Đánh giá Phân hạng OCOP',
+      status: 'APPROVED',
+      validUntil: new Date('2028-06-30'),
       imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format'
     }
   });
 
-  // Certification for Trace Batch Water Spinach
-  await prisma.certification.create({
-    data: {
-      batchId: batch3.id,
-      name: 'Chứng nhận hữu cơ Organic',
-      issuer: 'Hiệp hội Nông nghiệp Hữu cơ Việt Nam',
-      validUntil: new Date('2028-12-31'),
-      imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format'
-    }
-  });
-
-  console.log('Seeding CropNet DB successfully completed!');
+  console.log('✔ Hoàn thành khởi tạo dữ liệu mẫu CropNet Đồng Nai AI thành công!');
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('Lỗi khởi tạo DB:', e);
     process.exit(1);
   })
   .finally(async () => {

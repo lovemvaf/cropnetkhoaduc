@@ -1,6 +1,7 @@
 import { prisma } from '../../database/client';
 import { isDatabaseError, MOCK_PRODUCTS } from '../../database/dbFallback';
 import { logger } from '../../utils/logger';
+import { isProduction } from '../../utils/security';
 
 export const findProducts = async (filters: { 
   categoryId?: string; 
@@ -137,32 +138,21 @@ export const findProductById = async (id: string) => {
     });
   } catch (error: any) {
     if (isDatabaseError(error)) {
-      logger.warn(`Database connection failed. Falling back to mock product details for ID: ${id}.`);
-      const prod = MOCK_PRODUCTS.find(p => p.id === id) || MOCK_PRODUCTS[0];
+      if (isProduction()) {
+        logger.error(`[DB_ERROR] Database unreachable in production while fetching product: ${id}`, error);
+        throw error;
+      }
+      logger.warn(`Database connection unavailable in local mode. Searching mock products for ID: ${id}.`);
+      const prod = MOCK_PRODUCTS.find(p => p.id === id);
+      if (!prod) {
+        return null;
+      }
       return {
         ...prod,
-        supplier: prod.supplier || { id: 'mock-supplier-id', farmName: 'HTX Cái Mơn', address: 'Bến Tre' },
-        category: prod.category || { name: 'Trái Cây Sạch' },
-        images: prod.images || [{ url: prod.imageUrl || 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=500&auto=format' }],
-        batches: prod.batches || [
-          {
-            id: 'mock-batch-1',
-            batchCode: 'BATCH-BUOI-CAIMON-01',
-            harvestDate: new Date(),
-            farmingArea: 'Phân khu A3 - Trồng trọt Bưởi Hữu Cơ',
-            farmingProcess: 'Tưới tiêu bằng nước ngọt tự nhiên từ sông Hàm Luông, bón phân compost hữu cơ tự nhiên không sử dụng thuốc trừ sâu hóa học.',
-            qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BATCH-BUOI-CAIMON-01',
-            certifications: [
-              {
-                id: 'mock-cert-1',
-                name: 'Chứng nhận VietGAP',
-                issuer: 'Cơ quan kiểm nghiệm cây trồng Bến Tre',
-                validUntil: new Date('2028-12-31'),
-                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format'
-              }
-            ]
-          }
-        ]
+        supplier: prod.supplier,
+        category: prod.category,
+        images: prod.images || (prod.imageUrl ? [{ url: prod.imageUrl }] : []),
+        batches: prod.batches || []
       } as any;
     }
     throw error;
@@ -215,7 +205,7 @@ export const insertProduct = async (data: {
         tags: data.tags || [],
         variants: data.variants || null,
         createdAt: new Date(),
-        supplier: { id: data.supplierId, farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn', address: 'Xã Sơn Định, Huyện Chợ Lách, Tỉnh Bến Tre' },
+        supplier: { id: data.supplierId, farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều', address: 'Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai' },
         category: { name: 'Nông Sản' },
         images: data.imageUrls && data.imageUrls.length > 0 
           ? data.imageUrls.map(url => ({ url })) 
@@ -310,7 +300,7 @@ export const findSupplierByUserId = async (userId: string) => {
     return await prisma.supplier.findUnique({ where: { userId } });
   } catch (error: any) {
     if (isDatabaseError(error)) {
-      return { id: 'mock-supplier-id', userId, farmName: 'HTX Cái Mơn', address: 'Bến Tre', status: 'APPROVED' };
+      return { id: 'mock-supplier-tantrieu', userId, farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều', address: 'Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai', status: 'APPROVED' };
     }
     throw error;
   }

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import * as authRepository from '../modules/auth/auth.repository';
+import { getJwtSecret } from '../utils/security';
 
 export interface AuthenticatedRequest extends Request {
   user?: {
@@ -22,7 +23,7 @@ export const authMiddleware = async (req: AuthenticatedRequest, res: Response, n
 
   const token = authHeader.split(' ')[1];
   try {
-    const secret = process.env.JWT_SECRET || 'super-secret-jwt-key';
+    const secret = getJwtSecret();
     const decoded = jwt.verify(token, secret) as { id: string; role: string; email: string; fullName?: string };
     
     // Resolve user status dynamically from database or mock context

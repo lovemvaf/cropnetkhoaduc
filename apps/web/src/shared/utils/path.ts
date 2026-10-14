@@ -4,6 +4,9 @@ export function getAssetPath(url?: string) {
     return url;
   }
   const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+  if (cleanUrl.startsWith('/cropnetkhoaduc/')) {
+    return cleanUrl;
+  }
   
   // On GitHub Pages, Next.js basePath is '/cropnetkhoaduc'
   const isGithubPages = typeof window !== 'undefined' 

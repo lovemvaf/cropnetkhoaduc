@@ -30,7 +30,7 @@ export const findAllUsers = async () => {
         phone: u.phone || null,
         status: u.status,
         role: { name: u.role },
-        supplier: u.supplierId ? { id: u.supplierId, farmName: u.farmName || 'HTX Trái Cây Sạch Cái Mơn', address: u.address || 'Bến Tre', status: u.supplierStatus } : null
+        supplier: u.supplierId ? { id: u.supplierId, farmName: u.farmName || 'HTX Nông Nghiệp Tân Triều', address: u.address || 'Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai', status: u.supplierStatus } : null
       })) as any[];
     }
     throw error;

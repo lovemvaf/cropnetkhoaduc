@@ -442,8 +442,8 @@ export default function ForumPage() {
 
   // Popular system tags
   const trendingTagsList = [
-    'VietGAP', 'Hữu cơ', 'Số hóa', 'Ủ phân', 'Compost', 'Cái Mơn', 
-    'Bưởi da xanh', 'Cà chua bi', 'Nhật ký vụ mùa', 'Hỏi đáp'
+    'VietGAP', 'Hữu cơ', 'Số hóa', 'Ủ phân', 'Compost', 'Tân Triều', 
+    'Long Khánh', 'Bưởi đường lá cam', 'Sầu riêng Ri6', 'Nhật ký vụ mùa', 'OCOP Đồng Nai'
   ];
 
   return (
@@ -1256,8 +1256,8 @@ export default function ForumPage() {
             </h4>
             <div className="space-y-3.5 pt-1">
               {[
-                { name: 'HTX Cái Mơn', address: 'Bến Tre', items: 'Bưởi Da Xanh', desc: 'Canh tác đạt chuẩn hữu cơ sinh học sông Hàm Luông.' },
-                { name: 'Vườn Rau Sạch Bến Tre', address: 'Bến Tre', items: 'Rau Muống, Cải ngọt', desc: 'Mô hình phân lân vi sinh an toàn không hóa chất.' }
+                { name: 'HTX Nông Nghiệp Tân Triều', address: 'Vĩnh Cửu, Đồng Nai', items: 'Bưởi Đường Lá Cam, Da Xanh', desc: 'Vùng bưởi Tân Triều trứ danh phù sa sông Đồng Nai, đạt OCOP 4 sao và VietGAP.' },
+                { name: 'HTX Nông Nghiệp Long Khánh', address: 'Long Khánh, Đồng Nai', items: 'Sầu Riêng Ri6, Chôm Chôm Nhãn', desc: 'Thủ phủ trái cây vùng đất đỏ bazan màu mỡ, thu hoạch chín cây tự nhiên.' }
               ].map((farm, i) => (
                 <div key={i} className="space-y-1 pb-3 border-b border-gray-100 last:border-0 last:pb-0">
                   <p className="font-extrabold text-sm text-gray-900 hover:text-emerald-600 cursor-pointer">{farm.name}</p>

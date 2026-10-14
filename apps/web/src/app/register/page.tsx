@@ -126,7 +126,7 @@ export default function RegisterPage() {
                   type="text"
                   {...register('farmName', { required: 'Tên nông trại không được để trống' })}
                   className="mt-1 w-full border border-gray-200 px-4 py-2.5 rounded-xl focus:outline-primary-500 text-sm"
-                  placeholder="HTX Trái Cây Sạch Cái Mơn"
+                  placeholder="HTX Nông Nghiệp Tân Triều"
                 />
                 {errors.farmName && <span className="text-red-500 text-xs mt-1 block">{errors.farmName.message as string}</span>}
               </div>
@@ -136,7 +136,7 @@ export default function RegisterPage() {
                   type="text"
                   {...register('address', { required: 'Địa chỉ không được để trống' })}
                   className="mt-1 w-full border border-gray-200 px-4 py-2.5 rounded-xl focus:outline-primary-500 text-sm"
-                  placeholder="Chợ Lách, Bến Tre"
+                  placeholder="Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai"
                 />
                 {errors.address && <span className="text-red-500 text-xs mt-1 block">{errors.address.message as string}</span>}
               </div>

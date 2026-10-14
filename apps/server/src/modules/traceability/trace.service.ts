@@ -3,58 +3,41 @@ import * as traceRepository from './trace.repository';
 import * as productRepo from '../product/product.repository';
 import { NotFoundError, ForbiddenError } from '../../utils/errors';
 
+export const getFrontendOrigin = (overrideOrigin?: string): string => {
+  if (process.env.FRONTEND_URL) return process.env.FRONTEND_URL.replace(/\/$/, '');
+  if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
+  if (overrideOrigin && overrideOrigin.startsWith('http')) return overrideOrigin.replace(/\/$/, '');
+  return process.env.NODE_ENV === 'production' 
+    ? 'https://lovemvaf.github.io/cropnetkhoaduc' 
+    : 'http://localhost:3000';
+};
+
+export const getBatchTraceabilityUrl = (batchCode: string, origin?: string): string => {
+  const base = getFrontendOrigin(origin);
+  return `${base}/traceability/?batch=${encodeURIComponent(batchCode)}`;
+};
+
 const buildDefaultLogisticsTimeline = (batchCode: string, farmingArea: string) => {
   return [
     {
-      status: 'PICKED_UP',
-      title: 'Thu hoạch & Đóng gói',
-      description: `Lô hàng được thu hoạch từ vườn ${farmingArea} và đóng gói tại xưởng của nhà vườn.`,
+      status: 'REGISTERED',
+      title: 'Đăng ký thông tin lô hàng',
+      description: `Lô hàng được khai báo thông tin ban đầu tại ${farmingArea}.`,
       timestamp: new Date().toISOString(),
-      location: 'Nhà vườn / Hợp Tác Xã'
-    },
-    {
-      status: 'IN_TRANSIT',
-      title: 'Đang vận chuyển trung chuyển',
-      description: 'Lô hàng đã được bàn giao và đang vận chuyển bằng container lạnh.',
-      timestamp: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
-      location: 'Trên đường vận chuyển'
-    },
-    {
-      status: 'DELIVERED',
-      title: 'Cập cảng phân phối D2C',
-      description: 'Đã nhập kho trung chuyển trung tâm của CropNet.',
-      timestamp: new Date(Date.now() + 90 * 60 * 1000).toISOString(),
-      location: 'Kho trung chuyển TP. HCM'
+      location: 'Nhà vườn / Hợp tác xã (Thành phố Đồng Nai)'
     }
   ];
 };
 
 const buildDefaultInspectionReports = () => {
-  return [
-    {
-      inspector: 'Bộ phận Kiểm Định Chất lượng CropNet QC',
-      status: 'PASSED',
-      checkDate: new Date().toISOString(),
-      comments: 'Đã hoàn thành kiểm nghiệm các chỉ tiêu an toàn thực phẩm. Sản phẩm đạt độ chín sinh lý, kích thước và màu sắc đạt chuẩn chất lượng loại A.',
-      metrics: {
-        pesticideLevel: '0.0% (Không phát hiện)',
-        humidity: '84.5%',
-        sugarLevel: '12.0 Brix'
-      }
-    }
-  ];
+  // Truthful baseline: Empty until verified by third-party inspection agency or official lab report.
+  // Never fabricate PASSED or 0.0% pesticide residues.
+  return [];
 };
 
 const buildDefaultShipmentInfo = (batchCode: string) => {
-  return {
-    shipmentId: `SHIP-${batchCode}`,
-    carrier: 'CropNet Logistics Fleet',
-    vehicle: 'Xe tải lạnh chuyên dụng - BKS 51C-888.88',
-    currentTemp: '4.8°C',
-    humidity: '76.2%',
-    departureDate: new Date().toISOString(),
-    arrivalDate: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString()
-  };
+  // Truthful baseline: Null until an actual logistics partner or farmer dispatches a shipment.
+  return null;
 };
 
 export const findBatchByCode = async (batchCode: string) => {
@@ -78,8 +61,9 @@ export const createTraceBatch = async (data: {
   logisticsTimeline?: any;
   inspectionReports?: any;
   shipmentInfo?: any;
+  frontendOrigin?: string;
 }) => {
-  const publicUrl = `https://cropnet.vn/traceability/${data.batchCode}`;
+  const publicUrl = getBatchTraceabilityUrl(data.batchCode, data.frontendOrigin);
   const qrCodeDataUrl = await qrcode.toDataURL(publicUrl, {
     errorCorrectionLevel: 'H',
     width: 512
@@ -127,7 +111,7 @@ export const editTraceBatch = async (
 
   let qrCodeUrl = batch.qrCodeUrl;
   if (data.batchCode && data.batchCode !== batch.batchCode) {
-    const publicUrl = `https://cropnet.vn/traceability/${data.batchCode}`;
+    const publicUrl = getBatchTraceabilityUrl(data.batchCode);
     qrCodeUrl = await qrcode.toDataURL(publicUrl, {
       errorCorrectionLevel: 'H',
       width: 512
@@ -156,7 +140,7 @@ export const removeTraceBatch = async (id: string, supplierId: string) => {
 };
 
 export const generateQRData = async (batchCode: string, type: 'png' | 'svg', frontendOrigin: string) => {
-  const traceabilityUrl = `${frontendOrigin}/traceability/${batchCode}`;
+  const traceabilityUrl = getBatchTraceabilityUrl(batchCode, frontendOrigin);
 
   if (type === 'svg') {
     return await qrcode.toString(traceabilityUrl, {
@@ -178,7 +162,7 @@ export const regenerateBatchQR = async (id: string, frontendOrigin: string) => {
   const batch = await traceRepository.findBatchByCode(id);
   if (!batch) throw new NotFoundError('Không tìm thấy lô hàng');
 
-  const publicUrl = `${frontendOrigin}/traceability/${batch.batchCode}`;
+  const publicUrl = getBatchTraceabilityUrl(batch.batchCode, frontendOrigin);
   const qrCodeDataUrl = await qrcode.toDataURL(publicUrl, {
     errorCorrectionLevel: 'H',
     width: 512

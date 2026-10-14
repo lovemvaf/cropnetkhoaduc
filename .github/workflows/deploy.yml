@@ -27,7 +27,14 @@ jobs:
       - name: Install dependencies 🔧
         run: npm ci
 
+      - name: Run automated security & AI test suite 🧪
+        run: npm test
+
       - name: Build web application 🏗️
+        env:
+          NODE_ENV: production
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          NEXT_PUBLIC_BASE_PATH: /cropnetkhoaduc
         run: |
           npm run build:web
           touch apps/web/out/.nojekyll

@@ -45,15 +45,19 @@ export const getAdminAnalytics = async (filters: { startDate?: string; endDate?:
     }
   });
 
-  // 3. User growth series
+  // 3. User growth series (deterministic based on current counts)
   const growthSeries = Array(6).fill(0).map((_, idx) => {
     const d = new Date();
     d.setMonth(d.getMonth() - (5 - idx));
     const label = `${d.getMonth() + 1}/${d.getFullYear()}`;
+    const totalSup = counts.totalSuppliers || 1;
+    const totalCust = counts.totalCustomers || 1;
+    const supplierFactor = Math.min(totalSup, Math.max(1, Math.round((totalSup / 6) * (idx + 1))));
+    const customerFactor = Math.min(totalCust, Math.max(1, Math.round((totalCust / 6) * (idx + 1))));
     return {
       name: label,
-      suppliers: Math.floor(Math.random() * 5) + idx * 3 + 2,
-      customers: Math.floor(Math.random() * 15) + idx * 8 + 10
+      suppliers: supplierFactor,
+      customers: customerFactor
     };
   });
 
@@ -66,13 +70,27 @@ export const getAdminAnalytics = async (filters: { startDate?: string; endDate?:
     else if (o.status === 'CANCELLED') cancelled++;
   });
 
-  // 5. Category distribution
-  const categories = [
-    { name: 'Trái Cây Sạch', sales: 4500000 },
-    { name: 'Rau Củ Hữu Cơ', sales: 3200000 },
-    { name: 'Gạo & Ngũ Cốc', sales: 1800000 },
-    { name: 'Gia Vị Sạch', sales: 650000 }
-  ];
+  // 5. Category distribution from actual order data
+  const categoryMap = new Map<string, number>();
+  filteredOrders.forEach((o: any) => {
+    (o.orderItems || []).forEach((item: any) => {
+      const catName = item.product?.category?.name || 'Nông sản Đồng Nai';
+      const itemTotal = Number(item.price || 0) * Number(item.quantity || 1);
+      categoryMap.set(catName, (categoryMap.get(catName) || 0) + itemTotal);
+    });
+  });
+
+  const categories = Array.from(categoryMap.entries()).map(([name, sales]) => ({
+    name,
+    sales
+  }));
+
+  if (categories.length === 0) {
+    categories.push(
+      { name: 'Trái Cây Đặc Sản Đồng Nai', sales: 0 },
+      { name: 'Nông Sản Chế Biến & Hạt', sales: 0 }
+    );
+  }
 
   // 6. Top Selling Products
   const topProducts = await analyticsRepository.findTopProducts(5);

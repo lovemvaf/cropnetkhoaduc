@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCartStore } from '@/shared/stores/cart';
 import { useAuthStore } from '@/shared/stores/auth';
-import { ShoppingBag, User, Sprout, LogOut, LayoutDashboard } from 'lucide-react';
+import { ShoppingBag, User, Sprout, LogOut, LayoutDashboard, Sparkles, MapPin, Calendar, QrCode } from 'lucide-react';
 import { ConfirmDialog } from '@cropnet/ui';
 
 export default function Header() {
@@ -25,33 +25,92 @@ export default function Header() {
     setShowLogoutConfirm(false);
   };
 
-  const isActive = (path: string) => pathname === path;
+  const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-lg border-b border-gray-100">
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-xs">
+      {/* DiGiFest 2026 Showcase Mode Notice */}
+      <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white text-[11px] md:text-xs py-1.5 px-4 text-center font-medium flex items-center justify-center gap-2">
+        <span className="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded font-black tracking-wider uppercase">DIGIFEST 2026</span>
+        <span className="truncate">Bản Trình Diễn Dự Thi AI Digital Business Challenge — Nông Sản Số Thành Phố Đồng Nai</span>
+      </div>
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-primary-500 font-bold text-xl transition-transform active:scale-95">
-          <Sprout className="w-6 h-6 animate-pulse" />
-          <span className="tracking-tight font-black">CROPNET</span>
+        <Link href="/" className="flex items-center gap-2 text-primary-600 font-bold text-lg md:text-xl transition-transform active:scale-95">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-primary-500 flex items-center justify-center text-white shadow-sm">
+            <Sprout className="w-5 h-5" />
+          </div>
+          <div className="flex flex-col">
+            <span className="tracking-tight font-black leading-none bg-gradient-to-r from-emerald-700 to-primary-600 bg-clip-text text-transparent">
+              CROPNET <span className="text-amber-500 font-extrabold text-xs">ĐỒNG NAI AI</span>
+            </span>
+            <span className="text-[9px] text-gray-600 font-bold uppercase tracking-wider">
+              Nông Sản Số • DIGIFEST 2026
+            </span>
+          </div>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8 text-sm font-bold text-gray-500">
+        <nav className="hidden lg:flex items-center gap-6 text-sm font-bold text-gray-600">
           <Link 
             href="/products" 
             className={`transition-all duration-200 py-1 border-b-2 ${
               isActive('/products') 
-                ? 'border-primary-500 text-primary-500' 
-                : 'border-transparent hover:text-primary-500 text-gray-600'
+                ? 'border-primary-500 text-primary-600' 
+                : 'border-transparent hover:text-primary-600 text-gray-600'
             }`}
           >
-            Nông Sản Sạch
+            Nông Sản Đồng Nai
+          </Link>
+          <Link 
+            href="/ban-do" 
+            className={`transition-all duration-200 py-1 border-b-2 flex items-center gap-1 ${
+              isActive('/ban-do') 
+                ? 'border-primary-500 text-primary-600' 
+                : 'border-transparent hover:text-primary-600 text-gray-600'
+            }`}
+          >
+            <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Bản Đồ Vườn</span>
+          </Link>
+          <Link 
+            href="/mua-vu" 
+            className={`transition-all duration-200 py-1 border-b-2 flex items-center gap-1 ${
+              isActive('/mua-vu') 
+                ? 'border-primary-500 text-primary-600' 
+                : 'border-transparent hover:text-primary-600 text-gray-600'
+            }`}
+          >
+            <Calendar className="w-3.5 h-3.5 text-amber-600" />
+            <span>Lịch Mùa Vụ</span>
+          </Link>
+          <Link 
+            href="/ai-tu-van" 
+            className={`transition-all duration-200 py-1 px-2.5 rounded-full border flex items-center gap-1.5 shadow-xs ${
+              isActive('/ai-tu-van') 
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-emerald-500/20' 
+                : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 animate-pulse text-amber-400" />
+            <span>AI Tư Vấn</span>
+            <span className="text-[9px] bg-amber-400 text-amber-950 font-black px-1.5 py-0.2 rounded-full uppercase">24/7</span>
+          </Link>
+          <Link 
+            href="/traceability" 
+            className={`transition-all duration-200 py-1 border-b-2 flex items-center gap-1 ${
+              isActive('/traceability') 
+                ? 'border-primary-500 text-primary-600' 
+                : 'border-transparent hover:text-primary-600 text-gray-600'
+            }`}
+          >
+            <QrCode className="w-3.5 h-3.5" />
+            <span>Truy Xuất QR</span>
           </Link>
           <Link 
             href="/forum" 
             className={`transition-all duration-200 py-1 border-b-2 ${
               isActive('/forum') 
-                ? 'border-primary-500 text-primary-500' 
-                : 'border-transparent hover:text-primary-500 text-gray-600'
+                ? 'border-primary-500 text-primary-600' 
+                : 'border-transparent hover:text-primary-600 text-gray-600'
             }`}
           >
             Cộng Đồng

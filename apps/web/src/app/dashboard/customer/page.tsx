@@ -297,7 +297,7 @@ export default function CustomerDashboardPage() {
                 />
                 <div>
                   <h4 className="font-bold text-gray-900 text-base">{reviewingItem.product?.name}</h4>
-                  <p className="text-xs text-gray-400">Nhà vườn: HTX Cái Mơn</p>
+                  <p className="text-xs text-gray-400">Nhà vườn: {reviewingItem.product?.supplier?.farmName || 'HTX Nông Nghiệp Tân Triều'}</p>
                 </div>
               </div>
 

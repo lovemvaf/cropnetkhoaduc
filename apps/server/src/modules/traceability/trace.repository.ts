@@ -1,6 +1,7 @@
 import { prisma } from '../../database/client';
 import { isDatabaseError, MOCK_BATCHES } from '../../database/dbFallback';
 import { logger } from '../../utils/logger';
+import { isProduction } from '../../utils/security';
 
 export const findBatchByCode = async (batchCode: string) => {
   try {
@@ -17,11 +18,19 @@ export const findBatchByCode = async (batchCode: string) => {
     });
   } catch (error: any) {
     if (isDatabaseError(error)) {
-      const batch = MOCK_BATCHES.find(b => b.batchCode === batchCode) || MOCK_BATCHES[0];
-      return {
-        ...batch,
-        batchCode
-      };
+      // In production, never return mock data when the database fails (Fail-Closed)
+      if (isProduction()) {
+        logger.error(`[DB_ERROR] Database unreachable in production while fetching batch: ${batchCode}`, error);
+        throw error;
+      }
+      
+      // In development / testing: strictly match the requested batchCode.
+      // NEVER fallback to MOCK_BATCHES[0] and rebrand with the requested code.
+      const batch = MOCK_BATCHES.find(b => b.batchCode === batchCode);
+      if (!batch) {
+        return null;
+      }
+      return batch;
     }
     throw error;
   }
@@ -67,6 +76,10 @@ export const insertTraceBatch = async (data: {
     });
   } catch (error: any) {
     if (isDatabaseError(error)) {
+      if (isProduction()) {
+        logger.error(`[DB_ERROR] Failed to insert trace batch in production`, error);
+        throw error;
+      }
       const newBatch = {
         id: `mock-batch-${Date.now()}`,
         productId: data.productId,
@@ -75,16 +88,16 @@ export const insertTraceBatch = async (data: {
         farmingArea: data.farmingArea,
         farmingProcess: data.farmingProcess,
         qrCodeUrl: data.qrCodeUrl,
-        logisticsTimeline: data.logisticsTimeline,
-        inspectionReports: data.inspectionReports,
-        shipmentInfo: data.shipmentInfo,
+        logisticsTimeline: data.logisticsTimeline || [],
+        inspectionReports: data.inspectionReports || [],
+        shipmentInfo: data.shipmentInfo || null,
         product: {
-          name: 'Bưởi Da Xanh Bến Tre',
+          name: 'Bưởi Đường Lá Cam Tân Triều',
           supplier: {
-            farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn',
-            address: 'Xã Sơn Định, Huyện Chợ Lách, Tỉnh Bến Tre',
-            latitude: 10.2458,
-            longitude: 106.1284
+            farmName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều',
+            address: 'Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai',
+            latitude: 11.0267,
+            longitude: 106.8835
           }
         },
         certifications: data.certName ? [
@@ -118,6 +131,9 @@ export const insertCertification = async (batchId: string, data: { name: string;
     });
   } catch (error: any) {
     if (isDatabaseError(error)) {
+      if (isProduction()) {
+        throw error;
+      }
       const newCert = {
         id: `mock-cert-${Date.now()}`,
         name: data.name,
@@ -151,6 +167,9 @@ export const findAllBatches = async (supplierId?: string) => {
     });
   } catch (error: any) {
     if (isDatabaseError(error)) {
+      if (isProduction()) {
+        throw error;
+      }
       if (supplierId) {
         return MOCK_BATCHES.filter(b => 
           b.productId === supplierId || 
@@ -181,6 +200,9 @@ export const updateTraceBatch = async (id: string, data: {
     });
   } catch (error: any) {
     if (isDatabaseError(error)) {
+      if (isProduction()) {
+        throw error;
+      }
       logger.warn(`Database connection failed. Simulating in-memory batch update for ID: ${id}`);
       const index = MOCK_BATCHES.findIndex(b => b.id === id || b.batchCode === id);
       if (index !== -1) {
@@ -203,6 +225,9 @@ export const deleteTraceBatch = async (id: string) => {
     return true;
   } catch (error: any) {
     if (isDatabaseError(error)) {
+      if (isProduction()) {
+        throw error;
+      }
       logger.warn(`Database connection failed. Simulating in-memory batch deletion for ID: ${id}`);
       const index = MOCK_BATCHES.findIndex(b => b.id === id || b.batchCode === id);
       if (index !== -1) {

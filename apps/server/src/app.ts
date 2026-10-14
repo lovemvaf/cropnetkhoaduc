@@ -15,6 +15,7 @@ import analyticsRoutes from './modules/analytics/analytics.routes';
 import adminRoutes from './modules/admin/admin.routes';
 import uploadRoutes from './modules/upload/upload.routes';
 import forumRoutes from './modules/forum/forum.routes';
+import aiRoutes from './modules/ai/ai.routes';
 import { loggerMiddleware } from './middlewares/logger.middleware';
 
 const app = express();
@@ -63,6 +64,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/forum', forumRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

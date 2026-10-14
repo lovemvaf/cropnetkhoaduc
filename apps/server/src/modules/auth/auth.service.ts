@@ -3,9 +3,7 @@ import jwt from 'jsonwebtoken';
 import * as authRepository from './auth.repository';
 import { BadRequestError, UnauthorizedError } from '../../utils/errors';
 import { logger } from '../../utils/logger';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'super-secret-refresh-jwt-key';
+import { getJwtSecret, getJwtRefreshSecret, generateSecureToken, isProduction } from '../../utils/security';
 
 export const registerUser = async (data: {
   email: string;
@@ -31,14 +29,14 @@ export const registerUser = async (data: {
   });
 
   // Generate initial email verification token
-  const verificationToken = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const verificationToken = generateSecureToken(6);
   await authRepository.setUserVerificationToken(data.email, verificationToken);
 
-  logger.info(`[VERIFICATION EMAIL SENT] To: ${data.email} | Token: ${verificationToken}`);
+  logger.info(`[VERIFICATION EMAIL] Sent verification request to: ${data.email}`);
 
   return {
     ...user,
-    verificationToken
+    ...(isProduction() ? {} : { verificationToken })
   };
 };
 
@@ -56,14 +54,14 @@ export const loginUser = async (email: string, passwordTho: string) => {
   // Create Access Token (short-lived: 15m)
   const accessToken = jwt.sign(
     { id: user.id, email: user.email, role: user.role.name, fullName: user.fullName },
-    JWT_SECRET,
+    getJwtSecret(),
     { expiresIn: '15m' }
   );
 
   // Create Refresh Token (long-lived: 7d)
   const refreshToken = jwt.sign(
     { id: user.id },
-    JWT_REFRESH_SECRET,
+    getJwtRefreshSecret(),
     { expiresIn: '7d' }
   );
 
@@ -88,7 +86,7 @@ export const loginUser = async (email: string, passwordTho: string) => {
 
 export const refreshUserToken = async (token: string) => {
   try {
-    const decoded = jwt.verify(token, JWT_REFRESH_SECRET) as { id: string };
+    const decoded = jwt.verify(token, getJwtRefreshSecret()) as { id: string };
     const user = await authRepository.findUserById(decoded.id);
 
     if (!user) {
@@ -97,7 +95,7 @@ export const refreshUserToken = async (token: string) => {
 
     const newAccessToken = jwt.sign(
       { id: user.id, email: user.email, role: user.role.name, fullName: user.fullName },
-      JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: '15m' }
     );
 
@@ -114,18 +112,24 @@ export const logoutUser = async (userId: string) => {
 export const requestPasswordReset = async (email: string) => {
   const user = await authRepository.findUserByEmail(email);
   if (!user) {
+    // Avoid user enumeration in production
+    if (isProduction()) {
+      return { success: true, message: 'Nếu email tồn tại, hướng dẫn đặt lại mật khẩu đã được xử lý.' };
+    }
     throw new BadRequestError('Không tìm thấy tài khoản với email này');
   }
 
-  const resetToken = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const resetToken = generateSecureToken(8);
   const expires = new Date(Date.now() + 3600000); // 1 hour from now
 
   await authRepository.setUserResetPasswordToken(email, resetToken, expires);
 
-  logger.info(`[PASSWORD RESET EMAIL SENT] To: ${email} | Token: ${resetToken}`);
+  logger.info(`[PASSWORD RESET INITIATED] Password reset requested for: ${email}`);
 
   return {
-    resetToken
+    success: true,
+    message: 'Yêu cầu đặt lại mật khẩu đã được tiếp nhận.',
+    ...(isProduction() ? {} : { devResetToken: resetToken })
   };
 };
 
@@ -168,12 +172,14 @@ export const sendVerificationToken = async (email: string) => {
     throw new BadRequestError('Email đã được xác thực trước đó');
   }
 
-  const verificationToken = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const verificationToken = generateSecureToken(6);
   await authRepository.setUserVerificationToken(email, verificationToken);
 
-  logger.info(`[VERIFICATION EMAIL RESENT] To: ${email} | Token: ${verificationToken}`);
+  logger.info(`[VERIFICATION RESENT] Resent verification for: ${email}`);
 
   return {
-    verificationToken
+    success: true,
+    message: 'Mã xác minh đã được tạo lại.',
+    ...(isProduction() ? {} : { verificationToken })
   };
 };

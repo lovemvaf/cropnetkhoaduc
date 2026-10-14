@@ -29,8 +29,8 @@ export default function ProductsPage() {
   const [totalItems, setTotalItems] = useState(0);
   const limit = 6; // smaller limit for easier pagination demonstration
 
-  // Mock agricultural tags for search filter
-  const availableTags = ['VietGAP', 'Hữu cơ', 'D2C', 'Đặc sản', 'Bến Tre', 'Đà Lạt'];
+  // Authentic agricultural tags for search filter
+  const availableTags = ['OCOP', 'Bưởi Tân Triều', 'Sầu riêng Long Khánh', 'VietGAP', 'Hữu cơ', 'Đặc sản Đồng Nai'];
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -42,8 +42,8 @@ export default function ProductsPage() {
       } catch (err) {
         console.warn('Failed to load categories, using fallback:', err);
         setCategories([
-          { id: 'cat-fruits', name: 'Trái Cây Sạch', slug: 'trai-cay-sach' },
-          { id: 'cat-veggies', name: 'Rau Củ Hữu Cơ', slug: 'rau-cu-huu-co' }
+          { id: 'cat-fruits', name: 'Trái Cây Đặc Sản Đồng Nai', slug: 'trai-cay-dac-san-dong-nai' },
+          { id: 'cat-processed', name: 'Nông Sản Chế Biến & Hạt', slug: 'nong-san-che-bien-hat' }
         ]);
       }
     };
@@ -59,7 +59,6 @@ export default function ProductsPage() {
         sort,
         status: 'ACTIVE'
       };
-
       if (search) params.search = search;
       if (selectedCategory) params.categoryId = selectedCategory;
       if (selectedTag) params.tag = selectedTag;
@@ -79,16 +78,14 @@ export default function ProductsPage() {
       }
     } catch (err) {
       console.warn('Failed to fetch products, using offline backup:', err);
-      // Offline search fallback
+      // Offline fallback aligned with authentic Dong Nai cooperatives
       const offlineProducts = [
-        { id: '1', name: 'Bưởi Da Xanh Cái Mơn', price: 65000, unit: 'quả 1.2kg', categoryId: 'cat-fruits', tags: ['VietGAP', 'Đặc sản', 'Bến Tre'], status: 'ACTIVE', supplier: { farmName: 'Hợp Tác Xã Trái Cây Sạch Cái Mơn', address: 'Bến Tre' }, imageUrl: '/buoi-da-xanh-cai-mon.jpg' },
-        { id: '2', name: 'Cà Chua Bi Đà Lạt', price: 35000, unit: 'túi 500g', categoryId: 'cat-veggies', tags: ['Hữu cơ', 'Đà Lạt'], status: 'ACTIVE', supplier: { farmName: 'Dalat Bio Farm', address: 'Đà Lạt' }, imageUrl: '/cachuabidalat.jpg' },
-        { id: '3', name: 'Rau Muống Hữu Cơ', price: 15000, unit: 'bó 500g', categoryId: 'cat-veggies', tags: ['Hữu cơ', 'D2C'], status: 'ACTIVE', supplier: { farmName: 'Vườn Rau Sạch Bến Tre', address: 'Bến Tre' }, imageUrl: '/rau-muong-huu-co.jpg' },
-        { id: '4', name: 'Sầu Riêng Ri6 Vĩnh Long', price: 145000, unit: 'kg (quả 2.5kg)', categoryId: 'cat-fruits', tags: ['VietGAP', 'Đặc sản', 'Vĩnh Long'], status: 'ACTIVE', supplier: { farmName: 'HTX Sầu Riêng Vĩnh Long', address: 'Vĩnh Long' }, imageUrl: '/sau-rieng-vinh-long.jpg' },
-        { id: '5', name: 'Xoài Cát Hòa Lộc', price: 85000, unit: 'kg (2 quả)', categoryId: 'cat-fruits', tags: ['VietGAP', 'Đặc sản', 'Tiền Giang'], status: 'ACTIVE', supplier: { farmName: 'HTX Xoài Cát Hòa Lộc', address: 'Tiền Giang' }, imageUrl: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&auto=format' },
-        { id: '6', name: 'Bơ Sáp 034 Tây Nguyên', price: 55000, unit: 'túi 1kg', categoryId: 'cat-fruits', tags: ['VietGAP', 'Đặc sản', 'Đắk Lắk'], status: 'ACTIVE', supplier: { farmName: 'Vườn Bơ Sáp Đắk Lắk', address: 'Đắk Lắk' }, imageUrl: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=500&auto=format' },
-        { id: '7', name: 'Nấm Đùi Gà Hữu Cơ', price: 45000, unit: 'hộp 300g', categoryId: 'cat-veggies', tags: ['Hữu cơ', 'Lâm Đồng'], status: 'ACTIVE', supplier: { farmName: 'Lâm Đồng Organics', address: 'Lâm Đồng' }, imageUrl: '/nam-dui-ga.jpg' },
-        { id: '8', name: 'Măng Tây Xanh Loại 1', price: 85000, unit: 'bó 500g', categoryId: 'cat-veggies', tags: ['VietGAP', 'Đặc sản', 'Ninh Thuận'], status: 'ACTIVE', supplier: { farmName: 'HTX Măng Tây Ninh Thuận', address: 'Ninh Thuận' }, imageUrl: '/mang-tay-xanh.jpg' }
+        { id: '1', name: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)', price: 85000, unit: 'quả (1.1kg - 1.3kg)', categoryId: 'cat-fruits', tags: ['OCOP', 'Bưởi Tân Triều', 'VietGAP', 'Đặc sản Đồng Nai'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Tân Triều', address: 'Xã Tân Bình, Vĩnh Cửu, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' },
+        { id: '2', name: 'Bưởi Da Xanh Tân Triều Hữu Cơ', price: 75000, unit: 'quả (1.3kg - 1.5kg)', categoryId: 'cat-fruits', tags: ['VietGAP', 'Bưởi Tân Triều', 'Hữu cơ'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Tân Triều', address: 'Xã Tân Bình, Vĩnh Cửu, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' },
+        { id: '3', name: 'Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)', price: 135000, unit: 'kg (quả 2.5kg - 3.5kg)', categoryId: 'cat-fruits', tags: ['VietGAP', 'Sầu riêng Long Khánh', 'Chín tự nhiên'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Long Khánh', address: 'Phường Xuân Lập, TP Long Khánh, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=800&auto=format' },
+        { id: '4', name: 'Chôm Chôm Nhãn Long Khánh', price: 45000, unit: 'kg (chùm quả tươi)', categoryId: 'cat-fruits', tags: ['Đặc sản Long Khánh', 'Đang mùa vụ'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Long Khánh', address: 'Phường Xuân Lập, TP Long Khánh, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format' },
+        { id: '5', name: 'Hạt Điều Rang Muối Vỏ Lụa Đồng Nai (Hộp 500g)', price: 120000, unit: 'hộp 500g', categoryId: 'cat-processed', tags: ['OCOP', 'Hạt điều Đồng Nai', 'Chế biến sạch'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Long Khánh', address: 'Huyện Xuân Lộc, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&auto=format' },
+        { id: '6', name: 'Rượu Bưởi Tân Triều Truyền Thống (Bình Gốm 750ml)', price: 195000, unit: 'bình gốm 750ml', categoryId: 'cat-processed', tags: ['OCOP', 'Quà biếu tặng', 'Rượu bưởi Tân Triều'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Tân Triều', address: 'Xã Tân Bình, Vĩnh Cửu, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format' }
       ];
       
       let filtered = offlineProducts;

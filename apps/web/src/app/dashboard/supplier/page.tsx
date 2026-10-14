@@ -61,11 +61,11 @@ export default function SupplierDashboardPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
 
   // Farm Profile & Story states
-  const [farmName, setFarmName] = useState('Hợp Tác Xã Trái Cây Sạch Cái Mơn');
-  const [farmAddress, setFarmAddress] = useState('Xã Sơn Định, Huyện Chợ Lách, Tỉnh Bến Tre');
-  const [farmBio, setFarmBio] = useState('Chào mừng quý khách đến với vườn rừng của chúng tôi. Chúng tôi tự hào canh tác bưởi da xanh đạt chuẩn VietGAP organic tự nhiên không thuốc trừ sâu hóa học.');
+  const [farmName, setFarmName] = useState('Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều');
+  const [farmAddress, setFarmAddress] = useState('Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai');
+  const [farmBio, setFarmBio] = useState('Chào mừng quý khách đến với cù lao bưởi Tân Triều. Chúng tôi tự hào canh tác bưởi đường lá cam và bưởi da xanh đạt chuẩn OCOP 4 sao và VietGAP sinh thái, tưới tiêu từ nguồn nước ngọt phù sa sông Đồng Nai.');
   const [farmGallery, setFarmGallery] = useState<string[]>([
-    'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=500',
+    'https://images.unsplash.com/photo-1595855759920-86582396756a?w=500',
     'https://images.unsplash.com/photo-1593113630400-ea4288922497?w=500',
     'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=500'
   ]);
@@ -76,9 +76,9 @@ export default function SupplierDashboardPage() {
 
   // Journey Timeline states
   const [journeyTimeline, setJourneyTimeline] = useState<any[]>([
-    { id: '1', date: '2026-05-01', title: 'Bắt đầu xuống giống vụ Xuân Hè', description: 'Gieo hạt mầm giống cây ăn trái và các giống rau ăn lá tại vườn Cái Mơn.', imageUrl: 'https://images.unsplash.com/photo-1593113630400-ea4288922497?w=500' },
-    { id: '2', date: '2026-05-15', title: 'Tưới bón đợt 1 hữu cơ sinh học', description: 'Tưới nước ngọt tự nhiên từ sông Hàm Luông và bón phân compost hữu cơ compost vi sinh.', imageUrl: '' },
-    { id: '3', date: '2026-05-23', title: 'Thu hoạch quả ngọt đầu mùa đạt VietGAP', description: 'Quả chín căng đầy vỏ mỏng múi mọng ngọt đậm đà sẵn sàng đóng gói xuất xưởng D2C.', imageUrl: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=500' }
+    { id: '1', date: '2026-06-15', title: 'Khởi tạo thông tin lô bưởi vụ mùa 2026', description: 'HTX Tân Triều đăng ký mã vùng trồng và quản lý 5.000 cây bưởi đường lá cam.', imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=500' },
+    { id: '2', date: '2026-07-20', title: 'Bón phân hữu cơ vi sinh & Bao trái', description: 'Tưới nước phù sa sông Đồng Nai và bao 5.000 trái bằng túi màng thoáng khí chống côn trùng.', imageUrl: '' },
+    { id: '3', date: '2026-10-10', title: 'Thu hoạch quả đạt OCOP 4 sao & Dán tem QR', description: 'Kiểm tra độ ngọt đạt 11.8 Brix, vỏ mỏng tép mọng nước, dán tem truy xuất nguồn gốc số.', imageUrl: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=500' }
   ]);
   const [showTimelineModal, setShowTimelineModal] = useState(false);
   const [timelineTitle, setTimelineTitle] = useState('');
@@ -239,7 +239,7 @@ export default function SupplierDashboardPage() {
   
   // Cert inputs
   const [batchCertName, setBatchCertName] = useState('Chứng nhận VietGAP');
-  const [batchCertIssuer, setBatchCertIssuer] = useState('Cục Trồng trọt Bến Tre');
+  const [batchCertIssuer, setBatchCertIssuer] = useState('Chi cục Trồng trọt & BVTV Đồng Nai');
   const [batchCertValidUntil, setBatchCertValidUntil] = useState('2028-12-31');
   const [batchCertImageUrl, setBatchCertImageUrl] = useState('https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format');
 
@@ -251,7 +251,7 @@ export default function SupplierDashboardPage() {
   const [batchHumidity, setBatchHumidity] = useState('78%');
 
   // Inspection inputs
-  const [batchInspector, setBatchInspector] = useState('Chi cục Trồng trọt & BVTV Bến Tre');
+  const [batchInspector, setBatchInspector] = useState('Chi cục Trồng trọt & BVTV Đồng Nai');
   const [batchPesticide, setBatchPesticide] = useState('0.0% (Không phát hiện)');
   const [batchInspectHumidity, setBatchInspectHumidity] = useState('85%');
   const [batchSugar, setBatchSugar] = useState('12.5 Brix');
@@ -396,7 +396,7 @@ export default function SupplierDashboardPage() {
             <img class="qr-code" src="${qrImageSrc}" alt="QR Code" />
             <div class="batch-code">${batch.batchCode}</div>
             <div class="detail"><b>Sản phẩm:</b> ${batch.product?.name || 'Nông sản'}</div>
-            <div class="detail farm-name">${batch.product?.supplier?.farmName || user?.fullName || 'Hợp Tác Xã Cái Mơn'}</div>
+            <div class="detail farm-name">${batch.product?.supplier?.farmName || user?.fullName || 'Hợp Tác Xã Nông Nghiệp Tân Triều'}</div>
             <div class="footer-text">Xác thực nguồn gốc chuỗi cung ứng D2C</div>
           </div>
           <script>
@@ -642,7 +642,7 @@ export default function SupplierDashboardPage() {
     
     // Cert defaults
     setBatchCertName('Chứng nhận VietGAP');
-    setBatchCertIssuer('Cục Trồng trọt Bến Tre');
+    setBatchCertIssuer('Chi cục Trồng trọt & BVTV Đồng Nai');
     setBatchCertValidUntil('2028-12-31');
     setBatchCertImageUrl('https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format');
 
@@ -654,7 +654,7 @@ export default function SupplierDashboardPage() {
     setBatchHumidity('78%');
 
     // Inspections defaults
-    setBatchInspector('Chi cục Trồng trọt & BVTV Bến Tre');
+    setBatchInspector('Chi cục Trồng trọt & BVTV Đồng Nai');
     setBatchPesticide('0.0% (Không phát hiện)');
     setBatchInspectHumidity('85%');
     setBatchSugar('12.5 Brix');
@@ -680,7 +680,7 @@ export default function SupplierDashboardPage() {
       setBatchCertImageUrl(cert.imageUrl || '');
     } else {
       setBatchCertName('Chứng nhận VietGAP');
-      setBatchCertIssuer('Cục Trồng trọt Bến Tre');
+      setBatchCertIssuer('Chi cục Trồng trọt & BVTV Đồng Nai');
       setBatchCertValidUntil('2028-12-31');
       setBatchCertImageUrl('https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format');
     }
@@ -708,7 +708,7 @@ export default function SupplierDashboardPage() {
         setBatchSugar(rep.metrics.sugarLevel || '');
       }
     } else {
-      setBatchInspector('Chi cục Trồng trọt & BVTV Bến Tre');
+      setBatchInspector('Chi cục Trồng trọt & BVTV Đồng Nai');
       setBatchPesticide('0.0% (Không phát hiện)');
       setBatchInspectHumidity('85%');
       setBatchSugar('12.5 Brix');
@@ -729,7 +729,7 @@ export default function SupplierDashboardPage() {
           title: 'Thu hoạch & Đóng gói',
           description: `Đã đóng gói nông sản từ khu vực ${batchArea || 'khu canh tác'}`,
           timestamp: new Date().toISOString(),
-          location: user?.fullName || 'Hợp Tác Xã Bến Tre'
+          location: user?.fullName || 'Hợp Tác Xã Nông Nghiệp Tân Triều, Đồng Nai'
         }
       ];
 
@@ -931,7 +931,7 @@ export default function SupplierDashboardPage() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-100 pb-6">
           <div>
             <h2 className="text-3xl font-black text-gray-900 tracking-tight">Kênh Nhà Vườn / Hợp Tác Xã</h2>
-            <p className="text-gray-400 text-sm">Quản lý nông trại D2C • {user?.fullName || 'Hợp Tác Xã Cái Mơn'}</p>
+            <p className="text-gray-400 text-sm">Quản lý nông trại D2C • {user?.fullName || 'HTX Nông Nghiệp Tân Triều'}</p>
           </div>
           <div className="flex gap-2 w-full md:w-auto">
             <button onClick={openCreateProductModal} className="flex-grow md:flex-grow-0 bg-primary-500 text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-1.5 text-sm font-semibold hover:bg-primary-600 transition-colors shadow-sm">

@@ -12,6 +12,7 @@
     "dev:web": "npm run dev --workspace=apps/web",
     "build:server": "npm run build --workspace=apps/server",
     "build:web": "npm run build --workspace=apps/web",
+    "test": "npm run test --workspace=apps/server",
     "db:migrate": "npm run db:migrate --workspace=apps/server",
     "db:seed": "npm run db:seed --workspace=apps/server"
   }

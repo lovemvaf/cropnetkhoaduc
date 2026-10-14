@@ -924,7 +924,7 @@ export default function AdminDashboardPage() {
                       />
                       <span>{p.name}</span>
                     </td>
-                    <td className="py-4 px-4 text-xs font-semibold text-gray-655">{p.supplier?.farmName || 'HTX Cái Mơn'}</td>
+                    <td className="py-4 px-4 text-xs font-semibold text-gray-655">{p.supplier?.farmName || 'HTX Nông Nghiệp Tân Triều'}</td>
                     <td className="py-4 px-4 text-gray-800 font-bold">{formatVND(Number(p.price))}</td>
                     <td className="py-4 px-4 text-gray-500 font-mono text-xs">{p.stock} {p.unit}</td>
                     <td className="py-4 px-4">
