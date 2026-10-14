@@ -23,7 +23,23 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: true
-  }
+  },
+  ...(isVercel
+    ? {
+        async rewrites() {
+          return [
+            {
+              source: '/_next/static/chunks/maplibre-gl-worker.mjs',
+              destination: '/maplibre-gl-worker.mjs'
+            },
+            {
+              source: '/_next/static/chunks/maplibre-gl-worker.mjs.map',
+              destination: '/maplibre-gl-worker.mjs.map'
+            }
+          ];
+        }
+      }
+    : {})
 };
 
 export default nextConfig;

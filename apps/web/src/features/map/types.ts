@@ -6,7 +6,7 @@ export type VerificationStatus = 'VERIFIED' | 'PENDING_AUDIT' | 'TRADITIONAL_REG
 
 export type SubRegion = 'SOUTH' | 'NORTH';
 
-export type BasemapMode = 'liberty' | 'bright' | 'positron';
+export type BasemapMode = 'liberty' | 'bright' | 'positron' | 'osm_raster';
 
 export interface MapPoint {
   id: string;

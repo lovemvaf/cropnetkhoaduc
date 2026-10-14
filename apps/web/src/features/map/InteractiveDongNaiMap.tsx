@@ -29,8 +29,32 @@ import {
   getRegionsGeoJson
 } from './dongNaiGeoJson';
 
-// OpenFreeMap 100% Free, Keyless, Open-Source Vector Map Styles
-const OPEN_FREE_MAP_STYLES: Record<BasemapMode, { name: string; url: string; description: string }> = {
+// Định nghĩa style raster dự phòng không phụ thuộc Web Worker hay CDN vector
+const OSM_RASTER_STYLE_SPEC: any = {
+  version: 8,
+  sources: {
+    'osm-raster-source': {
+      type: 'raster',
+      tiles: [
+        'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+      ],
+      tileSize: 256,
+      attribution: '© OpenStreetMap contributors'
+    }
+  },
+  layers: [
+    {
+      id: 'osm-raster-base-layer',
+      type: 'raster',
+      source: 'osm-raster-source',
+      minzoom: 0,
+      maxzoom: 19
+    }
+  ]
+};
+
+// OpenFreeMap 100% Free, Keyless, Open-Source Vector Map Styles + Raster Fallback
+const OPEN_FREE_MAP_STYLES: Record<BasemapMode, { name: string; url: string | any; description: string }> = {
   liberty: {
     name: 'Tiêu chuẩn (Liberty)',
     url: 'https://tiles.openfreemap.org/styles/liberty',
@@ -45,6 +69,11 @@ const OPEN_FREE_MAP_STYLES: Record<BasemapMode, { name: string; url: string; des
     name: 'Thanh lịch (Positron)',
     url: 'https://tiles.openfreemap.org/styles/positron',
     description: 'Bản đồ vector tông xám tối giản, tôn vinh các ghim và vùng nông sản.'
+  },
+  osm_raster: {
+    name: 'Dự phòng (OSM)',
+    url: OSM_RASTER_STYLE_SPEC,
+    description: 'Lớp bản đồ raster OpenStreetMap dự phòng trực tiếp, bảo đảm 100% hiển thị địa lý kể cả khi vector tiles bị gián đoạn.'
   }
 };
 
@@ -181,9 +210,11 @@ export default function InteractiveDongNaiMap() {
     }
   }, []);
 
-  // Khởi tạo bản đồ MapLibre GL JS với OpenFreeMap Vector Tiles
+  // Khởi tạo bản đồ MapLibre GL JS với OpenFreeMap Vector Tiles & Fallback
   useEffect(() => {
     let isMounted = true;
+    let fallbackTimer: NodeJS.Timeout | null = null;
+    let resizeObserver: ResizeObserver | null = null;
 
     async function initMapLibre() {
       if (typeof window === 'undefined' || !mapContainerRef.current) return;
@@ -205,6 +236,19 @@ export default function InteractiveDongNaiMap() {
           throw new Error('Không tìm thấy Map class trong MapLibre GL JS');
         }
 
+        // Cấu hình worker URL nội bộ của ứng dụng để giải quyết triệt để lỗi Worker 404 trên Next.js production
+        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+        const workerUrl = `${window.location.origin}${basePath}/maplibre-gl-worker.mjs`;
+        try {
+          if (typeof mod.setWorkerUrl === 'function') {
+            mod.setWorkerUrl(workerUrl);
+          } else if (typeof mod.default?.setWorkerUrl === 'function') {
+            mod.default.setWorkerUrl(workerUrl);
+          }
+        } catch (workerErr) {
+          console.warn('Lỗi thiết lập worker URL:', workerErr);
+        }
+
         const map = new Map({
           container: mapContainerRef.current,
           style: OPEN_FREE_MAP_STYLES.liberty.url,
@@ -217,16 +261,62 @@ export default function InteractiveDongNaiMap() {
 
         mapInstanceRef.current = map;
 
+        // Tự động điều chỉnh kích thước bản đồ khi kích thước container thay đổi
+        if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
+          resizeObserver = new ResizeObserver(() => {
+            if (mapInstanceRef.current) {
+              mapInstanceRef.current.resize();
+            }
+          });
+          resizeObserver.observe(mapContainerRef.current);
+        }
+
+        // Kế hoạch phục hồi: nếu sau 8s vector tiles không render được, tự chuyển sang raster fallback
+        fallbackTimer = setTimeout(() => {
+          if (!isMounted || !mapInstanceRef.current) return;
+          if (!map.isStyleLoaded()) {
+            console.warn('Vector tiles tải chậm, tự động chuyển sang lớp raster dự phòng để đảm bảo hiển thị địa lý...');
+            try {
+              map.setStyle(OSM_RASTER_STYLE_SPEC);
+              setBasemap('osm_raster');
+            } catch (fallbackErr) {
+              console.error('Lỗi khi kích hoạt raster fallback:', fallbackErr);
+            }
+          }
+        }, 8000);
+
         map.on('load', () => {
+          if (fallbackTimer) clearTimeout(fallbackTimer);
           if (!isMounted) return;
           setMapLoaded(true);
           setMapError(null);
+          map.resize();
           addPolygonLayers(map);
         });
 
         map.on('error', (e: any) => {
-          console.warn('MapLibre notice:', e?.error?.message || e);
+          const errMsg = e?.error?.message || (typeof e?.message === 'string' ? e.message : '');
+          console.warn('MapLibre notice:', errMsg || e);
+
+          // Nếu có lỗi worker hoặc lỗi phân giải vector tile, tự động chuyển sang raster fallback
+          if (errMsg && (errMsg.includes('Worker') || errMsg.includes('worker') || errMsg.includes('pbf'))) {
+            console.warn('Phát hiện lỗi worker/vector, kích hoạt lớp raster dự phòng...');
+            try {
+              map.setStyle(OSM_RASTER_STYLE_SPEC);
+              setBasemap('osm_raster');
+            } catch (err) {
+              // ignore
+            }
+          }
         });
+
+        // Kích hoạt resize phụ sau 300ms đảm bảo layout ổn định
+        setTimeout(() => {
+          if (isMounted && mapInstanceRef.current) {
+            mapInstanceRef.current.resize();
+          }
+        }, 300);
+
       } catch (err: any) {
         if (!isMounted) return;
         console.error('Lỗi khởi tạo MapLibre:', err);
@@ -238,6 +328,8 @@ export default function InteractiveDongNaiMap() {
 
     return () => {
       isMounted = false;
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      if (resizeObserver) resizeObserver.disconnect();
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
@@ -659,7 +751,7 @@ export default function InteractiveDongNaiMap() {
                 onChange={e => setShowPolygons(e.target.checked)}
                 className="rounded border-[#E2E5DC] text-[#2C4939] focus:ring-0 w-3.5 h-3.5"
               />
-              <span>Hiện ranh giới tiểu vùng</span>
+              <span>Hiện ranh giới tiểu vùng (ước lượng tham khảo)</span>
             </label>
             <span className="text-[#8C978F] hidden sm:inline">•</span>
             <span className="text-[#8C978F] hidden sm:inline">Engine: MapLibre GL • OpenFreeMap Vector</span>
@@ -691,11 +783,11 @@ export default function InteractiveDongNaiMap() {
               </span>
             </div>
 
-            {/* Vector Basemap Switcher (Keyless OpenFreeMap) */}
-            <div className="flex items-center gap-1 bg-white p-0.5 rounded border border-[#E2E5DC]">
+            {/* Vector & Raster Basemap Switcher */}
+            <div className="flex items-center gap-1 bg-white p-0.5 rounded border border-[#E2E5DC] overflow-x-auto max-w-full">
               <button
                 onClick={() => setBasemap('liberty')}
-                className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors ${
+                className={`px-2 py-1 rounded text-[11px] font-medium transition-colors whitespace-nowrap ${
                   basemap === 'liberty'
                     ? 'bg-[#2C4939] text-white shadow-subtle'
                     : 'text-[#647067] hover:text-[#253129]'
@@ -706,7 +798,7 @@ export default function InteractiveDongNaiMap() {
               </button>
               <button
                 onClick={() => setBasemap('bright')}
-                className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors ${
+                className={`px-2 py-1 rounded text-[11px] font-medium transition-colors whitespace-nowrap ${
                   basemap === 'bright'
                     ? 'bg-[#2C4939] text-white shadow-subtle'
                     : 'text-[#647067] hover:text-[#253129]'
@@ -717,7 +809,7 @@ export default function InteractiveDongNaiMap() {
               </button>
               <button
                 onClick={() => setBasemap('positron')}
-                className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors ${
+                className={`px-2 py-1 rounded text-[11px] font-medium transition-colors whitespace-nowrap ${
                   basemap === 'positron'
                     ? 'bg-[#2C4939] text-white shadow-subtle'
                     : 'text-[#647067] hover:text-[#253129]'
@@ -725,6 +817,17 @@ export default function InteractiveDongNaiMap() {
                 title="Bản đồ vector thanh lịch Positron"
               >
                 Thanh lịch
+              </button>
+              <button
+                onClick={() => setBasemap('osm_raster')}
+                className={`px-2 py-1 rounded text-[11px] font-medium transition-colors whitespace-nowrap ${
+                  basemap === 'osm_raster'
+                    ? 'bg-[#A46C49] text-white shadow-subtle'
+                    : 'text-[#A46C49] hover:bg-[#F3E8DF]'
+                }`}
+                title="Bản đồ raster OpenStreetMap dự phòng trực tiếp"
+              >
+                Dự phòng (OSM)
               </button>
             </div>
           </div>
@@ -747,16 +850,38 @@ export default function InteractiveDongNaiMap() {
               </div>
             ) : null}
 
+            {/* Trạng thái đang tải bản đồ */}
+            {!mapLoaded && !mapError && webglSupported && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAF9F5]/70 backdrop-blur-[2px] z-10 space-y-2 pointer-events-none">
+                <div className="w-6 h-6 border-2 border-[#2C4939] border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-xs text-[#2C4939] font-medium">Đang tải bản đồ địa lý Đồng Nai...</span>
+              </div>
+            )}
+
             {mapError && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#FAF9F5]/90 z-20 space-y-3">
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#FAF9F5]/95 z-20 space-y-3">
                 <AlertCircle className="w-8 h-8 text-[#A46C49]" />
-                <p className="text-xs text-[#647067]">{mapError}</p>
-                <button
-                  onClick={() => window.location.reload()}
-                  className="px-3 py-1.5 bg-[#2C4939] text-white rounded text-xs"
-                >
-                  Thử lại
-                </button>
+                <p className="text-xs text-[#647067] max-w-sm">{mapError}</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setMapError(null);
+                      if (mapInstanceRef.current) {
+                        mapInstanceRef.current.setStyle(OSM_RASTER_STYLE_SPEC);
+                        setBasemap('osm_raster');
+                      }
+                    }}
+                    className="px-3 py-1.5 bg-[#2C4939] text-white rounded text-xs hover:bg-[#233b2e] transition-colors"
+                  >
+                    Dùng bản đồ dự phòng (OSM)
+                  </button>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="px-3 py-1.5 border border-[#E2E5DC] text-[#253129] rounded text-xs hover:bg-[#FAF9F5] transition-colors"
+                  >
+                    Tải lại
+                  </button>
+                </div>
               </div>
             )}
 
@@ -832,8 +957,12 @@ export default function InteractiveDongNaiMap() {
             </div>
 
             {/* Attribution hợp pháp góc dưới phải */}
-            <div className="absolute right-2 bottom-1 z-[10] bg-white/80 px-2 py-0.5 rounded text-[10px] text-[#647067] border border-[#E2E5DC]">
-              © <a href="https://openfreemap.org" target="_blank" rel="noopener noreferrer" className="hover:underline">OpenFreeMap</a> © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="hover:underline">OpenStreetMap</a>
+            <div className="absolute right-2 bottom-1 z-[10] bg-white/80 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-[#647067] border border-[#E2E5DC]">
+              {basemap === 'osm_raster' ? (
+                <>© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="hover:underline">OpenStreetMap</a> contributors</>
+              ) : (
+                <>© <a href="https://openfreemap.org" target="_blank" rel="noopener noreferrer" className="hover:underline">OpenFreeMap</a> • © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="hover:underline">OpenStreetMap</a></>
+              )}
             </div>
           </div>
         </div>
