@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import 'leaflet/dist/leaflet.css';
 import { MapPin, ExternalLink, Layers, Search, ShieldCheck, CheckCircle2, Info, Compass } from 'lucide-react';
 import Link from 'next/link';
 

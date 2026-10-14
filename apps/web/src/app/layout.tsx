@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/globals.css';
+import 'leaflet/dist/leaflet.css';
 import Header from '@/shared/components/Header';
 import Footer from '@/shared/components/Footer';
 import { Be_Vietnam_Pro, Playfair_Display } from 'next/font/google';
@@ -15,7 +16,7 @@ const beVietnamPro = Be_Vietnam_Pro({
 
 const playfair = Playfair_Display({
   weight: ['600', '700'],
-  subsets: ['latin', 'vietnamese'],
+  subsets: ['latin'],
   display: 'swap',
   variable: '--font-serif',
 });
