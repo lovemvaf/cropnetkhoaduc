@@ -17,30 +17,30 @@ export default function PendingApprovalPage() {
   };
 
   return (
-    <Container className="py-20 flex justify-center items-center bg-gray-50 min-h-[80vh]">
-      <Card className="max-w-md w-full border-t-8 border-amber-500 p-8 space-y-6 shadow-xl bg-white text-center">
-        {/* Animated Clock Icon */}
-        <div className="w-20 h-20 bg-amber-50 text-amber-500 rounded-3xl flex items-center justify-center mx-auto animate-pulse">
-          <Clock className="w-10 h-10" />
+    <div className="py-20 flex justify-center items-center bg-[#FAF9F5] min-h-[80vh] px-4">
+      <div className="max-w-md w-full border border-[#E2E5DC] p-8 space-y-6 shadow-sm bg-white text-center rounded-xl">
+        {/* Clock Icon */}
+        <div className="w-16 h-16 bg-[#FAF9F5] text-[#A46C49] rounded-full flex items-center justify-center mx-auto border border-[#E2E5DC]">
+          <Clock className="w-8 h-8" />
         </div>
 
         {/* Message Content */}
         <div className="space-y-3">
-          <h3 className="font-extrabold text-2xl text-gray-900">Đang Chờ Phê Duyệt</h3>
-          <p className="text-sm text-gray-500 leading-relaxed px-2">
-            Cảm ơn <strong>{user?.fullName || 'bạn'}</strong> đã đăng ký gia nhập CropNet với vai trò{' '}
-            <span className="font-bold text-amber-600">
+          <h1 className="font-serif font-bold text-2xl text-[#253129]">Hồ Sơ Chờ Phê Duyệt</h1>
+          <p className="text-xs text-[#647067] leading-relaxed">
+            Cảm ơn <strong>{user?.fullName || 'bạn'}</strong> đã gửi hồ sơ đăng ký tham gia chuỗi cung ứng CropNet với vai trò{' '}
+            <span className="font-medium text-[#2C4939]">
               {user?.role === 'FARMER'
-                ? 'Nhà Vườn / Supplier'
+                ? 'Nhà Vườn / Hợp Tác Xã'
                 : user?.role === 'LOGISTICS'
-                ? 'Đối Tác Vận Chuyển'
+                ? 'Đơn Vị Vận Chuyển'
                 : user?.role === 'INSPECTOR'
-                ? 'Kiểm Định Viên'
+                ? 'Kiểm Định Viên OCOP'
                 : 'Thành viên'}
             </span>.
           </p>
-          <p className="text-xs text-gray-400 leading-relaxed bg-amber-50/50 p-4 rounded-xl border border-amber-100/50">
-            Hồ sơ, giấy phép vùng trồng và thông tin của bạn đã được gửi tới Ban Quản Trị CropNet. Hệ thống đang tiến hành rà soát thủ công để đảm bảo chất lượng. Kết quả phê duyệt sẽ có trong vòng 24 giờ.
+          <p className="text-xs text-[#647067] leading-relaxed bg-[#FAF9F5] p-3.5 rounded-lg border border-[#E2E5DC]">
+            Hồ sơ năng lực, mã số vùng trồng và quy trình kiểm định của bạn đang được Ban Kiểm Soát rà soát đối chiếu thực địa. Kết quả sẽ được thông báo trong vòng 24 giờ làm việc.
           </p>
         </div>
 
@@ -48,21 +48,21 @@ export default function PendingApprovalPage() {
         <div className="space-y-3 pt-2">
           <button
             onClick={() => router.push('/')}
-            className="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm shadow-sm"
+            className="w-full bg-[#2C4939] hover:bg-[#233C2F] text-white font-medium py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors text-xs"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3.5 h-3.5" />
             <span>Quay lại Trang chủ</span>
           </button>
 
           <button
             onClick={handleLogout}
-            className="w-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm"
+            className="w-full border border-[#E2E5DC] bg-white hover:bg-[#FAF9F5] text-[#253129] font-medium py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors text-xs"
           >
-            <LogOut className="w-4 h-4 text-gray-400" />
-            <span>Đăng nhập tài khoản khác</span>
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Đăng xuất tài khoản</span>
           </button>
         </div>
-      </Card>
-    </Container>
+      </div>
+    </div>
   );
 }

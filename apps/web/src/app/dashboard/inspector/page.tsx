@@ -684,10 +684,10 @@ export default function InspectorDashboardPage() {
             </div>
           </div>
         ) : (
-          <div className="text-center py-20 text-gray-400 border border-dashed rounded-3xl bg-gray-50/50 space-y-2">
-            <FileText className="w-12 h-12 text-gray-300 mx-auto" />
-            <h4 className="font-bold text-gray-700">Tra cứu lô hàng để bắt đầu</h4>
-            <p className="text-xs text-gray-500">Nhập mã số lô thu hoạch của hợp tác xã ở ô tra cứu phía trên để tiến hành cấp chứng thư.</p>
+          <div className="text-center py-16 text-[#647067] border border-dashed rounded-xl bg-[#FAF9F5] space-y-2">
+            <FileText className="w-10 h-10 text-[#7B876C] mx-auto" />
+            <h4 className="font-serif font-bold text-[#253129]">Tra cứu lô hàng để bắt đầu</h4>
+            <p className="text-xs text-[#647067]">Nhập mã số lô thu hoạch của hợp tác xã ở ô tra cứu phía trên để tiến hành cấp chứng thư.</p>
           </div>
         )}
       </Container>

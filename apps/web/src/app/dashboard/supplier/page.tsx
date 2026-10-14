@@ -1336,7 +1336,7 @@ export default function SupplierDashboardPage() {
         {activeTab === 'batches' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in duration-150">
             {batches.length === 0 ? (
-              <div className="col-span-2 text-center py-16 text-gray-400 border border-dashed rounded-3xl bg-gray-50/55">
+              <div className="col-span-2 text-center py-16 text-gray-400 border border-dashed rounded-xl bg-gray-50/55">
                 Chưa có lô hàng QR Code nào được tạo.
               </div>
             ) : (
@@ -1345,7 +1345,7 @@ export default function SupplierDashboardPage() {
                 const staticQRUrl = `${apiBase}/traceability/batches/${b.batchCode}/qr?type=png`;
 
                 return (
-                  <Card key={b.batchCode || b.id} className="p-6 flex flex-col sm:flex-row gap-5 hover:shadow-lg transition-all border border-gray-100 rounded-3xl relative overflow-hidden group">
+                  <Card key={b.batchCode || b.id} className="p-6 flex flex-col sm:flex-row gap-5 hover:shadow-lg transition-all border border-gray-100 rounded-xl relative overflow-hidden group">
                     {/* Visual QR container */}
                     <div className="w-full sm:w-32 aspect-square border border-gray-150 rounded-2xl bg-white p-2.5 flex-shrink-0 flex items-center justify-center relative shadow-inner">
                       <img 
@@ -1447,7 +1447,7 @@ export default function SupplierDashboardPage() {
           <div className="space-y-8 animate-in fade-in duration-150">
             
             {/* Farm Profile Header */}
-            <Card className="p-6 md:p-8 border border-gray-100 rounded-3xl bg-white shadow-sm space-y-6">
+            <Card className="p-6 md:p-8 border border-gray-100 rounded-xl bg-white shadow-sm space-y-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-5">
                 <div className="space-y-1">
                   <span className="text-xs font-black text-emerald-600 uppercase tracking-widest">Hồ sơ nhà vườn CropNet</span>
@@ -1521,7 +1521,7 @@ export default function SupplierDashboardPage() {
               
               {/* Left Column: Farm Gallery */}
               <div className="lg:col-span-1 space-y-6">
-                <Card className="p-6 border border-gray-100 rounded-3xl bg-white shadow-sm space-y-4">
+                <Card className="p-6 border border-gray-100 rounded-xl bg-white shadow-sm space-y-4">
                   <div className="flex justify-between items-center border-b border-gray-100 pb-3">
                     <h4 className="font-black text-sm text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
                       <span>📸 Thư viện hình ảnh</span>
@@ -1559,7 +1559,7 @@ export default function SupplierDashboardPage() {
 
               {/* Right Column: Crop Journey Timeline */}
               <div className="lg:col-span-2 space-y-6">
-                <Card className="p-6 border border-gray-100 rounded-3xl bg-white shadow-sm space-y-5">
+                <Card className="p-6 border border-gray-100 rounded-xl bg-white shadow-sm space-y-5">
                   <div className="flex justify-between items-center border-b border-gray-100 pb-3">
                     <h4 className="font-black text-sm text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
                       <span>🌱 Nhật ký hành trình nông sản (Crop Journey)</span>
@@ -1619,7 +1619,7 @@ export default function SupplierDashboardPage() {
         {/* Modal: Create / Edit Product */}
         {showProductModal && (
           <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-            <Card className="max-w-md w-full p-6 space-y-6 animate-in fade-in zoom-in-95 duration-150 overflow-y-auto max-h-[90vh] rounded-3xl">
+            <Card className="max-w-md w-full p-6 space-y-6 animate-in fade-in zoom-in-95 duration-150 overflow-y-auto max-h-[90vh] rounded-xl">
               <div className="flex justify-between items-center border-b border-gray-100 pb-3">
                 <h3 className="font-black text-lg text-gray-900 font-sans">
                   {editProductId ? 'Cập nhật nông sản' : 'Đăng nông sản mới'}
@@ -1716,7 +1716,7 @@ export default function SupplierDashboardPage() {
         {/* Modal: Create / Edit Batch with Supply Chain Tabs */}
         {showBatchModal && (
           <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-            <Card className="max-w-lg w-full p-6 space-y-6 animate-in fade-in zoom-in-95 duration-150 overflow-y-auto max-h-[90vh] rounded-3xl">
+            <Card className="max-w-lg w-full p-6 space-y-6 animate-in fade-in zoom-in-95 duration-150 overflow-y-auto max-h-[90vh] rounded-xl">
               <div className="flex justify-between items-center border-b border-gray-100 pb-3">
                 <h3 className="font-black text-lg text-gray-900 font-sans">
                   {editBatchId ? 'Cập nhật lô hàng truy xuất' : 'Tạo lô hàng QR Code'}
@@ -1895,7 +1895,7 @@ export default function SupplierDashboardPage() {
         {/* Modal: Live QR Scan & Preview */}
         {previewBatch && (
           <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-            <Card className="max-w-sm w-full p-6 text-center space-y-5 rounded-3xl">
+            <Card className="max-w-sm w-full p-6 text-center space-y-5 rounded-xl">
               <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                 <span className="font-extrabold text-sm text-gray-800">Preview QR Lô Hàng</span>
                 <button onClick={() => setPreviewBatch(null)} className="text-gray-400 hover:text-gray-600 font-bold">✕</button>
@@ -1938,7 +1938,7 @@ export default function SupplierDashboardPage() {
       {/* Modal: Add Timeline Event */}
       {showTimelineModal && (
         <div className="fixed inset-0 z-55 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <Card className="max-w-md w-full p-6 space-y-5 rounded-3xl">
+          <Card className="max-w-md w-full p-6 space-y-5 rounded-xl">
             <div className="flex justify-between items-center border-b border-gray-50 pb-2">
               <span className="font-extrabold text-sm text-gray-800">Thêm mốc hành trình vụ mùa</span>
               <button onClick={() => setShowTimelineModal(false)} className="text-gray-400 hover:text-gray-600 font-bold">✕</button>

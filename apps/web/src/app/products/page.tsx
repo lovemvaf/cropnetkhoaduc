@@ -1,14 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Container, Card } from '@cropnet/ui';
+import { Container } from '@cropnet/ui';
 import ProductCard from '@/features/products/components/ProductCard';
 import { apiClient } from '@/shared/services/api';
-import { formatVND } from '@cropnet/utils';
-import { Search, SlidersHorizontal, ArrowUpDown, ChevronLeft, ChevronRight, Tag } from 'lucide-react';
-import Link from 'next/link';
+import { Search, SlidersHorizontal, ArrowUpDown, ChevronLeft, ChevronRight, X, Filter } from 'lucide-react';
 import { getAssetPath } from '@/shared/utils/path';
-
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -22,14 +19,14 @@ export default function ProductsPage() {
   const [minPrice, setMinPrice] = useState<string>('');
   const [maxPrice, setMaxPrice] = useState<string>('');
   const [sort, setSort] = useState('newest');
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   // Pagination states
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const limit = 6; // smaller limit for easier pagination demonstration
+  const limit = 6;
 
-  // Authentic agricultural tags for search filter
   const availableTags = ['OCOP', 'Bưởi Tân Triều', 'Sầu riêng Long Khánh', 'VietGAP', 'Hữu cơ', 'Đặc sản Đồng Nai'];
 
   useEffect(() => {
@@ -42,7 +39,7 @@ export default function ProductsPage() {
       } catch (err) {
         console.warn('Failed to load categories, using fallback:', err);
         setCategories([
-          { id: 'cat-fruits', name: 'Trái Cây Đặc Sản Đồng Nai', slug: 'trai-cay-dac-san-dong-nai' },
+          { id: 'cat-fruits', name: 'Trái Cây Đặc Sản', slug: 'trai-cay-dac-san' },
           { id: 'cat-processed', name: 'Nông Sản Chế Biến & Hạt', slug: 'nong-san-che-bien-hat' }
         ]);
       }
@@ -78,14 +75,13 @@ export default function ProductsPage() {
       }
     } catch (err) {
       console.warn('Failed to fetch products, using offline backup:', err);
-      // Offline fallback aligned with authentic Dong Nai cooperatives
       const offlineProducts = [
-        { id: '1', name: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)', price: 85000, unit: 'quả (1.1kg - 1.3kg)', categoryId: 'cat-fruits', tags: ['OCOP', 'Bưởi Tân Triều', 'VietGAP', 'Đặc sản Đồng Nai'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Tân Triều', address: 'Xã Tân Bình, Vĩnh Cửu, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' },
-        { id: '2', name: 'Bưởi Da Xanh Tân Triều Hữu Cơ', price: 75000, unit: 'quả (1.3kg - 1.5kg)', categoryId: 'cat-fruits', tags: ['VietGAP', 'Bưởi Tân Triều', 'Hữu cơ'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Tân Triều', address: 'Xã Tân Bình, Vĩnh Cửu, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' },
-        { id: '3', name: 'Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)', price: 135000, unit: 'kg (quả 2.5kg - 3.5kg)', categoryId: 'cat-fruits', tags: ['VietGAP', 'Sầu riêng Long Khánh', 'Chín tự nhiên'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Long Khánh', address: 'Phường Xuân Lập, TP Long Khánh, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=800&auto=format' },
-        { id: '4', name: 'Chôm Chôm Nhãn Long Khánh', price: 45000, unit: 'kg (chùm quả tươi)', categoryId: 'cat-fruits', tags: ['Đặc sản Long Khánh', 'Đang mùa vụ'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Long Khánh', address: 'Phường Xuân Lập, TP Long Khánh, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format' },
-        { id: '5', name: 'Hạt Điều Rang Muối Vỏ Lụa Đồng Nai (Hộp 500g)', price: 120000, unit: 'hộp 500g', categoryId: 'cat-processed', tags: ['OCOP', 'Hạt điều Đồng Nai', 'Chế biến sạch'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Long Khánh', address: 'Huyện Xuân Lộc, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&auto=format' },
-        { id: '6', name: 'Rượu Bưởi Tân Triều Truyền Thống (Bình Gốm 750ml)', price: 195000, unit: 'bình gốm 750ml', categoryId: 'cat-processed', tags: ['OCOP', 'Quà biếu tặng', 'Rượu bưởi Tân Triều'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Tân Triều', address: 'Xã Tân Bình, Vĩnh Cửu, TP Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format' }
+        { id: 'prod-buoi-duong-la-cam', name: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)', price: 85000, unit: 'quả (1.2kg - 1.4kg)', categoryId: 'cat-fruits', tags: ['OCOP', 'Bưởi Tân Triều', 'VietGAP', 'Đặc sản Đồng Nai'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều', address: 'Phường Tân Triều, Thành phố Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' },
+        { id: 'prod-buoi-da-xanh', name: 'Bưởi Da Xanh Tân Triều', price: 75000, unit: 'quả (1.3kg - 1.5kg)', categoryId: 'cat-fruits', tags: ['VietGAP', 'Bưởi Tân Triều', 'Hữu cơ'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều', address: 'Phường Tân Triều, Thành phố Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' },
+        { id: 'prod-saurieng-ri6-longkhanh', name: 'Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)', price: 135000, unit: 'kg (quả 2.5kg - 3.5kg)', categoryId: 'cat-fruits', tags: ['VietGAP', 'Sầu riêng Long Khánh', 'Chín tự nhiên'], status: 'ACTIVE', supplier: { farmName: 'HTX Sinh Thái Long Khánh', address: 'Phường Xuân Lập, Thành phố Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=800&auto=format' },
+        { id: 'prod-chom-chom-nhan', name: 'Chôm Chôm Nhãn Long Khánh', price: 45000, unit: 'kg (chùm quả tươi)', categoryId: 'cat-fruits', tags: ['Đặc sản Long Khánh', 'Đang mùa vụ'], status: 'ACTIVE', supplier: { farmName: 'HTX Sinh Thái Long Khánh', address: 'Phường Xuân Lập, Thành phố Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format' },
+        { id: 'prod-hat-dieu-rang-cui', name: 'Hạt Điều Rang Củi Vỏ Lụa Đồng Nai', price: 140000, unit: 'hộp 500g', categoryId: 'cat-processed', tags: ['OCOP', 'Hạt điều Đồng Nai', 'Chế biến sạch'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Long Khánh', address: 'TP Long Khánh, Thành phố Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1563865436874-9aef32095fad?w=800&auto=format' },
+        { id: 'prod-ruou-buoi-tan-trieu', name: 'Rượu Bưởi Tân Triều Truyền Thống (Bình Gốm 750ml)', price: 195000, unit: 'bình gốm 750ml', categoryId: 'cat-processed', tags: ['OCOP', 'Quà biếu tặng', 'Rượu bưởi Tân Triều'], status: 'ACTIVE', supplier: { farmName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều', address: 'Phường Tân Triều, Thành phố Đồng Nai' }, imageUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format' }
       ];
       
       let filtered = offlineProducts;
@@ -131,224 +127,250 @@ export default function ProductsPage() {
     setPage(1);
   };
 
-  // Find featured products (active, high pricing/rating representation)
-  const featuredProducts = products.slice(0, 2);
+  const FilterContent = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center border-b border-[#E2E5DC] pb-3">
+        <h3 className="font-semibold text-sm text-[#253129] flex items-center gap-2">
+          <SlidersHorizontal className="w-4 h-4 text-[#7B876C]" />
+          <span>Bộ lọc nông sản</span>
+        </h3>
+        <button onClick={handleClearFilters} className="text-xs text-[#2C4939] hover:underline font-medium">
+          Xóa lọc
+        </button>
+      </div>
 
-  return (
-    <Container className="py-12 space-y-10">
-      {/* Featured Header Showcase */}
-      {featuredProducts.length > 0 && !search && !selectedCategory && !selectedTag && (
-        <div className="space-y-4">
-          <h3 className="text-xs font-bold text-primary-500 uppercase tracking-widest">Nông sản nổi bật</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {featuredProducts.map((p) => (
-              <Card key={`featured-${p.id}`} className="overflow-hidden border border-primary-100 bg-primary-50/10 hover:shadow-md transition-shadow flex flex-col sm:flex-row p-0">
-                <div className="w-full sm:w-2/5 aspect-[4/3] sm:aspect-square relative flex-shrink-0 bg-gray-100">
-                  <img src={getAssetPath(p.images?.[0]?.url || p.imageUrl)} alt={p.name} className="object-cover w-full h-full" />
-                  <div className="absolute top-2 left-2 bg-primary-500 text-white text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full shadow-sm">
-                    Hot D2C
-                  </div>
-                </div>
-                <div className="p-6 flex flex-col justify-between flex-grow">
-                  <div className="space-y-2">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase">{p.supplier?.farmName || p.farmName}</span>
-                    <h4 className="font-extrabold text-xl text-gray-900 leading-tight">{p.name}</h4>
-                    <p className="text-xs text-gray-500 line-clamp-2">{p.description || 'Nông sản hữu cơ canh tác trực tiếp đảm bảo vệ sinh an toàn thực phẩm.'}</p>
-                  </div>
-                  <div className="flex items-end justify-between mt-4">
-                    <div className="flex flex-col min-w-0">
-                      <span className="text-lg font-black text-primary-500 leading-tight">
-                        {formatVND(Number(p.price))}
-                      </span>
-                      <span className="text-xs text-gray-400 truncate mt-0.5" title={p.unit}>
-                        / {p.unit}
-                      </span>
-                    </div>
-                    <Link
-                      href={`/products/${p.id}`}
-                      className="bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-sm flex-shrink-0 whitespace-nowrap ml-2 active:scale-95 duration-150"
-                    >
-                      Mua ngay
-                    </Link>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Categories */}
+      <div className="space-y-2">
+        <label className="block text-xs font-semibold text-[#647067]">Danh mục</label>
+        <select
+          value={selectedCategory}
+          onChange={(e) => { setSelectedCategory(e.target.value); setPage(1); }}
+          className="w-full border border-[#E2E5DC] bg-white px-3 py-2 rounded-lg text-xs text-[#253129] focus:outline-none focus:border-[#2C4939]"
+        >
+          <option value="">Tất cả danh mục</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
+      </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-        {/* Sidebar Filters */}
-        <Card className="space-y-6 lg:sticky lg:top-24">
-          <div className="flex justify-between items-center border-b border-gray-100 pb-3">
-            <h3 className="font-bold text-gray-900 flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-primary-500" />
-              Bộ lọc tìm kiếm
-            </h3>
-            <button onClick={handleClearFilters} className="text-xs font-bold text-primary-500 hover:underline">
-              Xóa tất cả
-            </button>
-          </div>
-
-          {/* Categories select */}
-          <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase text-gray-400">Danh mục</label>
-            <select
-              value={selectedCategory}
-              onChange={(e) => { setSelectedCategory(e.target.value); setPage(1); }}
-              className="w-full border border-gray-200 bg-white px-4 py-2.5 rounded-xl text-sm focus:outline-primary-500"
-            >
-              <option value="">Tất cả danh mục</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Price Range */}
-          <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase text-gray-400">Khoảng giá (VNĐ)</label>
-            <div className="grid grid-cols-2 gap-2">
-              <input
-                type="number"
-                placeholder="Từ"
-                value={minPrice}
-                onChange={(e) => { setMinPrice(e.target.value); setPage(1); }}
-                className="border border-gray-200 px-3 py-2 rounded-xl text-xs w-full text-center focus:outline-primary-500"
-              />
-              <input
-                type="number"
-                placeholder="Đến"
-                value={maxPrice}
-                onChange={(e) => { setMaxPrice(e.target.value); setPage(1); }}
-                className="border border-gray-200 px-3 py-2 rounded-xl text-xs w-full text-center focus:outline-primary-500"
-              />
-            </div>
-          </div>
-
-          {/* Tags cloud */}
-          <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase text-gray-400 flex items-center gap-1">
-              <Tag className="w-3.5 h-3.5 text-primary-500" />
-              Nhãn sản phẩm
-            </label>
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              {availableTags.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => { setSelectedTag(selectedTag === tag ? '' : tag); setPage(1); }}
-                  className={`text-xs px-3 py-1.5 rounded-xl border transition-all ${
-                    selectedTag === tag
-                      ? 'bg-primary-500 border-primary-500 text-white font-bold'
-                      : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-        </Card>
-
-        {/* Product Catalog Display */}
-        <div className="lg:col-span-3 space-y-8">
-          {/* Top toolbar */}
-          <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
-            <div className="relative flex-grow max-w-md">
-              <input
-                type="text"
-                placeholder="Tìm nông sản, nhà vườn..."
-                value={search}
-                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                className="border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 w-full focus:outline-primary-500 text-sm"
-              />
-              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
-            </div>
-
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <ArrowUpDown className="w-4 h-4 text-gray-400" />
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
-                className="border border-gray-200 bg-white px-4 py-2.5 rounded-xl text-sm focus:outline-primary-500"
-              >
-                <option value="newest">Mới đăng tải</option>
-                <option value="price_asc">Giá: Thấp đến Cao</option>
-                <option value="price_desc">Giá: Cao đến Thấp</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Results Info */}
-          <div className="text-xs text-gray-400 font-medium">
-            Tìm thấy <span className="font-bold text-gray-700">{totalItems}</span> nông sản phù hợp
-          </div>
-
-          {/* Grid Products */}
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="h-72 bg-gray-100 rounded-3xl"></div>
-              ))}
-            </div>
-          ) : products.length === 0 ? (
-            <div className="text-center py-24 text-gray-400 border border-dashed rounded-3xl bg-gray-50/50">
-              Không tìm thấy sản phẩm nào khớp với bộ lọc của bạn.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  id={p.id}
-                  name={p.name}
-                  price={Number(p.price)}
-                  unit={p.unit}
-                  farmName={p.supplier?.farmName || p.farmName}
-                  imageUrl={p.images?.[0]?.url || p.imageUrl}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 pt-6">
-              <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="p-2 border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white transition-colors"
-              >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
-              </button>
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPage(p)}
-                  className={`w-10 h-10 rounded-xl text-sm font-bold border transition-all ${
-                    page === p
-                      ? 'bg-primary-500 border-primary-500 text-white'
-                      : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-
-              <button
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="p-2 border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white transition-colors"
-              >
-                <ChevronRight className="w-5 h-5 text-gray-600" />
-              </button>
-            </div>
-          )}
+      {/* Price Range */}
+      <div className="space-y-2">
+        <label className="block text-xs font-semibold text-[#647067]">Khoảng giá (VNĐ)</label>
+        <div className="grid grid-cols-2 gap-2">
+          <input
+            type="number"
+            placeholder="Từ"
+            value={minPrice}
+            onChange={(e) => { setMinPrice(e.target.value); setPage(1); }}
+            className="border border-[#E2E5DC] px-2.5 py-1.5 rounded-lg text-xs text-[#253129] text-center focus:outline-none focus:border-[#2C4939]"
+          />
+          <input
+            type="number"
+            placeholder="Đến"
+            value={maxPrice}
+            onChange={(e) => { setMaxPrice(e.target.value); setPage(1); }}
+            className="border border-[#E2E5DC] px-2.5 py-1.5 rounded-lg text-xs text-[#253129] text-center focus:outline-none focus:border-[#2C4939]"
+          />
         </div>
       </div>
-    </Container>
+
+      {/* Tags */}
+      <div className="space-y-2">
+        <label className="block text-xs font-semibold text-[#647067]">Đặc điểm & Chứng nhận</label>
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {availableTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => { setSelectedTag(selectedTag === tag ? '' : tag); setPage(1); }}
+              className={`text-xs px-2.5 py-1 rounded-md border transition-colors ${
+                selectedTag === tag
+                  ? 'bg-[#2C4939] border-[#2C4939] text-white font-medium'
+                  : 'bg-white border-[#E2E5DC] text-[#647067] hover:border-[#CBD0C4]'
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="bg-[#FAF9F5] min-h-screen py-8 sm:py-12">
+      <Container className="space-y-8">
+        {/* Editorial Page Header */}
+        <div className="border-b border-[#E2E5DC] pb-6 space-y-2">
+          <span className="text-xs font-semibold text-[#7B876C] uppercase tracking-wider">
+            Sản Phẩm Trực Tiếp Từ Vườn
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#253129] tracking-tight">
+            Nông Sản Bản Địa Thành Phố Đồng Nai
+          </h1>
+          <p className="text-xs sm:text-sm text-[#647067] max-w-2xl leading-relaxed">
+            Các loại trái cây đặc sản OCOP và nông sản thu hoạch theo thời vụ từ HTX Tân Triều và HTX Long Khánh. 
+            Mọi sản phẩm đều có mã lô truy xuất nguồn gốc minh bạch.
+          </p>
+        </div>
+
+        {/* Main Grid: Filters + Catalog */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+          {/* Desktop Sidebar Filters */}
+          <div className="hidden lg:block bg-white rounded-xl border border-[#E2E5DC] p-5 shadow-subtle lg:sticky lg:top-24">
+            <FilterContent />
+          </div>
+
+          {/* Product Catalog Display */}
+          <div className="lg:col-span-3 space-y-6">
+            {/* Top Toolbar */}
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+              {/* Search input */}
+              <div className="relative flex-grow max-w-md">
+                <input
+                  type="text"
+                  placeholder="Tìm theo tên bưởi, sầu riêng, HTX..."
+                  value={search}
+                  onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                  className="w-full border border-[#E2E5DC] bg-white rounded-lg pl-9 pr-3 py-2 text-xs sm:text-sm text-[#253129] focus:outline-none focus:border-[#2C4939]"
+                />
+                <Search className="w-4 h-4 text-[#8C978F] absolute left-3 top-2.5" />
+              </div>
+
+              {/* Action Buttons: Mobile Filter Trigger & Sort */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setMobileFilterOpen(true)}
+                  className="lg:hidden flex items-center gap-1.5 px-3 py-2 bg-white border border-[#E2E5DC] rounded-lg text-xs font-medium text-[#253129]"
+                >
+                  <Filter className="w-3.5 h-3.5 text-[#7B876C]" />
+                  <span>Bộ lọc</span>
+                </button>
+
+                <div className="flex items-center gap-1.5 bg-white border border-[#E2E5DC] rounded-lg px-2.5 py-1.5 flex-grow sm:flex-grow-0">
+                  <ArrowUpDown className="w-3.5 h-3.5 text-[#8C978F]" />
+                  <select
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                    className="bg-transparent text-xs text-[#253129] focus:outline-none cursor-pointer"
+                  >
+                    <option value="newest">Mới cập nhật</option>
+                    <option value="price_asc">Giá: Thấp đến Cao</option>
+                    <option value="price_desc">Giá: Cao đến Thấp</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Results Counter */}
+            <div className="text-xs text-[#8C978F]">
+              Hiển thị <span className="font-semibold text-[#253129]">{products.length}</span> trên tổng số <span className="font-semibold text-[#253129]">{totalItems}</span> nông sản
+            </div>
+
+            {/* Product Cards Grid: 2 columns on mobile, 3 on lg */}
+            {loading ? (
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 animate-pulse">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className="h-64 bg-[#EAECE6] rounded-xl"></div>
+                ))}
+              </div>
+            ) : products.length === 0 ? (
+              <div className="text-center py-16 text-[#647067] bg-white border border-[#E2E5DC] rounded-xl p-8 space-y-2">
+                <p className="font-medium text-sm text-[#253129]">Không tìm thấy nông sản phù hợp</p>
+                <p className="text-xs">Quý khách vui lòng thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc.</p>
+                <button
+                  onClick={handleClearFilters}
+                  className="mt-3 text-xs text-[#2C4939] font-medium hover:underline inline-block"
+                >
+                  Xóa tất cả bộ lọc
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {products.map((p) => (
+                  <ProductCard
+                    key={p.id}
+                    id={p.id}
+                    name={p.name}
+                    price={Number(p.price)}
+                    unit={p.unit}
+                    farmName={p.supplier?.farmName || p.farmName}
+                    imageUrl={p.images?.[0]?.url || p.imageUrl}
+                    tags={p.tags || []}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-1.5 pt-6">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="p-2 border border-[#E2E5DC] rounded-lg bg-white text-[#647067] hover:bg-[#F1EFE8] disabled:opacity-40 transition-colors"
+                  aria-label="Trang trước"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className={`w-8 h-8 rounded-lg text-xs font-medium border transition-colors ${
+                      page === p
+                        ? 'bg-[#2C4939] border-[#2C4939] text-white'
+                        : 'bg-white border-[#E2E5DC] text-[#647067] hover:bg-[#F1EFE8]'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="p-2 border border-[#E2E5DC] rounded-lg bg-white text-[#647067] hover:bg-[#F1EFE8] disabled:opacity-40 transition-colors"
+                  aria-label="Trang sau"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile Filter Modal / Drawer */}
+        {mobileFilterOpen && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+            <div
+              className="fixed inset-0 bg-[#253129]/50 transition-opacity"
+              onClick={() => setMobileFilterOpen(false)}
+            />
+            <div className="relative bg-white rounded-t-2xl sm:rounded-xl max-w-md w-full p-6 shadow-modal border border-[#E2E5DC] z-10 max-h-[85vh] overflow-y-auto">
+              <div className="flex items-center justify-between border-b border-[#E2E5DC] pb-3 mb-4">
+                <h3 className="font-semibold text-base text-[#253129]">Bộ Lọc Nông Sản</h3>
+                <button
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="text-[#647067] p-1"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <FilterContent />
+              <div className="mt-6 pt-4 border-t border-[#E2E5DC]">
+                <button
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="w-full py-2.5 bg-[#2C4939] text-white rounded-lg text-xs font-medium"
+                >
+                  Áp dụng bộ lọc ({totalItems} sản phẩm)
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </Container>
+    </div>
   );
 }

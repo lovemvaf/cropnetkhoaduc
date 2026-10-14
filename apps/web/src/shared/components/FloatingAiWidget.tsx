@@ -1,76 +1,64 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Bot, Sparkles, X, MessageSquare, ArrowRight } from 'lucide-react';
+import { MessageSquare, X, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 export default function FloatingAiWidget() {
-  const router = useRouter();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [quickInput, setQuickInput] = useState('');
 
-  const handleQuickSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!quickInput.trim()) return;
-    router.push('/ai-tu-van');
-  };
+  // Hide on checkout and cart to prevent obstructing critical commerce CTAs on mobile
+  if (pathname === '/checkout' || pathname === '/cart' || pathname?.startsWith('/checkout')) {
+    return null;
+  }
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end space-y-3 font-sans">
-      {/* Expanded Quick Dialogue Bubble */}
+    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end space-y-2">
+      {/* Expanded Quick Dialog */}
       {isOpen && (
-        <div className="w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-emerald-200 p-5 space-y-4 animate-in fade-in slide-in-from-bottom-5 duration-200">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+        <div className="w-72 sm:w-80 bg-white rounded-xl shadow-modal border border-[#E2E5DC] p-4 space-y-3">
+          <div className="flex items-center justify-between border-b border-[#E2E5DC] pb-2.5">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm">
-                <Bot className="w-4 h-4" />
+              <div className="w-6 h-6 rounded bg-[#E6EAE4] text-[#2C4939] flex items-center justify-center">
+                <MessageSquare className="w-3.5 h-3.5" />
               </div>
-              <div>
-                <h4 className="font-black text-xs text-gray-900 leading-tight">Trợ Lý AI Đồng Nai 2026</h4>
-                <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  Sẵn sàng tư vấn 24/7
-                </span>
-              </div>
+              <h4 className="font-semibold text-xs text-[#253129]">Trợ Lý Mua Sắm Nông Sản</h4>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="text-gray-400 hover:text-gray-700 text-xs font-bold"
+              className="text-[#647067] hover:text-[#253129] p-1"
+              aria-label="Đóng"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="text-xs text-gray-600 space-y-2">
-            <p>Em có thể giúp quý khách:</p>
-            <div className="space-y-1.5">
-              <Link
-                href="/ai-tu-van"
-                className="block p-2 bg-emerald-50 hover:bg-emerald-100/70 text-emerald-900 rounded-xl font-bold transition-colors"
-              >
-                🎁 Tối ưu combo quà biếu theo ngân sách (500k, 1 triệu)
-              </Link>
-              <Link
-                href="/ai-tu-van"
-                className="block p-2 bg-amber-50 hover:bg-amber-100/70 text-amber-900 rounded-xl font-bold transition-colors"
-              >
-                🔍 Kiểm tra tem QR & chứng nhận OCOP 4 sao
-              </Link>
-              <Link
-                href="/ai-tu-van"
-                className="block p-2 bg-sky-50 hover:bg-sky-100/70 text-sky-900 rounded-xl font-bold transition-colors"
-              >
-                📋 Lập yêu cầu báo giá sỉ cho công ty (RFQ)
-              </Link>
-            </div>
+          <p className="text-xs text-[#647067] leading-relaxed">
+            Hỗ trợ gợi ý combo nông sản Đồng Nai theo ngân sách và tra cứu nhật ký canh tác.
+          </p>
+
+          <div className="space-y-1.5 text-xs">
+            <Link
+              href="/ai-tu-van"
+              className="block p-2 bg-[#F7F6F2] hover:bg-[#F1EFE8] text-[#253129] rounded-lg transition-colors font-medium border border-[#E2E5DC]"
+            >
+              • Đề xuất giỏ quà theo ngân sách (300k - 1tr)
+            </Link>
+            <Link
+              href="/traceability"
+              className="block p-2 bg-[#F7F6F2] hover:bg-[#F1EFE8] text-[#253129] rounded-lg transition-colors font-medium border border-[#E2E5DC]"
+            >
+              • Quét mã QR kiểm tra nhật ký thu hoạch
+            </Link>
           </div>
 
           <Link
             href="/ai-tu-van"
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 shadow-md transition-all"
+            className="w-full bg-[#2C4939] hover:bg-[#233C2F] text-white text-xs py-2 rounded-lg flex items-center justify-center gap-1.5 font-medium transition-colors"
           >
-            <span>Mở Cửa Sổ Trò Chuyện Đầy Đủ</span>
+            <span>Mở trang tư vấn</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -79,14 +67,11 @@ export default function FloatingAiWidget() {
       {/* Floating Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="group relative flex items-center gap-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs py-3.5 px-5 rounded-full shadow-2xl transition-all hover:scale-105 active:scale-95"
+        className="flex items-center gap-2 bg-[#FFFFFF] hover:bg-[#F7F6F2] text-[#2C4939] text-xs py-2.5 px-3.5 rounded-full border border-[#CBD0C4] shadow-subtle transition-colors focus:outline-none"
+        aria-label="Mở trợ lý tư vấn"
       >
-        <div className="relative">
-          <Bot className="w-5 h-5 text-white" />
-          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full border-2 border-white animate-ping"></span>
-        </div>
-        <span>AI Tư Vấn 24/7</span>
-        <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+        <MessageSquare className="w-4 h-4 text-[#2C4939]" />
+        <span className="font-medium hidden sm:inline">Tư vấn chọn nông sản</span>
       </button>
     </div>
   );

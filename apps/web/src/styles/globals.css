@@ -2,8 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  color: #1a1a1a;
-  background-color: #fafbfc;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+@layer base {
+  :root {
+    --canvas: #FAF9F5;
+    --surface: #FFFFFF;
+    --forest: #2C4939;
+    --forest-hover: #233C2F;
+    --ink: #253129;
+    --ink-muted: #647067;
+    --ink-light: #8C978F;
+    --olive: #7B876C;
+    --clay: #A46C49;
+    --warm-surface: #F1EFE8;
+    --border: #E2E5DC;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #FAF9F5;
+    color: #253129;
+    font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #253129;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  ::selection {
+    background-color: #2C4939;
+    color: #FAF9F5;
+  }
+}
+
+@layer utilities {
+  /* Subtle hairline border for clean editorial separation */
+  .border-hairline {
+    border-color: #E2E5DC;
+  }
+  
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }

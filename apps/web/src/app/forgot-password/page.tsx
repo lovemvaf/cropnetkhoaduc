@@ -51,30 +51,33 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <Container className="py-20 flex justify-center">
-      <Card className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-primary-500">Quên Mật Khẩu</h2>
-          <p className="text-xs text-gray-400 mt-1">Nhập email để nhận mã khôi phục tài khoản</p>
+    <div className="bg-[#FAF9F5] min-h-[85vh] flex items-center justify-center py-12 px-4">
+      <div className="w-full max-w-md bg-white border border-[#E2E5DC] rounded-xl p-8 space-y-6 shadow-sm">
+        <div className="text-center space-y-1.5">
+          <Link href="/" className="inline-block font-serif font-bold text-xl text-[#2C4939] tracking-tight">
+            CropNet Đồng Nai
+          </Link>
+          <h1 className="text-xl font-serif font-bold text-[#253129]">Quên Mật Khẩu</h1>
+          <p className="text-xs text-[#647067]">Nhập email đã đăng ký để nhận mã khôi phục</p>
         </div>
 
         {serverError && (
-          <div className="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100">
+          <div className="bg-red-50 text-red-700 text-xs p-3 rounded-lg border border-red-200">
             {serverError}
           </div>
         )}
 
         {message && (
-          <div className="bg-green-50 text-green-600 text-sm p-3 rounded-xl border border-green-100 space-y-2">
+          <div className="bg-[#F1EFE8] text-[#253129] text-xs p-4 rounded-lg border border-[#E2E5DC] space-y-2">
             <div>{message}</div>
             {demoToken && (
-              <div className="bg-white p-2 rounded border border-green-200 mt-2 font-mono text-center">
-                Mã xác nhận (Testing): <span className="font-bold text-lg text-primary-500">{demoToken}</span>
+              <div className="bg-white p-2.5 rounded-lg border border-[#E2E5DC] mt-2 font-mono text-center">
+                Mã xác nhận thử nghiệm: <span className="font-bold text-sm text-[#2C4939]">{demoToken}</span>
               </div>
             )}
             <button
               onClick={() => router.push(`/reset-password?token=${demoToken || ''}`)}
-              className="w-full mt-2 py-2 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition-colors"
+              className="w-full mt-2 py-2.5 bg-[#2C4939] text-white text-xs font-medium rounded-lg hover:bg-[#233C2F] transition-colors"
             >
               Tiến hành Đặt lại mật khẩu
             </button>
@@ -83,7 +86,7 @@ export default function ForgotPasswordPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase">Email tài khoản</label>
+            <label className="block text-xs font-medium text-[#253129] mb-1">Email tài khoản</label>
             <input
               type="email"
               {...register('email', {
@@ -93,29 +96,29 @@ export default function ForgotPasswordPage() {
                   message: 'Email không đúng định dạng'
                 }
               })}
-              className="mt-1 w-full border border-gray-200 px-4 py-3 rounded-xl focus:outline-primary-500 text-sm"
+              className="w-full bg-[#FAF9F5] border border-[#E2E5DC] px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#2C4939] focus:bg-white text-xs text-[#253129] transition-colors"
               placeholder="nhapmail@gmail.com"
             />
             {errors.email && (
-              <span className="text-red-500 text-xs mt-1 block">{errors.email.message as string}</span>
+              <span className="text-red-500 text-[11px] mt-1 block">{errors.email.message as string}</span>
             )}
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-primary-500 text-white font-bold rounded-2xl hover:bg-primary-600 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 bg-[#2C4939] text-white font-medium text-xs rounded-lg hover:bg-[#233C2F] transition-colors flex items-center justify-center"
           >
             {loading ? 'Đang gửi yêu cầu...' : 'Gửi mã khôi phục'}
           </button>
         </form>
 
-        <div className="text-center mt-4 text-xs text-gray-500 border-t pt-4">
-          <Link href="/login" className="text-primary-500 font-bold hover:underline">
+        <div className="text-center text-xs text-[#647067] border-t border-[#E2E5DC] pt-4">
+          <Link href="/login" className="text-[#2C4939] font-medium hover:underline">
             Quay lại Đăng nhập
           </Link>
         </div>
-      </Card>
-    </Container>
+      </div>
+    </div>
   );
 }

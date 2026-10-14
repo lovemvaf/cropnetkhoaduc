@@ -21,50 +21,24 @@ function CertificateTemplate({ cert, batch, shareUrl }: { cert: any; batch: any;
   const isHaccp = certName.toLowerCase().includes('haccp');
   const isIso = certName.toLowerCase().includes('iso');
 
-  // Themes
-  let borderStyle = 'border-double border-8 border-emerald-600 bg-emerald-50/5 text-emerald-950';
-  let title = 'CHỨNG NHẬN VIETGAP';
-  let subTitle = 'Vietnamese Good Agricultural Practices';
-  let badgeColor = 'bg-emerald-600 text-white';
-
-  if (isGlobalGAP) {
-    borderStyle = 'border-double border-8 border-blue-600 bg-blue-50/5 text-blue-950';
-    title = 'GLOBALG.A.P. CERTIFICATE';
-    subTitle = 'Good Agricultural Practice';
-    badgeColor = 'bg-blue-600 text-white';
-  } else if (isOrganic) {
-    borderStyle = 'border-double border-8 border-amber-600 bg-amber-50/5 text-amber-950';
-    title = 'ORGANIC CERTIFICATE';
-    subTitle = 'Certified Organic Product';
-    badgeColor = 'bg-amber-600 text-white';
-  } else if (isHaccp) {
-    borderStyle = 'border-double border-8 border-orange-600 bg-orange-50/5 text-orange-950';
-    title = 'HACCP FOOD SAFETY CERTIFICATE';
-    subTitle = 'Hazard Analysis Critical Control Point';
-    badgeColor = 'bg-orange-600 text-white';
-  } else if (isIso) {
-    borderStyle = 'border-double border-8 border-red-600 bg-red-50/5 text-red-950';
-    title = 'ISO 22000 CERTIFIED';
-    subTitle = 'Food Safety Management Systems';
-    badgeColor = 'bg-red-600 text-white';
-  }
+  // Editorial clean style
+  const borderStyle = 'border border-[#CBD0C4] bg-[#FAF9F5] text-[#253129]';
+  const title = 'CHỨNG NHẬN TIÊU CHUẨN NÔNG SẢN';
+  const subTitle = certName;
 
   const certId = cert.certId || cert.id || `CERT-${batch.batchCode.substring(0, 8)}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(shareUrl)}`;
 
   return (
-    <div className={`w-full p-6 md:p-8 rounded-xl font-serif text-center relative overflow-hidden bg-white shadow-inner ${borderStyle}`}>
-      {/* Background Decorative patterns */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px]"></div>
-      
+    <div className={`w-full p-6 md:p-8 rounded-xl text-center relative overflow-hidden ${borderStyle}`}>
       {/* Header */}
       <div className="space-y-2 mb-6">
-        <div className="flex justify-center mb-2">
-          <Award className="w-12 h-12 text-current" />
+        <div className="flex justify-center mb-1">
+          <Award className="w-8 h-8 text-[#2C4939]" />
         </div>
-        <h2 className="text-xl md:text-2xl font-black tracking-wide text-gray-900 uppercase">{title}</h2>
-        <p className="text-xs text-gray-400 italic tracking-wider font-sans uppercase font-bold">{subTitle}</p>
-        <div className="h-[2px] w-28 bg-gray-200 mx-auto my-3"></div>
+        <h2 className="text-lg md:text-xl font-bold tracking-wide text-[#253129] uppercase">{title}</h2>
+        <p className="text-xs text-[#647067] font-medium">{subTitle}</p>
+        <div className="h-[1px] w-20 bg-[#E2E5DC] mx-auto my-2"></div>
       </div>
 
       {/* Main Content */}
@@ -437,29 +411,26 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
   return (
     <Container className="py-12 max-w-4xl space-y-10">
       {/* Banner Authentic Verification */}
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-8 rounded-3xl shadow-lg relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="absolute right-0 bottom-0 opacity-10 translate-x-12 translate-y-12">
-          <ShieldCheck className="w-80 h-80 text-white" />
-        </div>
-        <div className="space-y-3 z-10">
+      <div className="bg-[#2C4939] text-white p-6 sm:p-8 rounded-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 border border-[#CBD0C4]">
+        <div className="space-y-2.5 z-10">
           <div className="flex flex-wrap gap-2">
-            <Badge className="bg-white/20 text-white border-0 font-bold px-3 py-1 text-xs">
-              Minh Bạch Nông Sản D2C
-            </Badge>
-            <Badge className="bg-amber-400 text-emerald-950 border-0 font-bold px-3 py-1 text-xs">
+            <span className="bg-white/15 text-white text-xs font-medium px-2.5 py-0.5 rounded">
+              Minh Bạch Nguồn Gốc Lô Hàng
+            </span>
+            <span className="bg-[#F1EFE8] text-[#2C4939] text-xs font-medium px-2.5 py-0.5 rounded">
               DỮ LIỆU MINH HỌA KHẢO SÁT 2026
-            </Badge>
+            </span>
           </div>
-          <h2 className="text-3xl font-black tracking-tight leading-tight">
-            Chứng Thư Nguồn Gốc Điện Tử
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            Chứng Thư Nguồn Gốc Lô Thu Hoạch
           </h2>
-          <p className="text-emerald-50 text-sm">
+          <p className="text-[#C7D1C3] text-xs sm:text-sm max-w-xl leading-relaxed">
             Hồ sơ lô hàng nông sản Thành phố Đồng Nai phục vụ kiểm chứng minh bạch số và đối chiếu thực tế.
           </p>
         </div>
-        <div className="bg-white/10 backdrop-blur-md border border-white/25 rounded-2xl p-4 text-sm z-10 flex flex-col items-start gap-1 flex-shrink-0">
-          <span className="text-emerald-100 text-xs font-bold uppercase tracking-wider">Mã lô truy xuất</span>
-          <span className="font-mono text-lg font-extrabold">{batch.batchCode}</span>
+        <div className="bg-white/10 border border-white/20 rounded-lg p-3 text-sm z-10 flex flex-col items-start gap-0.5 flex-shrink-0">
+          <span className="text-[#C7D1C3] text-[11px] font-medium uppercase tracking-wider">Mã lô truy xuất</span>
+          <span className="font-mono text-base font-bold text-white">{batch.batchCode}</span>
         </div>
       </div>
 
@@ -549,22 +520,22 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
                   return (
                     <div key={idx} className="relative">
                       {/* Timeline dot status */}
-                      <span className={`absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full border-4 border-white shadow-sm flex items-center justify-center ${
-                        isLast ? 'bg-primary-500 ring-4 ring-primary-100 animate-ping-slow' : 'bg-gray-300'
-                      }`} style={{ width: '18px', height: '18px' }} />
+                      <span className={`absolute -left-[30px] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm flex items-center justify-center ${
+                        isLast ? 'bg-[#2C4939] ring-4 ring-[#2C4939]/15' : 'bg-[#E2E5DC]'
+                      }`} />
                       
                       <div className="space-y-1">
                         <div className="flex items-center justify-between gap-4">
-                          <h4 className={`font-extrabold text-sm ${isLast ? 'text-primary-500' : 'text-gray-800'}`}>
+                          <h4 className={`font-medium text-xs ${isLast ? 'text-[#2C4939] font-bold' : 'text-[#253129]'}`}>
                             {step.title}
                           </h4>
-                          <span className="text-xs text-gray-400 font-semibold">{formatDate(step.timestamp)}</span>
+                          <span className="text-[10px] text-[#647067] font-mono">{formatDate(step.timestamp)}</span>
                         </div>
-                        <p className="text-xs text-gray-400 flex items-center gap-1 font-bold">
-                          <MapPin className="w-3.5 h-3.5 text-gray-300" />
+                        <p className="text-[11px] text-[#647067] flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-[#7B876C]" />
                           <span>Địa điểm: {step.location}</span>
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">{step.description}</p>
+                        <p className="text-xs text-[#647067] mt-1 leading-relaxed">{step.description}</p>
                       </div>
                     </div>
                   );
@@ -733,14 +704,14 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
               <Button 
                 onClick={() => setShowOriginal(false)}
                 variant={!showOriginal ? 'primary' : 'outline'}
-                className={`px-3.5 py-1.5 text-xs font-bold ${!showOriginal ? 'bg-primary-500 text-white border-none' : ''}`}
+                className={`px-3.5 py-1.5 text-xs font-medium ${!showOriginal ? 'bg-[#2C4939] hover:bg-[#233C2F] text-white border-none' : ''}`}
               >
                 Bản điện tử (Chứng thư số)
               </Button>
               <Button 
                 onClick={() => setShowOriginal(true)}
                 variant={showOriginal ? 'primary' : 'outline'}
-                className={`px-3.5 py-1.5 text-xs font-bold ${showOriginal ? 'bg-primary-500 text-white border-none' : ''}`}
+                className={`px-3.5 py-1.5 text-xs font-medium ${showOriginal ? 'bg-[#2C4939] hover:bg-[#233C2F] text-white border-none' : ''}`}
               >
                 Ảnh scan đính kèm
               </Button>

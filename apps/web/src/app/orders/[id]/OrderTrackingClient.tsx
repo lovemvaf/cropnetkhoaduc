@@ -71,11 +71,11 @@ export default function OrderTrackingPageClient() {
   if (!order) {
     return (
       <Container className="py-20 text-center space-y-4 max-w-md">
-        <ShieldAlert className="w-16 h-16 text-gray-300 mx-auto" />
-        <h3 className="text-xl font-extrabold text-gray-900">Không tìm thấy đơn hàng</h3>
-        <p className="text-sm text-gray-500">Mã đơn hàng không tồn tại hoặc bạn không có quyền truy cập.</p>
-        <Link href="/dashboard/customer" className="inline-block bg-primary-500 hover:bg-primary-600 text-white font-bold text-sm px-6 py-2.5 rounded-xl transition-colors">
-          Quay lại dashboard
+        <ShieldAlert className="w-16 h-16 text-[#647067] mx-auto" />
+        <h3 className="text-xl font-serif font-bold text-[#253129]">Không tìm thấy đơn hàng</h3>
+        <p className="text-sm text-[#647067]">Mã đơn hàng không tồn tại hoặc bạn không có quyền truy cập.</p>
+        <Link href="/dashboard/customer" className="inline-block bg-[#2C4939] hover:bg-[#233C2F] text-white font-medium text-xs px-5 py-2.5 rounded-lg transition-colors">
+          Quay lại danh sách đơn hàng
         </Link>
       </Container>
     );
@@ -86,104 +86,107 @@ export default function OrderTrackingPageClient() {
   const history = shipment?.trackingHistory || [];
 
   return (
-    <Container className="py-12 max-w-3xl space-y-6">
-      {/* Back link */}
-      <Link 
-        href="/dashboard/customer" 
-        className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 font-bold transition-colors"
-      >
-        <ArrowLeft className="w-3.5 h-3.5" />
-        <span>Quay lại Đơn hàng của tôi</span>
-      </Link>
+    <div className="bg-[#FAF9F5] min-h-screen py-10 md:py-14">
+      <Container className="max-w-4xl space-y-6">
+        {/* Back link */}
+        <Link 
+          href="/dashboard/customer" 
+          className="inline-flex items-center gap-1.5 text-xs text-[#647067] hover:text-[#253129] font-medium transition-colors"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Quay lại Đơn hàng của tôi</span>
+        </Link>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-3xl font-black text-gray-900 tracking-tight">Hành Trình Vận Đơn</h2>
-          <p className="text-gray-400 text-xs font-semibold uppercase font-mono mt-1">Mã đơn: #{order.id}</p>
-        </div>
-        <div className="flex gap-2">
-          <Button 
-            onClick={fetchOrderDetails} 
-            variant="outline" 
-            className="p-2.5 rounded-xl"
-            icon={<RefreshCw className="w-4 h-4 text-gray-500" />}
-          >
-            Làm mới
-          </Button>
-          {order.status === 'DELIVERED' && (
-            <Button 
-              onClick={() => setIsDisputeModalOpen(true)} 
-              variant="danger" 
-              className="px-4 py-2.5 rounded-xl"
-              icon={<AlertTriangle className="w-4 h-4" />}
-            >
-              Khiếu nại đơn hàng
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Main Tracking Details */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-        {/* Left Col: Timeline tracking */}
-        <Card className="p-6 md:col-span-2 space-y-6">
-          <div className="border-b border-gray-100 pb-3 flex justify-between items-center">
-            <h3 className="font-bold text-gray-950 text-base">Hành trình giao nhận</h3>
-            <Badge variant={
-              order.status === 'DELIVERED' ? 'success' :
-              order.status === 'SHIPPING' ? 'info' :
-              order.status === 'PENDING' ? 'warning' :
-              order.status === 'DISPUTED' ? 'purple' : 'secondary'
-            }>
-              {order.status === 'PENDING' ? 'Chờ xác nhận' :
-               order.status === 'CONFIRMED' ? 'Đã xác nhận' :
-               order.status === 'PROCESSING' ? 'Đang chuẩn bị hàng' :
-               order.status === 'SHIPPING' ? 'Đang giao hàng' :
-               order.status === 'DELIVERED' ? 'Đã giao thành công' :
-               order.status === 'DISPUTED' ? 'Đang khiếu nại' :
-               order.status === 'REFUNDED' ? 'Đã hoàn tiền' : order.status}
-            </Badge>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-[#253129] tracking-tight">
+              Hành Trình Vận Đơn Nông Sản
+            </h1>
+            <p className="text-[#647067] text-xs font-mono mt-1">Mã vận đơn: #{order.id}</p>
           </div>
+          <div className="flex gap-2">
+            <Button 
+              onClick={fetchOrderDetails} 
+              variant="outline" 
+              className="p-2.5 rounded-lg text-xs"
+              icon={<RefreshCw className="w-3.5 h-3.5 text-[#647067]" />}
+            >
+              Cập nhật
+            </Button>
+            {order.status === 'DELIVERED' && (
+              <Button 
+                onClick={() => setIsDisputeModalOpen(true)} 
+                variant="danger" 
+                className="px-3.5 py-2 rounded-lg text-xs"
+                icon={<AlertTriangle className="w-3.5 h-3.5" />}
+              >
+                Khiếu nại sản phẩm
+              </Button>
+            )}
+          </div>
+        </div>
 
-          {/* Timeline rendering */}
-          {history.length === 0 ? (
-            <div className="text-center py-8 text-gray-400 text-xs italic space-y-2">
-              <Truck className="w-8 h-8 mx-auto opacity-40 text-gray-300" />
-              <p>Hợp tác xã đang phân loại & đóng gói sản phẩm của bạn.</p>
-              <p className="text-[10px] font-bold text-primary-500">Mã lô nông sản sẽ được đính kèm khi giao hàng</p>
+        {/* Main Tracking Details */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          {/* Left Col: Timeline tracking */}
+          <div className="bg-white border border-[#E2E5DC] rounded-xl p-6 md:col-span-2 space-y-6">
+            <div className="border-b border-[#E2E5DC] pb-3 flex justify-between items-center">
+              <h2 className="font-serif font-bold text-[#253129] text-base">Hành trình giao nhận</h2>
+              <Badge variant={
+                order.status === 'DELIVERED' ? 'success' :
+                order.status === 'SHIPPING' ? 'info' :
+                order.status === 'PENDING' ? 'warning' :
+                order.status === 'DISPUTED' ? 'purple' : 'secondary'
+              }>
+                {order.status === 'PENDING' ? 'Chờ xác nhận' :
+                 order.status === 'CONFIRMED' ? 'Đã xác nhận' :
+                 order.status === 'PROCESSING' ? 'Đang chuẩn bị hàng' :
+                 order.status === 'SHIPPING' ? 'Đang giao hàng' :
+                 order.status === 'DELIVERED' ? 'Đã giao thành công' :
+                 order.status === 'DISPUTED' ? 'Đang khiếu nại' :
+                 order.status === 'REFUNDED' ? 'Đã hoàn tiền' : order.status}
+              </Badge>
             </div>
-          ) : (
-            <div className="relative pl-6 border-l border-gray-200 ml-3 space-y-8 py-2">
-              {history.map((step: any, idx: number) => {
-                const isLast = idx === history.length - 1;
-                return (
-                  <div key={idx} className="relative">
-                    {/* Timeline dot */}
-                    <span 
-                      className={`absolute -left-[30px] top-1.5 w-4 h-4 rounded-full border-4 border-white shadow-sm flex items-center justify-center ${
-                        isLast ? 'bg-primary-500 ring-4 ring-primary-100 animate-ping-slow' : 'bg-gray-300'
-                      }`}
-                    />
-                    
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between gap-4">
-                        <h4 className={`font-bold text-sm ${isLast ? 'text-primary-500' : 'text-gray-800'}`}>
-                          {step.title}
-                        </h4>
-                        <span className="text-[10px] text-gray-450 font-semibold">{formatDate(step.timestamp)}</span>
+
+            {/* Timeline rendering */}
+            {history.length === 0 ? (
+              <div className="text-center py-8 text-[#647067] text-xs space-y-2">
+                <Truck className="w-8 h-8 mx-auto text-[#7B876C]" />
+                <p>Hợp tác xã đang phân loại & đóng gói sản phẩm của bạn.</p>
+                <p className="text-[11px] font-medium text-[#2C4939]">Mã lô nông sản sẽ được đính kèm khi giao hàng</p>
+              </div>
+            ) : (
+              <div className="relative pl-6 border-l border-[#E2E5DC] ml-3 space-y-8 py-2">
+                {history.map((step: any, idx: number) => {
+                  const isLast = idx === history.length - 1;
+                  return (
+                    <div key={idx} className="relative">
+                      {/* Timeline dot */}
+                      <span 
+                        className={`absolute -left-[30px] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm flex items-center justify-center ${
+                          isLast ? 'bg-[#2C4939] ring-4 ring-[#2C4939]/15' : 'bg-[#E2E5DC]'
+                        }`}
+                      />
+                      
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-4">
+                          <h4 className={`font-medium text-xs ${isLast ? 'text-[#2C4939] font-bold' : 'text-[#253129]'}`}>
+                            {step.title}
+                          </h4>
+                          <span className="text-[10px] text-[#647067] font-mono">{formatDate(step.timestamp)}</span>
+                        </div>
+                        <p className="text-[11px] text-[#647067] flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-[#7B876C]" />
+                          <span>Vị trí: {step.location}</span>
+                        </p>
+                        <p className="text-xs text-[#647067] leading-relaxed mt-1">{step.description}</p>
                       </div>
-                      <p className="text-[10px] text-gray-400 flex items-center gap-1 font-bold">
-                        <MapPin className="w-3 h-3 text-gray-300" />
-                        <span>Vị trí: {step.location}</span>
-                      </p>
-                      <p className="text-xs text-gray-500 leading-relaxed mt-1">{step.description}</p>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </Card>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
         {/* Right Col: Driver info, recipient address, payment */}
         <div className="space-y-6">
@@ -260,44 +263,44 @@ export default function OrderTrackingPageClient() {
 
           {/* Payment info card */}
           {payment && (
-            <Card className="p-5 space-y-3.5">
-              <h4 className="font-bold text-xs uppercase text-gray-400 tracking-wider">Chi tiết thanh toán</h4>
-              <div className="space-y-2.5 text-xs text-gray-750">
+            <div className="bg-white border border-[#E2E5DC] rounded-xl p-5 space-y-3.5">
+              <h3 className="font-medium text-xs uppercase text-[#647067] tracking-wider">Chi tiết thanh toán</h3>
+              <div className="space-y-2.5 text-xs text-[#253129]">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Phương thức:</span>
-                  <span className="font-bold text-gray-800 flex items-center gap-1">
-                    <CreditCard className="w-3.5 h-3.5 text-primary-500" />
+                  <span className="text-[#647067]">Phương thức:</span>
+                  <span className="font-medium text-[#253129] flex items-center gap-1">
+                    <CreditCard className="w-3.5 h-3.5 text-[#2C4939]" />
                     {payment.paymentMethod === 'COD' ? 'Thanh toán COD' : 'Momo Sandbox'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Trạng thái ví:</span>
+                  <span className="text-[#647067]">Trạng thái ví:</span>
                   <Badge variant={payment.paymentStatus === 'COMPLETED' ? 'success' : payment.paymentStatus === 'REFUNDED' ? 'error' : 'warning'}>
                     {payment.paymentStatus === 'COMPLETED' ? 'Đã thanh toán' : 
                      payment.paymentStatus === 'REFUNDED' ? 'Đã hoàn tiền' : 'Chờ thanh toán'}
                   </Badge>
                 </div>
                 {payment.paidAt && (
-                  <div className="flex justify-between items-center text-[10px] text-gray-400">
+                  <div className="flex justify-between items-center text-[10px] text-[#647067]">
                     <span>Thanh toán lúc:</span>
-                    <span>{formatDate(payment.paidAt)}</span>
+                    <span className="font-mono">{formatDate(payment.paidAt)}</span>
                   </div>
                 )}
                 {payment.transactionId && (
-                  <div className="flex justify-between items-center font-mono text-[9px] text-gray-400 border-t border-gray-50 pt-2">
+                  <div className="flex justify-between items-center font-mono text-[10px] text-[#647067] border-t border-[#E2E5DC] pt-2">
                     <span>Mã GD:</span>
                     <span>{payment.transactionId}</span>
                   </div>
                 )}
               </div>
-            </Card>
+            </div>
           )}
         </div>
       </div>
 
       {/* Item summary */}
-      <Card className="p-6 space-y-4">
-        <h3 className="font-bold text-gray-950 text-base border-b border-gray-50 pb-2">Nông sản đặt mua</h3>
+      <div className="bg-white border border-[#E2E5DC] rounded-xl p-6 space-y-4">
+        <h3 className="font-serif font-bold text-[#253129] text-base border-b border-[#E2E5DC] pb-2">Nông sản đặt mua</h3>
         <div className="space-y-4">
           {order.orderItems?.map((item: any) => (
             <div key={item.id} className="flex justify-between items-center text-xs">
@@ -305,29 +308,29 @@ export default function OrderTrackingPageClient() {
                 <img 
                   src={getAssetPath(item.product?.images?.[0]?.url || item.product?.imageUrl) || 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=100&auto=format'} 
                   alt={item.product?.name} 
-                  className="w-10 h-10 rounded-lg object-cover" 
+                  className="w-10 h-10 rounded-lg object-cover border border-[#E2E5DC]" 
                 />
                 <div>
-                  <h4 className="font-bold text-gray-900">{item.product?.name}</h4>
+                  <h4 className="font-medium text-[#253129]">{item.product?.name}</h4>
                   {item.batch?.batchCode && (
                     <p className="text-[10px] mt-0.5">
-                      <span className="text-gray-400 font-bold">Lô đính kèm:</span>{' '}
-                      <Link href={`/traceability/${item.batch.batchCode}`} className="font-mono font-bold text-purple-600 hover:underline">
+                      <span className="text-[#647067]">Mã lô:</span>{' '}
+                      <Link href={`/traceability/${item.batch.batchCode}`} className="font-mono font-medium text-[#2C4939] hover:underline">
                         {item.batch.batchCode}
                       </Link>
                     </p>
                   )}
                 </div>
               </div>
-              <span className="font-semibold text-gray-600">{item.quantity} {item.product?.unit} x {formatVND(Number(item.price))}</span>
+              <span className="font-mono font-medium text-[#647067]">{item.quantity} {item.product?.unit} x {formatVND(Number(item.price))}</span>
             </div>
           ))}
-          <div className="border-t border-gray-50 pt-3 flex justify-between font-extrabold text-sm text-primary-500">
-            <span>Tổng cộng</span>
+          <div className="border-t border-[#E2E5DC] pt-3 flex justify-between font-mono font-bold text-sm text-[#2C4939]">
+            <span className="font-serif">Tổng cộng</span>
             <span>{formatVND(Number(order.totalAmount))}</span>
           </div>
         </div>
-      </Card>
+      </div>
 
       {/* Dispute Modal Form */}
       <Modal
@@ -375,6 +378,7 @@ export default function OrderTrackingPageClient() {
           </div>
         </form>
       </Modal>
-    </Container>
+      </Container>
+    </div>
   );
 }

@@ -7,7 +7,7 @@ export interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Container: React.FC<ContainerProps> = ({ children, className = '', ...props }) => {
   return (
-    <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`} {...props}>
+    <div className={`max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 ${className}`} {...props}>
       {children}
     </div>
   );
@@ -20,7 +20,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Card: React.FC<CardProps> = ({ children, className = '', ...props }) => {
   return (
-    <div className={`bg-white rounded-2xl border border-gray-100 shadow-sm p-6 overflow-hidden ${className}`} {...props}>
+    <div className={`bg-white rounded-xl border border-[#E2E5DC] shadow-subtle p-6 ${className}`} {...props}>
       {children}
     </div>
   );
@@ -42,14 +42,14 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyle = 'inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyle = 'inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variantStyles = {
-    primary: 'bg-primary-500 hover:bg-primary-600 text-white focus:ring-primary-500',
-    secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-800 focus:ring-gray-300',
-    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
-    outline: 'border border-gray-200 hover:bg-gray-50 text-gray-700 focus:ring-gray-200',
-    ghost: 'hover:bg-gray-50 text-gray-650 focus:ring-gray-100'
+    primary: 'bg-[#2C4939] hover:bg-[#233C2F] text-white focus:ring-[#2C4939]',
+    secondary: 'bg-[#F1EFE8] hover:bg-[#E7E4DC] text-[#253129] border border-[#E2E5DC] focus:ring-[#7B876C]',
+    danger: 'bg-[#B33A3A] hover:bg-[#962F2F] text-white focus:ring-[#B33A3A]',
+    outline: 'border border-[#E2E5DC] hover:bg-[#F7F6F2] text-[#253129] focus:ring-[#2C4939]',
+    ghost: 'hover:bg-[#F1EFE8] text-[#647067] hover:text-[#253129] focus:ring-[#E2E5DC]'
   };
 
   return (
@@ -90,23 +90,23 @@ export const Input: React.FC<InputProps> = ({
   return (
     <div className="space-y-1.5 w-full">
       {label && (
-        <label htmlFor={inputId} className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+        <label htmlFor={inputId} className="block text-xs font-semibold text-[#647067]">
           {label}
         </label>
       )}
       <input
         id={inputId}
-        className={`w-full bg-white border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all ${
+        className={`w-full bg-white border rounded-lg px-3.5 py-2 text-sm text-[#253129] placeholder-[#8C978F] focus:outline-none focus:ring-1 transition-colors ${
           error 
-            ? 'border-red-300 focus:ring-red-500 focus:border-red-550' 
-            : 'border-gray-200 focus:ring-primary-500 focus:border-primary-500'
+            ? 'border-[#B33A3A] focus:ring-[#B33A3A] focus:border-[#B33A3A]' 
+            : 'border-[#E2E5DC] focus:ring-[#2C4939] focus:border-[#2C4939]'
         } ${className}`}
         {...props}
       />
       {error ? (
-        <p className="text-xs text-red-600 font-medium">{error}</p>
+        <p className="text-xs text-[#B33A3A]">{error}</p>
       ) : helperText ? (
-        <p className="text-xs text-gray-400">{helperText}</p>
+        <p className="text-xs text-[#8C978F]">{helperText}</p>
       ) : null}
     </div>
   );
@@ -123,16 +123,16 @@ export const Badge: React.FC<BadgeProps> = ({
   variant = 'secondary',
   ...props
 }) => {
-  const baseStyle = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border';
+  const baseStyle = 'inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium border';
   
   const variantStyles = {
-    success: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-    warning: 'bg-amber-50 text-amber-700 border-amber-100',
-    error: 'bg-red-50 text-red-700 border-red-100',
-    info: 'bg-sky-50 text-sky-700 border-sky-100',
-    primary: 'bg-primary-50 text-primary-700 border-primary-100',
-    secondary: 'bg-gray-50 text-gray-600 border-gray-100',
-    purple: 'bg-purple-50 text-purple-700 border-purple-100'
+    primary: 'bg-[#E6EAE4] text-[#2C4939] border-[#C7D1C3]',
+    success: 'bg-[#E8F1EC] text-[#245436] border-[#B8D7C4]',
+    warning: 'bg-[#FAF0E6] text-[#8C5B3D] border-[#EAD5C3]',
+    error: 'bg-[#FDF0ED] text-[#A63826] border-[#F6CBC2]',
+    info: 'bg-[#EFF5F8] text-[#34627A] border-[#C9DFEA]',
+    secondary: 'bg-[#F1EFE8] text-[#647067] border-[#E2E5DC]',
+    purple: 'bg-[#F3EEF5] text-[#5C3D6A] border-[#DFD1E3]'
   };
 
   return (
@@ -157,26 +157,26 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" 
+        className="fixed inset-0 bg-[#253129]/50 transition-opacity" 
         onClick={onClose} 
       />
       
       {/* Modal Dialog */}
-      <div className="relative bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl border border-gray-150 transform transition-all animate-scaleUp z-10">
+      <div className="relative bg-white rounded-xl max-w-xl w-full p-6 shadow-modal border border-[#E2E5DC] z-10">
         {title && (
-          <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
-            <h3 className="font-extrabold text-lg text-gray-950">{title}</h3>
+          <div className="flex items-center justify-between border-b border-[#E2E5DC] pb-3 mb-4">
+            <h3 className="font-semibold text-lg text-[#253129]">{title}</h3>
             <button 
               onClick={onClose} 
-              className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-55 transition-colors focus:outline-none"
+              className="text-[#647067] hover:text-[#253129] p-1 rounded-md hover:bg-[#F1EFE8] transition-colors focus:outline-none"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
         )}
-        <div className="max-h-[70vh] overflow-y-auto pr-1">
+        <div className="max-h-[75vh] overflow-y-auto pr-1">
           {children}
         </div>
       </div>
@@ -192,16 +192,16 @@ export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
 
 export const Table: React.FC<TableProps> = ({ headers, children, className = '', ...props }) => {
   return (
-    <div className="overflow-x-auto w-full border border-gray-100 rounded-2xl">
-      <table className={`w-full text-left border-collapse bg-white ${className}`} {...props}>
+    <div className="overflow-x-auto w-full border border-[#E2E5DC] rounded-xl bg-white">
+      <table className={`w-full text-left border-collapse ${className}`} {...props}>
         <thead>
-          <tr className="border-b border-gray-100 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50">
+          <tr className="border-b border-[#E2E5DC] text-xs font-semibold text-[#647067] bg-[#F7F6F2]">
             {headers.map((h, i) => (
-              <th key={i} className="py-3.5 px-4 font-extrabold">{h}</th>
+              <th key={i} className="py-3 px-4">{h}</th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-50">
+        <tbody className="divide-y divide-[#E2E5DC] text-sm text-[#253129]">
           {children}
         </tbody>
       </table>
@@ -227,12 +227,12 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   const variantStyles = {
     text: 'h-4 w-3/4 rounded',
     circular: 'rounded-full',
-    rectangular: 'rounded-xl',
+    rectangular: 'rounded-lg',
   };
 
   return (
     <div
-      className={`bg-gray-100 animate-pulse ${variantStyles[variant]} ${className}`}
+      className={`bg-[#EAECE6] animate-pulse ${variantStyles[variant]} ${className}`}
       style={{
         width,
         height,
@@ -272,20 +272,20 @@ export const Drawer: React.FC<DrawerProps> = ({
     <div className="fixed inset-0 z-50 flex justify-end overflow-hidden">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity animate-fade-in"
+        className="fixed inset-0 bg-[#253129]/50 transition-opacity"
         onClick={onClose}
       />
 
       {/* Slide-out Sheet */}
-      <div className={`relative w-full ${sizeClasses[size]} bg-white shadow-2xl border-l border-gray-100 flex flex-col h-full z-10 animate-slide-left`}>
-        <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
-          <h3 className="font-extrabold text-lg text-gray-950">{title}</h3>
+      <div className={`relative w-full ${sizeClasses[size]} bg-white shadow-modal border-l border-[#E2E5DC] flex flex-col h-full z-10`}>
+        <div className="flex items-center justify-between border-b border-[#E2E5DC] px-6 py-4">
+          <h3 className="font-semibold text-lg text-[#253129]">{title}</h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200"
+            className="text-[#647067] hover:text-[#253129] p-1.5 rounded-md hover:bg-[#F1EFE8] transition-colors focus:outline-none"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
@@ -323,60 +323,20 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const variantColors = {
-    danger: {
-      button: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
-      iconBg: 'bg-red-50',
-      iconText: 'text-red-600',
-      stroke: 'stroke-red-600'
-    },
-    warning: {
-      button: 'bg-amber-500 hover:bg-amber-600 text-white focus:ring-amber-500',
-      iconBg: 'bg-amber-50',
-      iconText: 'text-amber-600',
-      stroke: 'stroke-amber-500'
-    },
-    primary: {
-      button: 'bg-primary-500 hover:bg-primary-600 text-white focus:ring-primary-500',
-      iconBg: 'bg-primary-50',
-      iconText: 'text-primary-600',
-      stroke: 'stroke-primary-500'
-    }
-  };
-
-  const style = variantColors[variant];
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity animate-fade-in"
+        className="fixed inset-0 bg-[#253129]/50 transition-opacity"
         onClick={loading ? undefined : onClose}
       />
 
       {/* Dialog Box */}
-      <div className="relative bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-gray-150 transform transition-all animate-scale-up z-10">
+      <div className="relative bg-white rounded-xl max-w-md w-full p-6 shadow-modal border border-[#E2E5DC] z-10">
         <div className="flex gap-4">
-          <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${style.iconBg} ${style.iconText}`}>
-            {variant === 'danger' && (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            )}
-            {variant === 'warning' && (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            )}
-            {variant === 'primary' && (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            )}
-          </div>
           <div className="flex-1">
-            <h3 className="font-extrabold text-lg text-gray-950 mb-1">{title}</h3>
-            <p className="text-sm text-gray-500 leading-relaxed">{message}</p>
+            <h3 className="font-semibold text-base text-[#253129] mb-1">{title}</h3>
+            <p className="text-sm text-[#647067] leading-relaxed">{message}</p>
           </div>
         </div>
 
@@ -393,7 +353,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             variant={variant === 'primary' ? 'primary' : variant === 'danger' ? 'danger' : 'secondary'}
             loading={loading}
             onClick={onConfirm}
-            className={`px-4 py-2 ${variant === 'warning' ? 'bg-amber-500 hover:bg-amber-600 text-white' : ''}`}
+            className="px-4 py-2"
           >
             {confirmLabel}
           </Button>

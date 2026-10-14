@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { formatVND } from '@cropnet/utils';
-import { Star, ShieldCheck, MapPin, Sparkles } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { getAssetPath } from '@/shared/utils/path';
 
 interface ProductCardProps {
@@ -27,79 +27,70 @@ export default function ProductCard({
 }: ProductCardProps) {
   const isOcop = tags.some(t => t.toLowerCase().includes('ocop'));
   const isVietGap = tags.some(t => t.toLowerCase().includes('vietgap'));
-  const isOrganic = tags.some(t => t.toLowerCase().includes('hữu cơ') || t.toLowerCase().includes('organic'));
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-xs hover:shadow-md transition-all group flex flex-col h-full hover:-translate-y-1 duration-200">
-      <div className="relative aspect-square bg-gray-50 border-b border-gray-100/50 overflow-hidden">
+    <div className="bg-white rounded-xl border border-[#E2E5DC] overflow-hidden flex flex-col h-full hover:border-[#CBD0C4] transition-colors">
+      {/* Product Image */}
+      <div className="relative aspect-square bg-[#F1EFE8] overflow-hidden">
         <img
           src={getAssetPath(imageUrl) || 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=600&auto=format'}
           alt={name}
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ease-out"
+          className="object-cover w-full h-full"
           loading="lazy"
         />
         
-        {/* Dynamic badges based on genuine tag claims */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1 items-start">
+        {/* Genuine Badges */}
+        <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5 items-start">
           {isOcop && (
-            <div className="bg-amber-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md flex items-center gap-1 shadow-xs">
-              <Sparkles className="w-3 h-3" />
-              <span>OCOP Đồng Nai</span>
-            </div>
+            <span className="bg-white/95 text-[#2C4939] text-[11px] font-medium px-2 py-0.5 rounded border border-[#E2E5DC]">
+              OCOP 4 Sao
+            </span>
           )}
           {isVietGap && (
-            <div className="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow-xs">
-              <ShieldCheck className="w-3 h-3" />
-              <span>VietGAP</span>
-            </div>
-          )}
-          {isOrganic && (
-            <div className="bg-teal-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow-xs">
-              <span>Hữu Cơ Sinh Thái</span>
-            </div>
+            <span className="bg-white/95 text-[#2C4939] text-[11px] font-medium px-2 py-0.5 rounded border border-[#E2E5DC]">
+              VietGAP
+            </span>
           )}
         </div>
 
         {seasonStatus && (
-          <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-xs text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
+          <div className="absolute bottom-2 left-2 bg-[#253129]/80 text-white text-[10px] font-medium px-2 py-0.5 rounded">
             {seasonStatus}
           </div>
         )}
       </div>
 
-      <div className="p-4 flex flex-col flex-grow">
-        <div className="flex items-center gap-1 text-[11px] text-gray-500 mb-1">
-          <MapPin className="w-3 h-3 text-emerald-600 flex-shrink-0" />
-          <span className="truncate font-medium">{farmName}</span>
+      {/* Product Information */}
+      <div className="p-4 flex flex-col flex-grow justify-between space-y-3">
+        <div>
+          <div className="flex items-center gap-1 text-xs text-[#8C978F] mb-1">
+            <MapPin className="w-3 h-3 text-[#7B876C] flex-shrink-0" />
+            <span className="truncate">{farmName}</span>
+          </div>
+
+          <Link 
+            href={`/products/${id}`} 
+            className="font-semibold text-sm sm:text-base text-[#253129] hover:text-[#2C4939] transition-colors line-clamp-2 leading-snug"
+            title={name}
+          >
+            {name}
+          </Link>
         </div>
 
-        <Link 
-          href={`/products/${id}`} 
-          className="font-bold text-gray-900 hover:text-primary-600 transition-colors mb-2 text-base line-clamp-1 group-hover:text-emerald-700"
-        >
-          {name}
-        </Link>
-
-        <div className="flex items-center gap-1 mb-3">
-          <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
-          <span className="text-xs font-semibold text-gray-600">4.9</span>
-          <span className="text-[11px] text-gray-400 ml-1">• TP Đồng Nai</span>
-        </div>
-
-        <div className="flex items-end justify-between mt-auto pt-3 border-t border-gray-100">
+        <div className="flex items-end justify-between pt-3 border-t border-[#E2E5DC]">
           <div className="flex flex-col min-w-0">
-            <span className="text-base sm:text-lg font-black text-emerald-700 leading-tight">
+            <span className="text-base font-bold text-[#253129] leading-tight">
               {formatVND(price)}
             </span>
-            <span className="text-xs text-gray-400 truncate mt-0.5" title={unit}>
+            <span className="text-xs text-[#8C978F] truncate mt-0.5">
               / {unit}
             </span>
           </div>
           <Link 
             href={`/products/${id}`} 
-            className="bg-emerald-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl hover:bg-emerald-700 transition-all flex-shrink-0 whitespace-nowrap ml-2 shadow-xs active:scale-95 duration-150"
+            className="bg-[#F1EFE8] hover:bg-[#E7E4DC] text-[#253129] text-xs font-medium px-3.5 py-1.5 rounded-lg transition-colors flex-shrink-0"
           >
-            Xem & Đặt
+            Chi tiết
           </Link>
         </div>
       </div>

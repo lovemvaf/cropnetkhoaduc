@@ -74,22 +74,25 @@ export default function LoginPage() {
   };
 
   return (
-    <Container className="py-20 flex justify-center">
-      <Card className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-primary-500">Đăng Nhập CropNet</h2>
-          <p className="text-xs text-gray-400 mt-1">Kết nối trực tiếp nông sản sạch Việt Nam</p>
+    <div className="bg-[#FAF9F5] min-h-[85vh] flex items-center justify-center py-12 px-4">
+      <div className="w-full max-w-md bg-white border border-[#E2E5DC] rounded-xl p-8 space-y-6 shadow-sm">
+        <div className="text-center space-y-1.5">
+          <Link href="/" className="inline-block font-serif font-bold text-xl text-[#2C4939] tracking-tight">
+            CropNet Đồng Nai
+          </Link>
+          <h1 className="text-xl font-serif font-bold text-[#253129]">Đăng Nhập Hệ Thống</h1>
+          <p className="text-xs text-[#647067]">Thương mại nông sản số & Truy xuất nguồn gốc</p>
         </div>
 
         {serverError && (
-          <div className="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100">
+          <div className="bg-red-50 text-red-700 text-xs p-3 rounded-lg border border-red-200">
             {serverError}
           </div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase">Email</label>
+            <label className="block text-xs font-medium text-[#253129] mb-1">Email đăng nhập</label>
             <input
               type="email"
               {...register('email', {
@@ -99,42 +102,42 @@ export default function LoginPage() {
                   message: 'Email không đúng định dạng'
                 }
               })}
-              className="mt-1 w-full border border-gray-200 px-4 py-3 rounded-xl focus:outline-primary-500 text-sm"
+              className="w-full bg-[#FAF9F5] border border-[#E2E5DC] px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#2C4939] focus:bg-white text-xs text-[#253129] transition-colors"
               placeholder="nhapmail@gmail.com"
             />
             {errors.email && (
-              <span className="text-red-500 text-xs mt-1 block">{errors.email.message as string}</span>
+              <span className="text-red-500 text-[11px] mt-1 block">{errors.email.message as string}</span>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase">Mật khẩu</label>
+            <label className="block text-xs font-medium text-[#253129] mb-1">Mật khẩu</label>
             <input
               type="password"
               {...register('password', {
                 required: 'Mật khẩu không được để trống',
                 minLength: { value: 6, message: 'Mật khẩu tối thiểu 6 ký tự' }
               })}
-              className="mt-1 w-full border border-gray-200 px-4 py-3 rounded-xl focus:outline-primary-500 text-sm"
+              className="w-full bg-[#FAF9F5] border border-[#E2E5DC] px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#2C4939] focus:bg-white text-xs text-[#253129] transition-colors"
               placeholder="••••••••"
             />
             {errors.password && (
-              <span className="text-red-500 text-xs mt-1 block">{errors.password.message as string}</span>
+              <span className="text-red-500 text-[11px] mt-1 block">{errors.password.message as string}</span>
             )}
           </div>
 
           <div className="flex items-center justify-between text-xs my-2">
-            <label className="flex items-center gap-2 cursor-pointer text-gray-500 font-medium select-none">
+            <label className="flex items-center gap-2 cursor-pointer text-[#647067] select-none">
               <input
                 type="checkbox"
                 {...register('rememberMe')}
-                className="rounded text-primary-500 focus:ring-primary-500 h-4 w-4 border-gray-300"
+                className="rounded accent-[#2C4939] h-3.5 w-3.5"
               />
               Ghi nhớ đăng nhập
             </label>
             <Link
               href="/forgot-password"
-              className="text-primary-500 hover:underline font-semibold"
+              className="text-[#2C4939] hover:underline font-medium"
             >
               Quên mật khẩu?
             </Link>
@@ -143,19 +146,19 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-primary-500 text-white font-bold rounded-2xl hover:bg-primary-600 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 bg-[#2C4939] text-white font-medium text-xs rounded-lg hover:bg-[#233C2F] transition-colors flex items-center justify-center gap-2"
           >
             {loading ? 'Đang xác thực...' : 'Đăng Nhập'}
           </button>
         </form>
 
-        <div className="text-center mt-4 text-xs text-gray-500 border-t pt-4">
+        <div className="text-center text-xs text-[#647067] border-t border-[#E2E5DC] pt-4">
           Chưa có tài khoản?{' '}
-          <Link href="/register" className="text-primary-500 font-bold hover:underline">
-            Đăng ký ngay
+          <Link href="/register" className="text-[#2C4939] font-medium hover:underline">
+            Đăng ký tham gia
           </Link>
         </div>
-      </Card>
-    </Container>
+      </div>
+    </div>
   );
 }

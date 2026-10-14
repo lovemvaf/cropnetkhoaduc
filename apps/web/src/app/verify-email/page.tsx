@@ -111,31 +111,34 @@ function VerifyEmailForm() {
   };
 
   return (
-    <Container className="py-20 flex justify-center">
-      <Card className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-primary-500">Xác Minh Email</h2>
-          <p className="text-xs text-gray-400 mt-1">Xác thực tài khoản để bắt đầu sử dụng đầy đủ chức năng</p>
+    <div className="bg-[#FAF9F5] min-h-[85vh] flex items-center justify-center py-12 px-4">
+      <div className="w-full max-w-md bg-white border border-[#E2E5DC] rounded-xl p-8 space-y-6 shadow-sm">
+        <div className="text-center space-y-1.5">
+          <Link href="/" className="inline-block font-serif font-bold text-xl text-[#2C4939] tracking-tight">
+            CropNet Đồng Nai
+          </Link>
+          <h1 className="text-xl font-serif font-bold text-[#253129]">Xác Minh Email</h1>
+          <p className="text-xs text-[#647067]">Xác thực tài khoản tham gia sàn nông sản CropNet</p>
         </div>
 
         {serverError && (
-          <div className="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100">
+          <div className="bg-red-50 text-red-700 text-xs p-3 rounded-lg border border-red-200">
             {serverError}
           </div>
         )}
 
         {success && (
-          <div className="bg-green-50 text-green-600 text-sm p-3 rounded-xl border border-green-100">
+          <div className="bg-green-50 text-green-700 text-xs p-3.5 rounded-lg border border-green-200">
             Xác minh email thành công! Đang chuyển hướng về trang Đăng nhập...
           </div>
         )}
 
         {message && (
-          <div className="bg-green-50 text-green-600 text-sm p-3 rounded-xl border border-green-100 space-y-2">
+          <div className="bg-[#F1EFE8] text-[#253129] text-xs p-4 rounded-lg border border-[#E2E5DC] space-y-2">
             <div>{message}</div>
             {resentToken && (
-              <div className="bg-white p-2 rounded border border-green-200 mt-2 font-mono text-center">
-                Mã xác nhận của bạn (Testing): <span className="font-bold text-lg text-primary-500">{resentToken}</span>
+              <div className="bg-white p-2.5 rounded-lg border border-[#E2E5DC] mt-2 font-mono text-center">
+                Mã xác nhận (Testing): <span className="font-bold text-sm text-[#2C4939]">{resentToken}</span>
               </div>
             )}
           </div>
@@ -143,55 +146,55 @@ function VerifyEmailForm() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase">Mã xác minh</label>
+            <label className="block text-xs font-medium text-[#253129] mb-1">Mã xác minh tài khoản</label>
             <input
               type="text"
               {...register('token', {
                 required: 'Mã xác minh không được để trống'
               })}
-              className="mt-1 w-full border border-gray-200 px-4 py-3 rounded-xl focus:outline-primary-500 text-sm font-mono text-center uppercase tracking-widest"
+              className="w-full bg-[#FAF9F5] border border-[#E2E5DC] px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#2C4939] focus:bg-white text-xs text-[#253129] font-mono text-center uppercase tracking-widest transition-colors"
               placeholder="MÃ XÁC MINH"
             />
             {errors.token && (
-              <span className="text-red-500 text-xs mt-1 block">{errors.token.message as string}</span>
+              <span className="text-red-500 text-[11px] mt-1 block">{errors.token.message as string}</span>
             )}
           </div>
 
           <button
             type="submit"
             disabled={loading || success}
-            className="w-full py-4 bg-primary-500 text-white font-bold rounded-2xl hover:bg-primary-600 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 bg-[#2C4939] text-white font-medium text-xs rounded-lg hover:bg-[#233C2F] transition-colors flex items-center justify-center gap-2"
           >
             {loading ? 'Đang xác minh...' : 'Xác thực tài khoản'}
           </button>
         </form>
 
-        <div className="flex flex-col items-center gap-3 text-xs border-t pt-4">
+        <div className="flex flex-col items-center gap-3 text-xs border-t border-[#E2E5DC] pt-4">
           <button
             onClick={handleResend}
             disabled={resending}
-            className="text-primary-500 hover:underline font-semibold"
+            className="text-[#2C4939] hover:underline font-medium"
           >
             {resending ? 'Đang gửi lại...' : 'Chưa nhận được mã? Gửi lại mã xác minh'}
           </button>
           
-          <Link href="/login" className="text-gray-400 hover:underline font-medium mt-1">
+          <Link href="/login" className="text-[#647067] hover:underline font-medium mt-1">
             Quay lại Đăng nhập
           </Link>
         </div>
-      </Card>
-    </Container>
+      </div>
+    </div>
   );
 }
 
 export default function VerifyEmailPage() {
   return (
     <Suspense fallback={
-      <Container className="py-20 flex justify-center">
-        <Card className="w-full max-w-md p-6 text-center">
-          <div className="text-gray-400">Đang tải...</div>
-        </Card>
-      </Container>
+      <div className="bg-[#FAF9F5] min-h-[85vh] flex items-center justify-center py-20">
+        <div className="w-full max-w-md p-6 text-center text-[#647067] text-xs">
+          Đang tải thông tin xác minh...
+        </div>
+      </div>
     }>
       <VerifyEmailForm />
     </Suspense>

@@ -115,11 +115,12 @@ export default function CustomerDashboardPage() {
 
   return (
     <RouteGuard allowedRoles={['CUSTOMER']}>
-      <Container className="py-12 space-y-8 max-w-4xl">
-        <div>
-          <h2 className="text-3xl font-extrabold text-gray-900">Đơn Hàng Của Tôi</h2>
-          <p className="text-gray-400 text-sm">Theo dõi và đánh giá chất lượng nông sản đã mua</p>
-        </div>
+      <div className="bg-[#FAF9F5] min-h-screen py-10 md:py-14">
+        <Container className="space-y-8 max-w-4xl">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-[#253129] tracking-tight">Đơn Hàng Của Tôi</h1>
+            <p className="text-[#647067] text-xs mt-1">Theo dõi hành trình nông sản và đánh giá chất lượng sản phẩm</p>
+          </div>
 
         {/* Purchase Analytics & Statistics */}
         <div className="space-y-6">
@@ -157,30 +158,30 @@ export default function CustomerDashboardPage() {
               />
             </div>
             
-            <Card className="p-6 flex flex-col justify-between">
+            <div className="bg-white border border-[#E2E5DC] rounded-xl p-6 flex flex-col justify-between">
               <div>
-                <h3 className="font-bold text-base text-gray-800 mb-4 uppercase tracking-wider text-xs">Trạng thái đơn mua</h3>
+                <h3 className="font-serif font-bold text-xs uppercase tracking-wider text-[#253129] mb-4">Trạng thái đơn mua</h3>
                 <div className="space-y-3.5">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500 font-semibold flex items-center gap-1.5"><Package className="w-4 h-4 text-amber-500" /> Chờ xác nhận</span>
-                    <span className="font-bold text-gray-900 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-100">{stats?.orderStatuses?.pending ?? 0}</span>
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-[#647067] flex items-center gap-1.5"><Package className="w-4 h-4 text-amber-600" /> Chờ xác nhận</span>
+                    <span className="font-mono font-medium text-[#253129] bg-[#FAF9F5] px-2.5 py-0.5 rounded border border-[#E2E5DC]">{stats?.orderStatuses?.pending ?? 0}</span>
                   </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500 font-semibold flex items-center gap-1.5"><Truck className="w-4 h-4 text-sky-500" /> Đang giao</span>
-                    <span className="font-bold text-gray-900 bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-100">{stats?.orderStatuses?.shipping ?? 0}</span>
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-[#647067] flex items-center gap-1.5"><Truck className="w-4 h-4 text-sky-600" /> Đang giao</span>
+                    <span className="font-mono font-medium text-[#253129] bg-[#FAF9F5] px-2.5 py-0.5 rounded border border-[#E2E5DC]">{stats?.orderStatuses?.shipping ?? 0}</span>
                   </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500 font-semibold flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-emerald-500" /> Đã giao</span>
-                    <span className="font-bold text-gray-900 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">{stats?.orderStatuses?.delivered ?? 0}</span>
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-[#647067] flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-[#2C4939]" /> Đã giao</span>
+                    <span className="font-mono font-medium text-[#253129] bg-[#FAF9F5] px-2.5 py-0.5 rounded border border-[#E2E5DC]">{stats?.orderStatuses?.delivered ?? 0}</span>
                   </div>
                 </div>
               </div>
-              <div className="pt-4 border-t border-gray-100 text-center">
-                <Link href="/products" className="text-xs text-primary-500 font-black hover:underline">
-                  ➔ Tiếp tục mua sắm sạch
+              <div className="pt-4 border-t border-[#E2E5DC] text-center">
+                <Link href="/products" className="text-xs text-[#2C4939] font-medium hover:underline">
+                  ➔ Tiếp tục mua sắm nông sản
                 </Link>
               </div>
-            </Card>
+            </div>
           </div>
         </div>
 
@@ -198,21 +199,21 @@ export default function CustomerDashboardPage() {
                   {/* Order Header */}
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-4 gap-4">
                     <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase">Mã đơn hàng</p>
+                      <p className="text-[11px] font-medium text-[#647067] uppercase">Mã đơn hàng</p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className="font-mono font-semibold text-gray-800 text-sm">{order.id}</span>
-                        <Link href={`/orders/${order.id}`} className="text-xs text-primary-500 hover:underline font-bold">
+                        <span className="font-mono font-medium text-[#253129] text-xs">{order.id}</span>
+                        <Link href={`/orders/${order.id}`} className="text-xs text-[#2C4939] hover:underline font-medium">
                           Theo dõi chi tiết ➔
                         </Link>
                       </div>
                     </div>
                     <div className="text-right sm:text-left">
-                      <p className="text-xs font-bold text-gray-400 uppercase">Ngày đặt hàng</p>
-                      <p className="font-semibold text-gray-800 text-sm">{formatDate(order.createdAt)}</p>
+                      <p className="text-[11px] font-medium text-[#647067] uppercase">Ngày đặt hàng</p>
+                      <p className="font-mono text-[#253129] text-xs">{formatDate(order.createdAt)}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase">Tổng tiền</p>
-                      <p className="font-extrabold text-primary-500">{formatVND(Number(order.totalAmount))}</p>
+                      <p className="text-[11px] font-medium text-[#647067] uppercase">Tổng tiền</p>
+                      <p className="font-mono font-bold text-sm text-[#2C4939]">{formatVND(Number(order.totalAmount))}</p>
                     </div>
                   </div>
 
@@ -245,13 +246,13 @@ export default function CustomerDashboardPage() {
                   </div>
 
                   {/* Order Status Timeline */}
-                  <div className="pt-4 border-t border-gray-100">
-                    <p className="text-xs font-bold text-gray-400 uppercase mb-4">Trạng thái giao hàng</p>
+                  <div className="pt-4 border-t border-[#E2E5DC]">
+                    <p className="text-[11px] font-medium text-[#647067] uppercase mb-4">Trạng thái giao hàng</p>
                     <div className="flex justify-between items-center relative">
                       {/* Progress Line */}
-                      <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-100 -translate-y-1/2 -z-10"></div>
+                      <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-[#E2E5DC] -translate-y-1/2 -z-10"></div>
                       <div
-                        className="absolute top-1/2 left-0 h-0.5 bg-primary-500 -translate-y-1/2 -z-10 transition-all duration-500"
+                        className="absolute top-1/2 left-0 h-0.5 bg-[#2C4939] -translate-y-1/2 -z-10 transition-all duration-500"
                         style={{ width: `${((currentStep - 1) / 3) * 100}%` }}
                       ></div>
 
@@ -266,10 +267,10 @@ export default function CustomerDashboardPage() {
                         const isActive = currentStep >= s.step;
                         return (
                           <div key={s.step} className="flex flex-col items-center gap-1.5 bg-white px-2">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all ${isActive ? 'bg-primary-500 border-primary-500 text-white shadow-sm' : 'bg-white border-gray-200 text-gray-400'}`}>
-                              <Icon className="w-4 h-4" />
+                            <div className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all ${isActive ? 'bg-[#2C4939] border-[#2C4939] text-white shadow-sm' : 'bg-white border-[#E2E5DC] text-[#647067]'}`}>
+                              <Icon className="w-3.5 h-3.5" />
                             </div>
-                            <span className={`text-[10px] sm:text-xs font-semibold ${isActive ? 'text-primary-600' : 'text-gray-400'}`}>{s.label}</span>
+                            <span className={`text-[10px] font-medium ${isActive ? 'text-[#2C4939]' : 'text-[#647067]'}`}>{s.label}</span>
                           </div>
                         );
                       })}
@@ -284,60 +285,61 @@ export default function CustomerDashboardPage() {
         {/* Review Dialog Modal */}
         {reviewingItem && (
           <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-            <Card className="max-w-md w-full p-6 space-y-6 animate-in fade-in zoom-in-95 duration-150">
-              <div className="flex justify-between items-center border-b border-gray-100 pb-3">
-                <h3 className="font-extrabold text-lg text-gray-900">Đánh giá sản phẩm</h3>
-                <button onClick={() => setReviewingItem(null)} className="text-gray-400 hover:text-gray-600 font-bold">✕</button>
+            <div className="bg-white border border-[#E2E5DC] rounded-xl max-w-md w-full p-6 space-y-5 animate-in fade-in zoom-in-95 duration-150 shadow-lg">
+              <div className="flex justify-between items-center border-b border-[#E2E5DC] pb-3">
+                <h3 className="font-serif font-bold text-base text-[#253129]">Đánh giá sản phẩm</h3>
+                <button onClick={() => setReviewingItem(null)} className="text-[#647067] hover:text-[#253129] font-bold">✕</button>
               </div>
               <div className="flex items-center gap-3">
                 <img
                   src={getAssetPath(reviewingItem.product?.images?.[0]?.url || reviewingItem.product?.imageUrl)}
                   alt={reviewingItem.product?.name}
-                  className="w-14 h-14 rounded-2xl object-cover"
+                  className="w-12 h-12 rounded-lg object-cover border border-[#E2E5DC]"
                 />
                 <div>
-                  <h4 className="font-bold text-gray-900 text-base">{reviewingItem.product?.name}</h4>
-                  <p className="text-xs text-gray-400">Nhà vườn: {reviewingItem.product?.supplier?.farmName || 'HTX Nông Nghiệp Tân Triều'}</p>
+                  <h4 className="font-medium text-[#253129] text-xs">{reviewingItem.product?.name}</h4>
+                  <p className="text-[11px] text-[#647067]">Nhà vườn: {reviewingItem.product?.supplier?.farmName || 'HTX Nông Nghiệp Tân Triều'}</p>
                 </div>
               </div>
 
               <form onSubmit={handleReviewSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 block">Đánh giá sao</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-[#253129] block">Đánh giá sao</label>
                   <div className="flex gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
                         type="button"
                         onClick={() => setRating(star)}
-                        className="text-amber-400 focus:outline-none"
+                        className="text-amber-500 focus:outline-none"
                       >
-                        <Star className={`w-8 h-8 ${rating >= star ? 'fill-current' : 'stroke-current text-gray-300'}`} />
+                        <Star className={`w-6 h-6 ${rating >= star ? 'fill-current' : 'stroke-current text-gray-300'}`} />
                       </button>
                     ))}
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 block">Nhận xét nhận hàng</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-[#253129] block">Nhận xét chất lượng</label>
                   <textarea
                     rows={4}
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     required
-                    placeholder="Hãy chia sẻ nhận xét của bạn về độ tươi ngọt và đóng gói sản phẩm..."
-                    className="w-full border border-gray-200 rounded-2xl p-4 text-sm focus:outline-primary-500"
+                    placeholder="Hãy chia sẻ nhận xét của bạn về độ tươi ngọt và cách đóng gói nông sản..."
+                    className="w-full bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg p-3 text-xs focus:outline-none focus:border-[#2C4939] focus:bg-white text-[#253129]"
                   ></textarea>
                 </div>
 
-                <button type="submit" className="w-full bg-primary-500 text-white font-bold py-3.5 rounded-2xl hover:bg-primary-600 transition-colors">
+                <button type="submit" className="w-full bg-[#2C4939] text-white font-medium text-xs py-3 rounded-lg hover:bg-[#233C2F] transition-colors">
                   Gửi nhận xét
                 </button>
               </form>
-            </Card>
+            </div>
           </div>
         )}
-      </Container>
+        </Container>
+      </div>
     </RouteGuard>
   );
 }

@@ -60,100 +60,103 @@ function ResetPasswordForm() {
   };
 
   return (
-    <Container className="py-20 flex justify-center">
-      <Card className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-primary-500">Đặt Lại Mật Khẩu</h2>
-          <p className="text-xs text-gray-400 mt-1">Thiết lập mật khẩu mới cho tài khoản của bạn</p>
+    <div className="bg-[#FAF9F5] min-h-[85vh] flex items-center justify-center py-12 px-4">
+      <div className="w-full max-w-md bg-white border border-[#E2E5DC] rounded-xl p-8 space-y-6 shadow-sm">
+        <div className="text-center space-y-1.5">
+          <Link href="/" className="inline-block font-serif font-bold text-xl text-[#2C4939] tracking-tight">
+            CropNet Đồng Nai
+          </Link>
+          <h1 className="text-xl font-serif font-bold text-[#253129]">Đặt Lại Mật Khẩu</h1>
+          <p className="text-xs text-[#647067]">Thiết lập mật khẩu mới bảo mật cho tài khoản</p>
         </div>
 
         {serverError && (
-          <div className="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100">
+          <div className="bg-red-50 text-red-700 text-xs p-3 rounded-lg border border-red-200">
             {serverError}
           </div>
         )}
 
         {success && (
-          <div className="bg-green-50 text-green-600 text-sm p-3 rounded-xl border border-green-100">
+          <div className="bg-green-50 text-green-700 text-xs p-3.5 rounded-lg border border-green-200">
             Cập nhật mật khẩu thành công! Đang chuyển hướng về trang Đăng nhập...
           </div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase">Mã khôi phục</label>
+            <label className="block text-xs font-medium text-[#253129] mb-1">Mã xác nhận khôi phục</label>
             <input
               type="text"
               {...register('token', {
                 required: 'Mã khôi phục không được để trống'
               })}
-              className="mt-1 w-full border border-gray-200 px-4 py-3 rounded-xl focus:outline-primary-500 text-sm font-mono text-center uppercase tracking-widest"
+              className="w-full bg-[#FAF9F5] border border-[#E2E5DC] px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#2C4939] focus:bg-white text-xs text-[#253129] font-mono text-center uppercase tracking-widest transition-colors"
               placeholder="MÃ KHÔI PHỤC"
             />
             {errors.token && (
-              <span className="text-red-500 text-xs mt-1 block">{errors.token.message as string}</span>
+              <span className="text-red-500 text-[11px] mt-1 block">{errors.token.message as string}</span>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase">Mật khẩu mới</label>
+            <label className="block text-xs font-medium text-[#253129] mb-1">Mật khẩu mới</label>
             <input
               type="password"
               {...register('password', {
                 required: 'Mật khẩu mới không được để trống',
                 minLength: { value: 6, message: 'Mật khẩu tối thiểu 6 ký tự' }
               })}
-              className="mt-1 w-full border border-gray-200 px-4 py-3 rounded-xl focus:outline-primary-500 text-sm"
+              className="w-full bg-[#FAF9F5] border border-[#E2E5DC] px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#2C4939] focus:bg-white text-xs text-[#253129] transition-colors"
               placeholder="••••••••"
             />
             {errors.password && (
-              <span className="text-red-500 text-xs mt-1 block">{errors.password.message as string}</span>
+              <span className="text-red-500 text-[11px] mt-1 block">{errors.password.message as string}</span>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase">Xác nhận mật khẩu mới</label>
+            <label className="block text-xs font-medium text-[#253129] mb-1">Xác nhận mật khẩu mới</label>
             <input
               type="password"
               {...register('confirmPassword', {
                 required: 'Xác nhận mật khẩu không được để trống',
                 validate: value => value === password || 'Mật khẩu xác nhận không khớp'
               })}
-              className="mt-1 w-full border border-gray-200 px-4 py-3 rounded-xl focus:outline-primary-500 text-sm"
+              className="w-full bg-[#FAF9F5] border border-[#E2E5DC] px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#2C4939] focus:bg-white text-xs text-[#253129] transition-colors"
               placeholder="••••••••"
             />
             {errors.confirmPassword && (
-              <span className="text-red-500 text-xs mt-1 block">{errors.confirmPassword.message as string}</span>
+              <span className="text-red-500 text-[11px] mt-1 block">{errors.confirmPassword.message as string}</span>
             )}
           </div>
 
           <button
             type="submit"
             disabled={loading || success}
-            className="w-full py-4 bg-primary-500 text-white font-bold rounded-2xl hover:bg-primary-600 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 bg-[#2C4939] text-white font-medium text-xs rounded-lg hover:bg-[#233C2F] transition-colors flex items-center justify-center gap-2"
           >
             {loading ? 'Đang thực hiện...' : 'Đặt lại mật khẩu'}
           </button>
         </form>
 
-        <div className="text-center mt-4 text-xs text-gray-500 border-t pt-4">
-          <Link href="/login" className="text-primary-500 font-bold hover:underline">
+        <div className="text-center text-xs text-[#647067] border-t border-[#E2E5DC] pt-4">
+          <Link href="/login" className="text-[#2C4939] font-medium hover:underline">
             Quay lại Đăng nhập
           </Link>
         </div>
-      </Card>
-    </Container>
+      </div>
+    </div>
   );
 }
 
 export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
-      <Container className="py-20 flex justify-center">
-        <Card className="w-full max-w-md p-6 text-center">
-          <div className="text-gray-400">Đang tải...</div>
-        </Card>
-      </Container>
+      <div className="bg-[#FAF9F5] min-h-[85vh] flex items-center justify-center py-20">
+        <div className="w-full max-w-md p-6 text-center text-[#647067] text-xs">
+          Đang tải thông tin...
+        </div>
+      </div>
     }>
       <ResetPasswordForm />
     </Suspense>

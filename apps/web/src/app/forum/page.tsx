@@ -457,16 +457,16 @@ export default function ForumPage() {
       )}
 
       {/* Hero Banner / Header */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-primary-600 via-emerald-950 to-teal-950 p-8 md:p-12 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 border border-emerald-800/30">
-        <div className="space-y-3 max-w-2xl">
-          <Badge className="bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 px-3 py-1 rounded-full text-xs uppercase tracking-wider">
-            CropNet Social Commerce Hub
-          </Badge>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-none text-white">
-            Cộng Đồng Nông Nghiệp Sạch
+      <div className="bg-[#2C4939] rounded-xl p-8 md:p-10 text-white flex flex-col md:flex-row md:items-center justify-between gap-6 border border-[#233C2F]">
+        <div className="space-y-2 max-w-2xl">
+          <span className="inline-block text-[#A46C49] font-medium text-xs tracking-wider uppercase bg-[#FAF9F5] px-2.5 py-1 rounded">
+            Diễn đàn trao đổi
+          </span>
+          <h1 className="text-2xl md:text-3xl font-serif font-bold tracking-tight text-white">
+            Cộng Đồng Nông Nghiệp Đồng Nai
           </h1>
-          <p className="text-emerald-50/90 text-sm md:text-base leading-relaxed">
-            Kết nối nhà nông Kể câu chuyện vườn rừng và Người tiêu dùng chia sẻ mẹo vặt, công thức nấu ăn sạch tự nhiên.
+          <p className="text-[#FAF9F5]/80 text-xs md:text-sm leading-relaxed">
+            Giao lưu kỹ thuật canh tác VietGAP / OCOP giữa nhà vườn và người tiêu dùng nông sản sạch.
           </p>
         </div>
 
@@ -815,7 +815,7 @@ export default function ForumPage() {
               <Button onClick={fetchPosts} variant="outline" className="bg-white border-red-200">Thử lại</Button>
             </div>
           ) : posts.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm text-gray-400 space-y-4">
+            <div className="text-center py-16 bg-white rounded-xl border border-[#E2E5DC] text-[#647067] space-y-4">
               <MessageSquare className="w-14 h-14 mx-auto text-gray-300" />
               <div>
                 <p className="font-black text-xl text-gray-900">Không có bài viết thảo luận nào</p>
@@ -1198,9 +1198,9 @@ export default function ForumPage() {
         <div className="lg:col-span-1 space-y-6">
           
           {/* Quick info community rules */}
-          <Card className="p-5 border border-emerald-100 bg-gradient-to-br from-emerald-50/50 to-teal-50/50 space-y-4">
-            <h4 className="font-extrabold text-sm text-gray-800 flex items-center gap-1.5 uppercase tracking-wider">
-              <span>📌 Nội quy diễn đàn</span>
+          <div className="bg-white p-5 border border-[#E2E5DC] rounded-xl space-y-4">
+            <h4 className="font-serif font-bold text-sm text-[#253129] flex items-center gap-1.5 tracking-wide">
+              <span>Nội quy diễn đàn</span>
             </h4>
             <ul className="text-xs text-gray-650 space-y-2.5 leading-relaxed font-semibold">
               <li className="flex gap-2">
@@ -1220,7 +1220,7 @@ export default function ForumPage() {
                 <span>Mọi hành vi gian lận thông tin xuất xứ sẽ bị chặn tài khoản ngay lập tức.</span>
               </li>
             </ul>
-          </Card>
+          </div>
 
           {/* Trending Tags list */}
           <Card className="p-5 border border-gray-100 space-y-4 bg-white shadow-xs">

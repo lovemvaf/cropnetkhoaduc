@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useCartStore } from '@/shared/stores/cart';
-import { Container, Card } from '@cropnet/ui';
+import { Container } from '@cropnet/ui';
 import { formatVND } from '@cropnet/utils';
-import { ShoppingCart, QrCode, Leaf, ShieldCheck, Truck, ChevronRight } from 'lucide-react';
+import { ShoppingCart, QrCode, MapPin, ChevronRight, Check } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { apiClient } from '@/shared/services/api';
@@ -19,6 +19,7 @@ export default function ProductDetailPageClient() {
   const [loading, setLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
+  const [addedNotice, setAddedNotice] = useState(false);
 
   useEffect(() => {
     const fetchProductAndRelated = async () => {
@@ -29,12 +30,10 @@ export default function ProductDetailPageClient() {
           const prodData = res.data.data;
           setProduct(prodData);
 
-          // Auto-select first variant if available
           if (prodData.variants && Array.isArray(prodData.variants) && prodData.variants.length > 0) {
             setSelectedVariant(prodData.variants[0]);
           }
 
-          // Fetch related products (same category)
           try {
             const relRes = await apiClient.get('/products', {
               params: { categoryId: prodData.categoryId, limit: 4 }
@@ -49,7 +48,6 @@ export default function ProductDetailPageClient() {
         }
       } catch (err) {
         console.warn('Failed to load product details, using offline backup:', err);
-        // Mock data fallback with authentic Dong Nai agricultural products
         const allMockProducts = [
           {
             id: '1',
@@ -57,8 +55,8 @@ export default function ProductDetailPageClient() {
             idAlias: ['1', 'prod-buoi-duong-la-cam'],
             name: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)',
             price: 85000,
-            unit: 'quả (1.1kg - 1.3kg)',
-            description: 'Bưởi đường lá cam trứ danh cù lao Tân Triều, da vàng xanh mỏng dính, tép bưởi mọng nước ngọt thanh đậm đà, không the đắng. Trồng theo quy chuẩn sinh thái và đạt OCOP 4 sao.',
+            unit: 'quả (1.2kg - 1.4kg)',
+            description: 'Bưởi đường lá cam trứ danh cù lao Tân Triều, vỏ mỏng vàng ươm khi chín, tép bưởi mọng nước ngọt thanh dịu mát, không the đắng. Canh tác kết hợp hữu cơ vi sinh bồi đắp phù sa sông Đồng Nai.',
             categoryId: 'cat-fruits',
             tags: ['OCOP', 'Bưởi Tân Triều', 'VietGAP', 'Đặc sản Đồng Nai'],
             farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều',
@@ -68,12 +66,12 @@ export default function ProductDetailPageClient() {
               { url: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' }
             ],
             variants: [
-              { name: 'Quả tiêu chuẩn (1.1kg - 1.3kg)', price: 85000 },
-              { name: 'Quả tuyển chọn VIP (1.4kg - 1.6kg)', price: 110000 },
-              { name: 'Cặp quả biếu Tết Tân Triều', price: 195000 }
+              { name: 'Quả tiêu chuẩn (1.2kg - 1.4kg)', price: 85000 },
+              { name: 'Quả chọn VIP (1.5kg+)', price: 110000 },
+              { name: 'Cặp quả biếu quà Tân Triều', price: 195000 }
             ],
             batches: [
-              { id: 'batch-buoi-tantrieu-01', batchCode: 'BATCH-BUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-10-10'), farmingArea: 'Vườn mẫu A1 - Phường Tân Triều, TP Đồng Nai', farmingProcess: 'Canh tác sinh thái VietGAP, nước ngọt phù sa sông Đồng Nai bồi đắp, bao trái an toàn vi sinh.' }
+              { id: 'batch-buoi-tantrieu-01', batchCode: 'BATCH-BUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-10-10'), farmingArea: 'Vườn mẫu A1 - Phường Tân Triều, TP Đồng Nai', farmingProcess: 'Canh tác sinh thái kết hợp VietGAP, tưới nước phù sa sông Đồng Nai, bao trái màng thoáng khí.' }
             ]
           },
           {
@@ -83,7 +81,7 @@ export default function ProductDetailPageClient() {
             name: 'Bưởi Da Xanh Tân Triều Hữu Cơ',
             price: 75000,
             unit: 'quả (1.3kg - 1.5kg)',
-            description: 'Bưởi da xanh ruột hồng giòn ngọt, vỏ xanh bóng, ít hạt, canh tác theo quy chuẩn an toàn sinh thái tại Phường Tân Triều, vị ngọt đậm thơm mát.',
+            description: 'Bưởi da xanh ruột hồng giòn mọng, ít hạt, vị ngọt đậm tự nhiên. Đạt tiêu chuẩn an toàn sinh thái của HTX Nông nghiệp Tân Triều.',
             categoryId: 'cat-fruits',
             tags: ['VietGAP', 'Bưởi Tân Triều', 'Hữu cơ'],
             farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều',
@@ -97,31 +95,31 @@ export default function ProductDetailPageClient() {
               { name: 'Quả lớn chọn lọc (1.5kg+)', price: 95000 }
             ],
             batches: [
-              { id: 'batch-buoi-tantrieu-01', batchCode: 'BATCH-BUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-10-10'), farmingArea: 'Khu bưởi da xanh sinh thái Tân Triều', farmingProcess: 'Bón phân hữu cơ vi sinh, không thuốc diệt cỏ' }
+              { id: 'batch-buoi-tantrieu-01', batchCode: 'BATCH-BUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-10-10'), farmingArea: 'Khu bưởi da xanh sinh thái Tân Triều', farmingProcess: 'Bón phân hữu cơ vi sinh, tưới tiêu nước sông Đồng Nai' }
             ]
           },
           {
             id: '3',
-            slug: 'prod-sau-rieng-ri6',
-            idAlias: ['3', 'prod-sau-rieng-ri6'],
+            slug: 'prod-saurieng-ri6-longkhanh',
+            idAlias: ['3', 'prod-saurieng-ri6-longkhanh'],
             name: 'Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)',
             price: 135000,
             unit: 'kg (quả 2.5kg - 3.5kg)',
-            description: 'Sầu riêng Ri6 đất đỏ bazan Long Khánh thu hoạch già đủ ngày, chín tự nhiên không nhúng thuốc kích chín. Cơm vàng óng, dẻo béo ngậy, hạt lép đậm đà.',
+            description: 'Sầu riêng Ri6 trồng trên đất đỏ bazan Long Khánh, cơm vàng hạt lép giòn mịn béo bùi. Cam kết cắt già hoặc tự rụng, tuyệt đối không ngâm hóa chất ép chín.',
             categoryId: 'cat-fruits',
             tags: ['VietGAP', 'Sầu riêng Long Khánh', 'Chín tự nhiên'],
-            farmName: 'Hợp Tác Xã Nông Nghiệp Sinh Thái Long Khánh',
+            farmName: 'Hợp Tác Xã Sinh Thái Long Khánh',
             address: 'Phường Xuân Lập, Thành phố Đồng Nai',
-            imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=800&auto=format',
+            imageUrl: 'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=800&auto=format',
             images: [
-              { url: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=800&auto=format' }
+              { url: 'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=800&auto=format' }
             ],
             variants: [
-              { name: 'Quả nguyên trái chín cây (2.5kg - 3.0kg)', price: 337500 },
-              { name: 'Hộp cơm sầu bóc sẵn hút chân không 500g', price: 185000 }
+              { name: 'Quả nguyên trái chín cây (2.5 - 3.5kg)', price: 135000 },
+              { name: 'Khay bóc múi hút chân không (500g)', price: 180000 }
             ],
             batches: [
-              { id: 'batch-saurieng-longkhanh-01', batchCode: 'BATCH-SAURIENG-LONGKHANH-2026-01', harvestDate: new Date('2026-10-12'), farmingArea: 'Vườn sầu riêng mẫu B2 - Phường Xuân Lập, TP Đồng Nai', farmingProcess: 'Đất đỏ bazan màu mỡ, bón phân trùn quế vi sinh, neo trái già tự rụng' }
+              { id: 'batch-saurieng-longkhanh-01', batchCode: 'BATCH-SAURIENG-LONGKHANH-2026-01', harvestDate: new Date('2026-10-12'), farmingArea: 'Vườn mẫu B2 - Phường Xuân Lập, TP Đồng Nai', farmingProcess: 'Canh tác trên đất đỏ bazan, bón phân trùn quế, không ngâm thuốc kích chín.' }
             ]
           },
           {
@@ -131,45 +129,43 @@ export default function ProductDetailPageClient() {
             name: 'Chôm Chôm Nhãn Long Khánh',
             price: 45000,
             unit: 'kg (chùm quả tươi)',
-            description: 'Chôm chôm nhãn đặc sản Long Khánh vỏ vàng ửng đỏ, cùi dày giòn tróc hạt, vị ngọt thanh mát, hái tươi trong ngày từ các nhà vườn đất đỏ bazan.',
+            description: 'Chôm chôm nhãn trái nhỏ vỏ vàng đỏ, gai ngắn, cơm dày róc hạt, vị ngọt thanh giòn rụm.',
             categoryId: 'cat-fruits',
             tags: ['Đặc sản Long Khánh', 'Đang mùa vụ'],
-            farmName: 'Hợp Tác Xã Nông Nghiệp Sinh Thái Long Khánh',
+            farmName: 'Hợp Tác Xã Sinh Thái Long Khánh',
             address: 'Phường Xuân Lập, Thành phố Đồng Nai',
             imageUrl: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format',
             images: [
               { url: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format' }
             ],
             variants: [
-              { name: 'Chùm tươi 1kg', price: 45000 },
-              { name: 'Thùng quà 5kg tuyển chọn', price: 210000 }
+              { name: 'Túi 1kg chùm tươi', price: 45000 },
+              { name: 'Rổ quà 3kg đóng hộp', price: 130000 }
             ],
-            batches: [
-              { id: 'batch-chomchom-longkhanh-01', batchCode: 'BATCH-CHOMCHOM-LONGKHANH-2026-01', harvestDate: new Date('2026-10-11'), farmingArea: 'Vườn chôm chôm hữu cơ Phường Xuân Lập, TP Đồng Nai', farmingProcess: 'Tưới nước suối ngầm tự nhiên, bón phân hữu cơ vi sinh' }
-            ]
+            batches: []
           },
           {
             id: '5',
-            slug: 'prod-hat-dieu-dong-nai',
-            idAlias: ['5', 'prod-hat-dieu-dong-nai'],
-            name: 'Hạt Điều Rang Muối Vỏ Lụa Đồng Nai (Hộp 500g)',
-            price: 120000,
+            slug: 'prod-hat-dieu-rang-cui',
+            idAlias: ['5', 'prod-hat-dieu-rang-cui'],
+            name: 'Hạt Điều Rang Củi Vỏ Lụa Đồng Nai',
+            price: 140000,
             unit: 'hộp 500g',
-            description: 'Hạt điều Đồng Nai loại A tuyển chọn xuất khẩu, hạt to mẩy đều, rang củi thủ công cùng muối tinh giữ nguyên lớp vỏ lụa thơm bùi giòn rụm.',
+            description: 'Hạt điều Bình Lộc - Long Khánh rang củi truyền thống, giữ trọn độ ngậy béo thơm lừng, còn nguyên vỏ lụa bảo vệ hạt.',
             categoryId: 'cat-processed',
             tags: ['OCOP', 'Hạt điều Đồng Nai', 'Chế biến sạch'],
-            farmName: 'Hợp Tác Xã Nông Nghiệp Sinh Thái Long Khánh',
-            address: 'Vùng trồng Xuân Lộc & Xuân Lập, Thành phố Đồng Nai',
-            imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&auto=format',
+            farmName: 'HTX Nông Nghiệp Long Khánh',
+            address: 'TP Long Khánh, Thành phố Đồng Nai',
+            imageUrl: 'https://images.unsplash.com/photo-1563865436874-9aef32095fad?w=800&auto=format',
             images: [
-              { url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&auto=format' }
+              { url: 'https://images.unsplash.com/photo-1563865436874-9aef32095fad?w=800&auto=format' }
             ],
             variants: [
-              { name: 'Hộp 500g tròn hút chân không', price: 120000 },
-              { name: 'Combo 2 hộp (1kg) quà tặng', price: 230000 }
+              { name: 'Hộp tròn 500g', price: 140000 },
+              { name: 'Hút chân không 500g', price: 135000 }
             ],
             batches: [
-              { id: 'batch-hatdieu-dongnai-01', batchCode: 'BATCH-HATDIEU-DONGNAI-2026-01', harvestDate: new Date('2026-10-05'), farmingArea: 'Xưởng chế biến Nông sản Đồng Nai - Xuân Lộc, TP Đồng Nai', farmingProcess: 'Chế biến nhiệt củi truyền thống, đạt tiêu chuẩn HACCP và OCOP' }
+              { id: 'batch-hatdieu-01', batchCode: 'BATCH-HATDIEU-DONGNAI-2026-01', harvestDate: new Date('2026-09-15'), farmingArea: 'Vùng điều xã Bình Lộc, Đồng Nai', farmingProcess: 'Thu hoạch quả chín tự nhiên, tách nhân, rang củi than đước.' }
             ]
           },
           {
@@ -179,26 +175,22 @@ export default function ProductDetailPageClient() {
             name: 'Rượu Bưởi Tân Triều Truyền Thống (Bình Gốm 750ml)',
             price: 195000,
             unit: 'bình gốm 750ml',
-            description: 'Đặc sản trứ danh lên men tự nhiên từ nước cốt bưởi đường lá cam Tân Triều và men thảo mộc cổ truyền, hương vị êm dịu, vị ngọt hậu thanh tao. Sản phẩm có cồn có điều kiện (15% vol).',
+            description: 'Rượu lên men tự nhiên từ nước cốt bưởi đường lá cam Tân Triều và men gạo nếp truyền thống. Đựng trong bình gốm mỹ nghệ Biên Hòa đặc trưng.',
             categoryId: 'cat-processed',
             tags: ['OCOP', 'Quà biếu tặng', 'Rượu bưởi Tân Triều'],
-            farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều',
+            farmName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều',
             address: 'Phường Tân Triều, Thành phố Đồng Nai',
             imageUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format',
             images: [
               { url: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format' }
             ],
             variants: [
-              { name: 'Bình gốm hoa văn thổ cẩm 750ml (15% vol)', price: 195000 },
-              { name: 'Cặp bình quà biếu hộp gỗ sang trọng', price: 420000 }
+              { name: 'Bình gốm trái bưởi 750ml', price: 195000 }
             ],
-            batches: [
-              { id: 'batch-ruoubuoi-tantrieu-01', batchCode: 'BATCH-RUOUBUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-09-20'), farmingArea: 'Cơ sở ủ rượu truyền thống làng bưởi Tân Triều, Phường Tân Triều', farmingProcess: 'Lên men tự nhiên từ tép bưởi đường lá cam và gạo nếp cái hoa vàng trong vò sành 6 tháng' }
-            ]
+            batches: []
           }
         ];
 
-        // Fail-closed match: never fallback to allMockProducts[0] if ID is invalid
         const matchedProduct = allMockProducts.find((p: any) => p.id === id || p.slug === id || p.idAlias?.includes(String(id))) || null;
         setProduct(matchedProduct);
         if (matchedProduct) {
@@ -208,7 +200,6 @@ export default function ProductDetailPageClient() {
             setSelectedVariant(null);
           }
 
-          // Mock related products
           const related = allMockProducts.filter((p: any) => p.id !== matchedProduct.id && p.categoryId === matchedProduct.categoryId);
           const finalRelated = related.length > 0 ? related : allMockProducts.filter((p: any) => p.id !== matchedProduct.id);
 
@@ -231,13 +222,13 @@ export default function ProductDetailPageClient() {
   if (loading) {
     return (
       <Container className="py-12 animate-pulse space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="h-96 bg-gray-100 rounded-3xl"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="h-96 bg-[#EAECE6] rounded-xl"></div>
           <div className="space-y-4">
-            <div className="h-6 bg-gray-100 rounded w-1/4"></div>
-            <div className="h-10 bg-gray-100 rounded w-3/4"></div>
-            <div className="h-8 bg-gray-100 rounded w-1/3"></div>
-            <div className="h-24 bg-gray-100 rounded"></div>
+            <div className="h-5 bg-[#EAECE6] rounded w-1/4"></div>
+            <div className="h-8 bg-[#EAECE6] rounded w-3/4"></div>
+            <div className="h-6 bg-[#EAECE6] rounded w-1/3"></div>
+            <div className="h-20 bg-[#EAECE6] rounded"></div>
           </div>
         </div>
       </Container>
@@ -247,18 +238,15 @@ export default function ProductDetailPageClient() {
   if (!product) {
     return (
       <Container className="py-20 text-center space-y-4 max-w-md mx-auto">
-        <div className="w-16 h-16 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-2">
-          <ShieldCheck className="w-8 h-8" />
-        </div>
-        <h3 className="text-xl font-black text-gray-900">Không Tìm Thấy Sản Phẩm</h3>
-        <p className="text-sm text-gray-500">
-          Mã sản phẩm truy vấn không tồn tại trong CSDL nông sản Thành phố Đồng Nai 2026.
+        <h3 className="text-xl font-bold text-[#253129]">Không Tìm Thấy Sản Phẩm</h3>
+        <p className="text-xs sm:text-sm text-[#647067]">
+          Mã sản phẩm truy vấn không tồn tại trong danh mục nông sản khảo sát Đồng Nai.
         </p>
         <Link
           href="/products"
-          className="inline-block bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs px-6 py-3 rounded-2xl transition-colors"
+          className="inline-block bg-[#2C4939] hover:bg-[#233C2F] text-white text-xs font-medium px-5 py-2.5 rounded-lg transition-colors"
         >
-          Quay lại danh sách sản phẩm
+          Quay lại danh mục
         </Link>
       </Container>
     );
@@ -276,185 +264,192 @@ export default function ProductDetailPageClient() {
       quantity: 1,
       imageUrl: product.images?.[activeImageIndex]?.url || product.imageUrl
     });
-    alert(`Đã thêm ${finalName} vào giỏ hàng thành công!`);
+    setAddedNotice(true);
+    setTimeout(() => setAddedNotice(false), 3000);
   };
 
   const imagesList = product.images && product.images.length > 0 
     ? product.images 
-    : [{ url: product.imageUrl || 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=800&auto=format' }];
+    : [{ url: product.imageUrl || 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' }];
 
   return (
-    <Container className="py-12 space-y-16">
-      {/* Product Details Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-        {/* Gallery */}
-        <div className="space-y-4">
-          <div className="relative aspect-square sm:aspect-[4/3] rounded-3xl overflow-hidden shadow-sm bg-gray-50 border border-gray-100">
-            <img
-              src={getAssetPath(imagesList[activeImageIndex]?.url)}
-              alt={product.name}
-              className="object-cover w-full h-full transition-all duration-300"
-            />
-          </div>
-          {/* Thumbnails */}
-          {imagesList.length > 1 && (
-            <div className="flex gap-3 overflow-x-auto pb-1">
-              {imagesList.map((img: any, idx: number) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImageIndex(idx)}
-                  className={`w-20 h-20 rounded-2xl overflow-hidden border-2 flex-shrink-0 transition-all ${
-                    activeImageIndex === idx ? 'border-primary-500 scale-95 shadow-sm' : 'border-gray-100 opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  <img src={getAssetPath(img.url)} alt={`Thumb ${idx}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
+    <div className="bg-[#FAF9F5] min-h-screen py-8 sm:py-12">
+      <Container className="space-y-12">
+        {/* Editorial Breadcrumbs */}
+        <nav className="flex items-center gap-1.5 text-xs text-[#8C978F]">
+          <Link href="/" className="hover:text-[#253129]">Trang chủ</Link>
+          <ChevronRight className="w-3.5 h-3.5" />
+          <Link href="/products" className="hover:text-[#253129]">Nông sản Đồng Nai</Link>
+          <ChevronRight className="w-3.5 h-3.5" />
+          <span className="text-[#253129] font-medium truncate max-w-xs">{product.name}</span>
+        </nav>
+
+        {/* Product Details Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-14 items-start">
+          {/* Gallery */}
+          <div className="space-y-3">
+            <div className="aspect-square rounded-xl overflow-hidden bg-[#F1EFE8] border border-[#E2E5DC]">
+              <img
+                src={getAssetPath(imagesList[activeImageIndex]?.url)}
+                alt={product.name}
+                className="object-cover w-full h-full"
+              />
             </div>
-          )}
-        </div>
-
-        {/* Info */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-primary-500 uppercase tracking-widest bg-green-50 px-3 py-1 rounded-full">
-              {product.supplier?.farmName || product.farmName}
-            </span>
-          </div>
-
-          <div className="space-y-1">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">{product.name}</h1>
-            <p className="text-xs text-gray-400">Xuất xứ: {product.supplier?.address || product.address}</p>
-          </div>
-
-          {/* Pricing area */}
-          <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-between">
-            <div>
-              <span className="text-3xl font-black text-primary-500">
-                {formatVND(selectedVariant ? Number(selectedVariant.price) : Number(product.price))}
-              </span>
-              <span className="text-sm font-normal text-gray-400"> / {product.unit}</span>
-            </div>
-            <div className="text-right text-xs text-gray-500">
-              Tồn kho: <span className="font-bold text-gray-900">{product.stock} {product.unit}</span>
-            </div>
-          </div>
-
-          {/* Tag badges */}
-          {product.tags && Array.isArray(product.tags) && product.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 items-center">
-              <span className="text-xs text-gray-400 font-bold mr-1">Nhãn:</span>
-              {product.tags.map((tag: string) => (
-                <span key={tag} className="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-xl">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Variant Selector */}
-          {product.variants && Array.isArray(product.variants) && product.variants.length > 0 && (
-            <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase text-gray-400">Lựa chọn đóng gói / Quy cách</label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {product.variants.map((v: any, idx: number) => (
+            {imagesList.length > 1 && (
+              <div className="flex gap-2.5 overflow-x-auto pb-1">
+                {imagesList.map((img: any, idx: number) => (
                   <button
                     key={idx}
-                    onClick={() => setSelectedVariant(v)}
-                    className={`p-3 rounded-2xl border text-left transition-all ${
-                      selectedVariant?.name === v.name
-                        ? 'bg-primary-55 border-primary-500 ring-2 ring-primary-100'
-                        : 'bg-white border-gray-200 hover:border-gray-300'
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`w-16 h-16 rounded-lg overflow-hidden border flex-shrink-0 transition-colors ${
+                      activeImageIndex === idx ? 'border-[#2C4939]' : 'border-[#E2E5DC] opacity-70 hover:opacity-100'
                     }`}
                   >
-                    <p className="text-xs font-bold text-gray-900">{v.name}</p>
-                    <p className="text-xs font-black text-primary-500 mt-1">{formatVND(Number(v.price))}</p>
+                    <img src={getAssetPath(img.url)} alt={`Hình ${idx + 1}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
-            </div>
-          )}
-
-          <p className="text-gray-500 leading-relaxed text-sm">{product.description}</p>
-
-          {/* Guarantee Badges */}
-          <div className="grid grid-cols-3 gap-4 border-y border-gray-100 py-4 text-center">
-            <div className="flex flex-col items-center gap-1">
-              <Leaf className="w-5 h-5 text-primary-500" />
-              <span className="text-[10px] font-bold text-gray-600">100% Hữu cơ</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <ShieldCheck className="w-5 h-5 text-primary-500" />
-              <span className="text-[10px] font-bold text-gray-600">VietGAP Đạt chuẩn</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <Truck className="w-5 h-5 text-primary-500" />
-              <span className="text-[10px] font-bold text-gray-600">D2C Giao siêu tốc</span>
-            </div>
+            )}
           </div>
 
-          <div className="flex gap-4">
-            <button onClick={handleAddToCart} className="flex-grow bg-primary-500 text-white py-4 rounded-2xl font-bold hover:bg-primary-600 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary-500/20">
-              <ShoppingCart className="w-5 h-5" />
-              <span>Thêm vào giỏ hàng</span>
-            </button>
-          </div>
-        </div>
-      </div>
+          {/* Product Narrative & Controls */}
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-1.5 text-xs text-[#7B876C] font-medium mb-1.5">
+                <MapPin className="w-3.5 h-3.5" />
+                <span>{product.supplier?.farmName || product.farmName}</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#253129] leading-tight">
+                {product.name}
+              </h1>
+              <p className="text-xs text-[#8C978F] mt-1">
+                Xuất xứ: {product.supplier?.address || product.address}
+              </p>
+            </div>
 
-      {/* Traceability Batches History */}
-      {product.batches && Array.isArray(product.batches) && product.batches.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-            <QrCode className="w-5 h-5 text-primary-500" />
-            Lịch sử lô hàng thu hoạch và truy xuất nguồn gốc
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {product.batches.map((b: any) => (
-              <Card key={b.id} className="p-5 flex justify-between items-center bg-gray-50 border border-gray-150 rounded-2xl">
-                <div className="space-y-1.5 text-sm">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-gray-900 text-base">{b.batchCode}</span>
-                    <span className="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded">Đã kiểm nghiệm</span>
-                  </div>
-                  <p className="text-gray-500 text-xs">Vùng canh tác: <span className="font-semibold text-gray-700">{b.farmingArea}</span></p>
-                  <p className="text-gray-400 text-xs">Thu hoạch: {new Date(b.harvestDate).toLocaleDateString('vi-VN')}</p>
+            {/* Pricing Area */}
+            <div className="p-4 rounded-xl bg-[#F1EFE8] border border-[#E2E5DC] flex items-center justify-between">
+              <div>
+                <span className="text-2xl font-bold text-[#253129]">
+                  {formatVND(selectedVariant ? Number(selectedVariant.price) : Number(product.price))}
+                </span>
+                <span className="text-xs text-[#647067]"> / {product.unit}</span>
+              </div>
+              <div className="text-xs text-[#647067]">
+                Giá niêm yết tại vườn
+              </div>
+            </div>
+
+            {/* Packaging / Variants */}
+            {product.variants && Array.isArray(product.variants) && product.variants.length > 0 && (
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-[#647067]">Quy cách lựa chọn</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {product.variants.map((v: any, idx: number) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedVariant(v)}
+                      className={`p-3 rounded-lg border text-left text-xs transition-colors ${
+                        selectedVariant?.name === v.name
+                          ? 'bg-[#E6EAE4] border-[#2C4939] text-[#2C4939] font-medium'
+                          : 'bg-white border-[#E2E5DC] text-[#253129] hover:border-[#CBD0C4]'
+                      }`}
+                    >
+                      <div className="font-medium">{v.name}</div>
+                      <div className="text-[#647067] mt-0.5">{formatVND(Number(v.price))}</div>
+                    </button>
+                  ))}
                 </div>
-                <Link
-                  href={`/traceability/${b.batchCode}`}
-                  className="bg-white border border-gray-200 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded-xl hover:bg-gray-50 transition-all flex items-center gap-1"
-                >
-                  <span>Xem nguồn gốc</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
-              </Card>
-            ))}
-          </div>
-        </div>
-      )}
+              </div>
+            )}
 
-      {/* Related Products Grid */}
-      {relatedProducts.length > 0 && (
-        <div className="space-y-6">
-          <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-            <Leaf className="w-5 h-5 text-primary-500" />
-            Nông sản liên quan cùng chuyên mục
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedProducts.map((p) => (
-              <ProductCard
-                key={p.id}
-                id={p.id}
-                name={p.name}
-                price={Number(p.price)}
-                unit={p.unit}
-                farmName={p.supplier?.farmName || p.farmName}
-                imageUrl={p.images?.[0]?.url || p.imageUrl}
-              />
-            ))}
+            {/* Description */}
+            <div className="space-y-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[#647067]">
+                Mô tả đặc sản
+              </h3>
+              <p className="text-xs sm:text-sm text-[#647067] leading-relaxed">
+                {product.description}
+              </p>
+            </div>
+
+            {/* Add to Cart CTA */}
+            <div className="pt-2 space-y-2">
+              <button
+                onClick={handleAddToCart}
+                className="w-full bg-[#2C4939] hover:bg-[#233C2F] text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                <span>Thêm vào giỏ hàng</span>
+              </button>
+              {addedNotice && (
+                <div className="p-2.5 rounded-lg bg-[#E8F1EC] text-[#245436] text-xs font-medium flex items-center gap-2">
+                  <Check className="w-4 h-4" />
+                  <span>Đã thêm sản phẩm vào giỏ hàng thành công!</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      )}
-    </Container>
+
+        {/* Traceability Batches History */}
+        {product.batches && Array.isArray(product.batches) && product.batches.length > 0 && (
+          <div className="pt-8 border-t border-[#E2E5DC] space-y-4">
+            <h3 className="text-lg font-bold text-[#253129] flex items-center gap-2">
+              <QrCode className="w-5 h-5 text-[#7B876C]" />
+              <span>Mã lô thu hoạch & Nhật ký nguồn gốc</span>
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {product.batches.map((b: any) => (
+                <div
+                  key={b.id}
+                  className="p-5 rounded-xl bg-white border border-[#E2E5DC] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                >
+                  <div className="space-y-1 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-semibold text-sm text-[#253129]">{b.batchCode}</span>
+                      <span className="text-[10px] font-medium bg-[#E6EAE4] text-[#2C4939] px-2 py-0.5 rounded">
+                        Lô thu hoạch
+                      </span>
+                    </div>
+                    <p className="text-[#647067]">Khu canh tác: {b.farmingArea}</p>
+                    <p className="text-[#8C978F]">Thu hoạch: {new Date(b.harvestDate).toLocaleDateString('vi-VN')}</p>
+                  </div>
+                  <Link
+                    href={`/traceability/${b.batchCode}`}
+                    className="bg-[#F1EFE8] hover:bg-[#E7E4DC] text-[#253129] text-xs font-medium px-3.5 py-2 rounded-lg transition-colors inline-flex items-center gap-1 self-start sm:self-center"
+                  >
+                    <span>Xem nhật ký QR</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-[#7B876C]" />
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <div className="pt-8 border-t border-[#E2E5DC] space-y-6">
+            <h3 className="text-lg font-bold text-[#253129]">
+              Nông sản cùng loại từ nhà vườn Đồng Nai
+            </h3>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {relatedProducts.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  id={p.id}
+                  name={p.name}
+                  price={Number(p.price)}
+                  unit={p.unit}
+                  farmName={p.farmName}
+                  imageUrl={p.imageUrl}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </Container>
+    </div>
   );
 }
