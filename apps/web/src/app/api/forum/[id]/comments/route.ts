@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/server/db';
+import { getUserFromRequest } from '@/server/auth';
 
-export const dynamic = 'force-static';
-
-export function generateStaticParams() {
-  return [{ id: 'post-1' }, { id: 'post-2' }, { id: 'post-3' }, { id: 'post-4' }];
-}
+export const dynamic = 'force-dynamic';
 
 export async function POST(
   request: NextRequest,
@@ -19,16 +17,18 @@ export async function POST(
       return NextResponse.json({ success: false, error: 'Bình luận không được để trống' }, { status: 400 });
     }
 
-    const newComment = {
-      id: `comment-${Date.now()}`,
+    const user = getUserFromRequest(request);
+    const authorId = user?.id || 'anonymous-customer';
+    const authorName = user?.fullName || 'Thành viên Đồng Nai';
+
+    const newComment = db.addComment(id, {
       postId: id,
-      authorId: 'user-current',
-      authorName: 'Thành viên Đồng Nai',
+      authorId,
+      authorName,
       content: content.trim(),
-      parentId: parentId || null,
       status: 'PUBLISHED',
-      createdAt: new Date().toISOString()
-    };
+      parentId: parentId || null
+    });
 
     return NextResponse.json({
       success: true,

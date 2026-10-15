@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/server/db';
+import { getUserFromRequest } from '@/server/auth';
 
-export const dynamic = 'force-static';
-
-export function generateStaticParams() {
-  return [{ id: 'post-1' }, { id: 'post-2' }, { id: 'post-3' }, { id: 'post-4' }];
-}
+export const dynamic = 'force-dynamic';
 
 export async function POST(
   request: NextRequest,
@@ -12,11 +10,16 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
+    const user = getUserFromRequest(request);
+    const userId = user?.id || 'anonymous-user';
+    const result = db.toggleLikePost(id, userId);
+
     return NextResponse.json({
       success: true,
       data: {
         postId: id,
-        isLiked: true,
+        likes: result.likes,
+        isLiked: result.isLiked,
         message: 'Đã cập nhật lượt thích bài viết'
       }
     });

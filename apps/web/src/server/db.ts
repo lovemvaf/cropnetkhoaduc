@@ -28,6 +28,7 @@ export interface ForumCommentRecord {
   content: string;
   status: 'PUBLISHED' | 'HIDDEN';
   createdAt: string;
+  parentId?: string | null;
   replies?: any[];
 }
 
