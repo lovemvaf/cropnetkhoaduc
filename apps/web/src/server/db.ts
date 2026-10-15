@@ -95,24 +95,23 @@ const TMP_STORAGE_FILE = '/tmp/cropnet_store.json';
 let state: DatabaseState | null = null;
 
 function getStoreFilePath(): string {
-  // Try local directory first, or /tmp in serverless environments
-  try {
-    fs.accessSync(process.cwd(), fs.constants.W_OK);
-    return STORAGE_FILE;
-  } catch {
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.platform !== 'win32') {
     return TMP_STORAGE_FILE;
   }
+  return STORAGE_FILE;
 }
 
 function loadFromDisk(): DatabaseState | null {
-  const filePath = getStoreFilePath();
-  try {
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf8');
-      return JSON.parse(data);
+  const candidates = [getStoreFilePath(), TMP_STORAGE_FILE, STORAGE_FILE];
+  for (const filePath of candidates) {
+    try {
+      if (fs.existsSync(filePath)) {
+        const data = fs.readFileSync(filePath, 'utf8');
+        return JSON.parse(data);
+      }
+    } catch {
+      // try next
     }
-  } catch (err) {
-    console.warn('Could not read store file from disk:', err);
   }
   return null;
 }
@@ -122,7 +121,11 @@ function saveToDisk(data: DatabaseState): void {
   try {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
   } catch (err) {
-    console.warn('Could not write store file to disk:', err);
+    try {
+      fs.writeFileSync(TMP_STORAGE_FILE, JSON.stringify(data, null, 2), 'utf8');
+    } catch (e2) {
+      console.warn('Could not write store file to disk:', e2);
+    }
   }
 }
 
@@ -267,19 +270,43 @@ function getState(): DatabaseState {
 export const db = {
   // User operations
   findUserByEmail(email: string): UserRecord | null {
-    const s = getState();
     const normalized = email.toLowerCase().trim();
-    return s.users.find(u => u.email.toLowerCase() === normalized) || null;
+    let s = getState();
+    let found = s.users.find(u => u.email.toLowerCase() === normalized);
+    if (!found) {
+      const disk = loadFromDisk();
+      if (disk) {
+        state = disk;
+        found = state.users.find(u => u.email.toLowerCase() === normalized);
+      }
+    }
+    return found || null;
   },
 
   findUserById(id: string): UserRecord | null {
     const s = getState();
-    return s.users.find(u => u.id === id) || null;
+    let found = s.users.find(u => u.id === id);
+    if (!found) {
+      const disk = loadFromDisk();
+      if (disk) {
+        state = disk;
+        found = state.users.find(u => u.id === id);
+      }
+    }
+    return found || null;
   },
 
   findUserByVerificationToken(token: string): UserRecord | null {
-    const s = getState();
-    return s.users.find(u => u.verificationToken === token) || null;
+    let s = getState();
+    let found = s.users.find(u => u.verificationToken === token);
+    if (!found) {
+      const disk = loadFromDisk();
+      if (disk) {
+        state = disk;
+        found = state.users.find(u => u.verificationToken === token);
+      }
+    }
+    return found || null;
   },
 
   findUserByResetToken(token: string): UserRecord | null {

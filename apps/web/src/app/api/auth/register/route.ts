@@ -52,8 +52,8 @@ export async function POST(request: NextRequest) {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // 4. Generate verification token
-    const verificationToken = crypto.randomBytes(16).toString('hex').toUpperCase();
+    // 4. Generate verification token (6-char secure crypto hex)
+    const verificationToken = crypto.randomBytes(3).toString('hex').toUpperCase();
 
     // 5. Persist user to database
     const newUser = db.createUser({
