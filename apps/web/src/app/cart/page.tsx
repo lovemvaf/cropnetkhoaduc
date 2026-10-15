@@ -59,9 +59,12 @@ export default function CartPage() {
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-16 h-16 rounded-lg bg-[#F1EFE8] border border-[#E2E5DC] overflow-hidden flex-shrink-0">
                     <img
-                      src={getAssetPath(item.imageUrl) || 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=400&auto=format'}
+                      src={getAssetPath(item.imageUrl) || '/assets/nongsan/placeholder-nongsan.svg'}
                       alt={item.name}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = '/assets/nongsan/placeholder-nongsan.svg';
+                      }}
                     />
                   </div>
                   <div className="min-w-0">

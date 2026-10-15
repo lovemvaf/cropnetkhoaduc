@@ -1,22 +1,20 @@
 import type { NextConfig } from 'next';
 
-const isVercel = process.env.DEPLOY_TARGET === 'vercel' || process.env.VERCEL === '1';
-const isProd = process.env.NODE_ENV === 'production';
+const isGhPages = process.env.DEPLOY_TARGET === 'gh-pages';
 
 // Base path calculation:
-// On Vercel: basePath is strictly empty string ''
-// On GitHub Pages: basePath is '/cropnetkhoaduc'
-const basePath = isVercel
-  ? ''
-  : (process.env.NEXT_PUBLIC_BASE_PATH !== undefined
+// On Vercel / Local: basePath is strictly ''
+// On GitHub Pages: basePath is repo-specific
+const basePath = isGhPages
+  ? (process.env.NEXT_PUBLIC_BASE_PATH !== undefined
       ? process.env.NEXT_PUBLIC_BASE_PATH
-      : (process.env.GITHUB_REPOSITORY ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}` : (isProd ? '/cropnetkhoaduc' : '')));
+      : (process.env.GITHUB_REPOSITORY ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}` : '/cropnetkhoaduc'))
+  : '';
 
 const nextConfig: NextConfig = {
-  // On Vercel: dynamic serverless runtime with API route handlers; On GitHub Pages: static HTML export
-  ...(isVercel ? {} : { output: 'export' }),
+  // On GitHub Pages: static export. Default (Local & Vercel): dynamic Next.js runtime with Route Handlers
+  ...(isGhPages ? { output: 'export', trailingSlash: true } : {}),
   basePath: basePath,
-  trailingSlash: !isVercel,
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true
@@ -24,22 +22,18 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true
   },
-  ...(isVercel
-    ? {
-        async rewrites() {
-          return [
-            {
-              source: '/_next/static/chunks/maplibre-gl-worker.mjs',
-              destination: '/maplibre-gl-worker.mjs'
-            },
-            {
-              source: '/_next/static/chunks/maplibre-gl-worker.mjs.map',
-              destination: '/maplibre-gl-worker.mjs.map'
-            }
-          ];
-        }
+  async rewrites() {
+    return [
+      {
+        source: '/_next/static/chunks/maplibre-gl-worker.mjs',
+        destination: '/maplibre-gl-worker.mjs'
+      },
+      {
+        source: '/_next/static/chunks/maplibre-gl-worker.mjs.map',
+        destination: '/maplibre-gl-worker.mjs.map'
       }
-    : {})
+    ];
+  }
 };
 
 export default nextConfig;

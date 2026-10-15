@@ -62,12 +62,12 @@ export default function SupplierDashboardPage() {
 
   // Farm Profile & Story states
   const [farmName, setFarmName] = useState('Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều');
-  const [farmAddress, setFarmAddress] = useState('Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai');
+  const [farmAddress, setFarmAddress] = useState('Xã Tân Bình, Huyện Vĩnh Cửu, Tỉnh Đồng Nai');
   const [farmBio, setFarmBio] = useState('Chào mừng quý khách đến với cù lao bưởi Tân Triều. Chúng tôi tự hào canh tác bưởi đường lá cam và bưởi da xanh đạt chuẩn OCOP 4 sao và VietGAP sinh thái, tưới tiêu từ nguồn nước ngọt phù sa sông Đồng Nai.');
   const [farmGallery, setFarmGallery] = useState<string[]>([
-    'https://images.unsplash.com/photo-1595855759920-86582396756a?w=500',
-    'https://images.unsplash.com/photo-1593113630400-ea4288922497?w=500',
-    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=500'
+    '/assets/nongsan/buoi-duong-la-cam.jpg',
+    '/assets/nongsan/buoi-da-xanh-tantrieu.jpg',
+    '/assets/nongsan/placeholder-nongsan.svg'
   ]);
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [tempBio, setTempBio] = useState('');
@@ -76,9 +76,9 @@ export default function SupplierDashboardPage() {
 
   // Journey Timeline states
   const [journeyTimeline, setJourneyTimeline] = useState<any[]>([
-    { id: '1', date: '2026-06-15', title: 'Khởi tạo thông tin lô bưởi vụ mùa 2026', description: 'HTX Tân Triều đăng ký mã vùng trồng và quản lý 5.000 cây bưởi đường lá cam.', imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=500' },
+    { id: '1', date: '2026-06-15', title: 'Khởi tạo thông tin lô bưởi vụ mùa 2026', description: 'HTX Tân Triều đăng ký mã vùng trồng và quản lý 5.000 cây bưởi đường lá cam.', imageUrl: '/assets/nongsan/buoi-duong-la-cam.jpg' },
     { id: '2', date: '2026-07-20', title: 'Bón phân hữu cơ vi sinh & Bao trái', description: 'Tưới nước phù sa sông Đồng Nai và bao 5.000 trái bằng túi màng thoáng khí chống côn trùng.', imageUrl: '' },
-    { id: '3', date: '2026-10-10', title: 'Thu hoạch quả đạt OCOP 4 sao & Dán tem QR', description: 'Kiểm tra độ ngọt đạt 11.8 Brix, vỏ mỏng tép mọng nước, dán tem truy xuất nguồn gốc số.', imageUrl: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=500' }
+    { id: '3', date: '2026-10-10', title: 'Thu hoạch quả đạt OCOP 4 sao & Dán tem QR', description: 'Kiểm tra độ ngọt đạt 11.8 Brix, vỏ mỏng tép mọng nước, dán tem truy xuất nguồn gốc số.', imageUrl: '/assets/nongsan/buoi-da-xanh-tantrieu.jpg' }
   ]);
   const [showTimelineModal, setShowTimelineModal] = useState(false);
   const [timelineTitle, setTimelineTitle] = useState('');
@@ -241,7 +241,7 @@ export default function SupplierDashboardPage() {
   const [batchCertName, setBatchCertName] = useState('Chứng nhận VietGAP');
   const [batchCertIssuer, setBatchCertIssuer] = useState('Chi cục Trồng trọt & BVTV Đồng Nai');
   const [batchCertValidUntil, setBatchCertValidUntil] = useState('2028-12-31');
-  const [batchCertImageUrl, setBatchCertImageUrl] = useState('https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format');
+  const [batchCertImageUrl, setBatchCertImageUrl] = useState('/assets/nongsan/placeholder-nongsan.svg');
 
   // Logistics & Shipment inputs
   const [batchShipStatus, setBatchShipStatus] = useState<'PICKED_UP' | 'IN_TRANSIT' | 'DELIVERED'>('PICKED_UP');
@@ -586,7 +586,7 @@ export default function SupplierDashboardPage() {
         price: prodPrice,
         unit: prodUnit,
         stock: prodStock,
-        imageUrls: imageUrls.length > 0 ? imageUrls : ['https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=500&auto=format'],
+        imageUrls: imageUrls.length > 0 ? imageUrls : ['/assets/nongsan/placeholder-nongsan.svg'],
         tags,
         variants
       };
@@ -644,7 +644,7 @@ export default function SupplierDashboardPage() {
     setBatchCertName('Chứng nhận VietGAP');
     setBatchCertIssuer('Chi cục Trồng trọt & BVTV Đồng Nai');
     setBatchCertValidUntil('2028-12-31');
-    setBatchCertImageUrl('https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format');
+    setBatchCertImageUrl('/assets/nongsan/placeholder-nongsan.svg');
 
     // Logistics defaults
     setBatchShipStatus('PICKED_UP');
@@ -682,7 +682,7 @@ export default function SupplierDashboardPage() {
       setBatchCertName('Chứng nhận VietGAP');
       setBatchCertIssuer('Chi cục Trồng trọt & BVTV Đồng Nai');
       setBatchCertValidUntil('2028-12-31');
-      setBatchCertImageUrl('https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format');
+      setBatchCertImageUrl('/assets/nongsan/placeholder-nongsan.svg');
     }
 
     // Logistics & Shipment

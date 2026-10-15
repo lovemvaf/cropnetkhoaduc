@@ -1,0 +1,9 @@
+rejected_id,claim_text,rejection_reason,suggested_status,source_ref
+REJ-01,"Toàn bộ diện tích bưởi cù lao Tân Triều đều đạt OCOP 4 sao",Quy nạp sai; OCOP cấp theo hồ sơ chủ thể cụ thể (HTX Tân Triều) không tự động cấp cho mọi hộ cá thể chưa thẩm định,REJECTED,SRC-DN-01
+REJ-02,"Bưởi da xanh Tân Triều được bảo hộ Chỉ dẫn địa lý 2012 số 00031",Sai văn bằng; Chỉ dẫn địa lý 00031 chỉ bảo hộ bưởi đường lá cam và bưởi ổi,REJECTED,SRC-DN-10
+REJ-03,"Sầu riêng Long Khánh ngâm thuốc thúc chín bảo quản được lâu",Trái với thực tế và cam kết VietGAP của HTX Xuân Lập (neo cuống chín cây tự nhiên),REJECTED,SRC-DN-06
+REJ-04,"Bưởi da xanh Cái Mơn được trồng tại huyện Vĩnh Cửu Đồng Nai",Nhầm lẫn địa danh nghiêm trọng; Cái Mơn thuộc Chợ Lách Bến Tre,REJECTED,EXC-01
+REJ-05,"Sầu riêng Vĩnh Long là đặc sản đất đỏ Long Khánh Đồng Nai",Nhầm lẫn địa danh và tỉnh thành ngoài địa bàn Đồng Nai,REJECTED,EXC-03
+REJ-06,"Cà chua bi Đà Lạt của Hợp tác xã Đồng Nai",Mượn danh nông sản Lâm Đồng gắn nhãn Đồng Nai,REJECTED,EXC-02
+REJ-07,"Nông sản Bưởi Tân Triều chữa khỏi hoàn toàn bệnh ung thư và tiểu đường",Tuyên bố y tế sai lệch; vi phạm an toàn thông tin sức khỏe và quy định an toàn thực phẩm,REJECTED,DOM-06
+REJ-08,"Mã lô BATCH-UNKNOWN-9999 có kết quả kiểm định PASSED",Tự động giả lập kết quả kiểm định cho mã lô không tồn tại,REJECTED,DOM-08

@@ -171,7 +171,7 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
                 name: 'Chứng nhận VietGAP Trồng trọt Đồng Nai',
                 issuer: 'Chi cục Trồng trọt và Bảo vệ Thực vật Đồng Nai (Hồ sơ tham khảo)',
                 validUntil: '2028-12-31T00:00:00.000Z',
-                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                imageUrl: '/assets/nongsan/placeholder-nongsan.svg',
                 status: 'APPROVED'
               },
               {
@@ -179,7 +179,7 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
                 name: 'Giấy chứng nhận OCOP Tỉnh Đồng Nai',
                 issuer: 'UBND Tỉnh Đồng Nai - Hội đồng Phân hạng OCOP (Dữ liệu minh họa)',
                 validUntil: '2028-06-30T00:00:00.000Z',
-                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                imageUrl: '/assets/nongsan/placeholder-nongsan.svg',
                 status: 'APPROVED'
               }
             ],
@@ -226,7 +226,7 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
                 name: 'Cam kết Chuẩn canh tác sinh thái Long Khánh (Hồ sơ mẫu)',
                 issuer: 'Hội Nông Dân TP Long Khánh',
                 validUntil: '2027-12-31T00:00:00.000Z',
-                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                imageUrl: '/assets/nongsan/placeholder-nongsan.svg',
                 status: 'APPROVED'
               }
             ],
@@ -259,7 +259,7 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
                 name: 'Chứng nhận An Toàn Vệ Sinh Thực Phẩm HACCP',
                 issuer: 'Chi cục Quản lý Chất lượng Nông Lâm Sản và Thủy sản Đồng Nai',
                 validUntil: '2028-10-31T00:00:00.000Z',
-                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                imageUrl: '/assets/nongsan/placeholder-nongsan.svg',
                 status: 'APPROVED'
               }
             ],
@@ -304,7 +304,7 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
                 name: 'Chứng nhận VietGAP Vùng Trái Cây Long Khánh',
                 issuer: 'Hội Làm Vườn Đồng Nai',
                 validUntil: '2027-12-31T00:00:00.000Z',
-                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                imageUrl: '/assets/nongsan/placeholder-nongsan.svg',
                 status: 'APPROVED'
               }
             ],
@@ -336,7 +336,7 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
                 name: 'Chứng nhận OCOP Tỉnh Đồng Nai',
                 issuer: 'UBND Tỉnh Đồng Nai',
                 validUntil: '2028-12-31T00:00:00.000Z',
-                imageUrl: 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format',
+                imageUrl: '/assets/nongsan/placeholder-nongsan.svg',
                 status: 'APPROVED'
               }
             ],
@@ -666,7 +666,7 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
                         alt="Scan certificate" 
                         onError={(e) => {
                           e.currentTarget.onerror = null;
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format';
+                          e.currentTarget.src = '/assets/nongsan/placeholder-nongsan.svg';
                         }}
                         className="object-cover w-full h-full group-hover:scale-105 transition-transform" 
                       />
@@ -728,7 +728,7 @@ export default function TraceabilityDetailPageClient({ batchCodeOverride }: { ba
                     className="max-h-[60vh] object-contain rounded-lg shadow-sm"
                     onError={(e) => {
                       e.currentTarget.onerror = null;
-                      e.currentTarget.src = 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format';
+                      e.currentTarget.src = '/assets/nongsan/placeholder-nongsan.svg';
                     }}
                   />
                 </div>

@@ -44,26 +44,42 @@ function TraceabilityPortalContent() {
     {
       code: 'BATCH-BUOI-TANTRIEU-2026-01',
       name: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)',
-      farm: 'HTX Nông Nghiệp Dịch Vụ Tân Triều (Phường Tân Triều, TP Đồng Nai)',
-      certs: ['OCOP 4 Sao', 'VietGAP Trồng trọt'],
+      farm: 'HTX Nông Nghiệp Dịch Vụ Tân Triều (Xã Tân Bình, Huyện Vĩnh Cửu, Tỉnh Đồng Nai)',
+      certs: ['OCOP 4 Sao', 'VietGAP Trồng trọt', 'Chỉ dẫn địa lý Tân Triều'],
       status: 'Hồ sơ kiểm định mẫu đạt chuẩn',
       date: '10/10/2026'
     },
     {
       code: 'BATCH-SAURIENG-LONGKHANH-2026-01',
       name: 'Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)',
-      farm: 'HTX Nông Nghiệp Sinh Thái Long Khánh (Phường Xuân Lập, TP Đồng Nai)',
-      certs: ['Canh tác sinh thái'],
+      farm: 'HTX Nông Nghiệp - Thương Mại - Dịch Vụ Xuân Lập (Phường Xuân Lập, TP Long Khánh, Tỉnh Đồng Nai)',
+      certs: ['VietGAP Trồng trọt', 'Mã số vùng trồng xuất khẩu'],
       status: 'Cắt già tự nhiên, không ngâm thuốc',
       date: '12/10/2026'
     },
     {
+      code: 'BATCH-CHOMCHOM-LONGKHANH-2026-01',
+      name: 'Chôm Chôm Nhãn Long Khánh (Chỉ Dẫn Địa Lý)',
+      farm: 'HTX Nông Nghiệp - Dịch Vụ - Thương Mại Bình Lộc (Xã Bình Lộc, TP Long Khánh, Tỉnh Đồng Nai)',
+      certs: ['Chỉ Dẫn Địa Lý Long Khánh', 'VietGAP Trồng trọt', 'OCOP 4 Sao'],
+      status: 'Hái tươi giao trong ngày, bao gói đạt chuẩn',
+      date: '11/10/2026'
+    },
+    {
       code: 'BATCH-HATDIEU-DONGNAI-2026-01',
-      name: 'Hạt Điều Rang Củi Vỏ Lụa Đồng Nai (Hộp 500g)',
-      farm: 'HTX Nông Nghiệp Long Khánh (TP Long Khánh, TP Đồng Nai)',
-      certs: ['OCOP Đồng Nai', 'ATTP'],
-      status: 'Kiểm soát nhiệt độ rang thủ công',
+      name: 'Hạt Điều Rang Củi Vỏ Lụa Định Quán (Hộp 500g)',
+      farm: 'Cơ Sở Chế Biến Hạt Điều Định Quán (Thị trấn Định Quán, Huyện Định Quán, Tỉnh Đồng Nai)',
+      certs: ['HACCP Codex', 'OCOP 3 Sao Tỉnh Đồng Nai'],
+      status: 'Kiểm soát nhiệt độ rang thủ công, hút chân không an toàn',
       date: '05/10/2026'
+    },
+    {
+      code: 'BATCH-TIEU-XUANLOC-2026-01',
+      name: 'Hồ Tiêu Đen Hữu Cơ Xuân Lộc (Hũ 200g)',
+      farm: 'HTX Hồ Tiêu Năng Động Xuân Lộc (Xã Xuân Thọ, Huyện Xuân Lộc, Tỉnh Đồng Nai)',
+      certs: ['VietGAP Trồng trọt', 'OCOP 4 Sao Tỉnh Đồng Nai'],
+      status: 'Thu hoạch hồ tiêu chân núi Chứa Chan, phơi sấy vô trùng',
+      date: '08/10/2026'
     }
   ];
 

@@ -10,32 +10,32 @@ export default function HomePage() {
     {
       id: 'prod-buoi-duong-la-cam',
       name: 'Bưởi Đường Lá Cam Tân Triều',
-      supplier: 'HTX Nông Nghiệp Tân Triều',
-      origin: 'Phường Tân Triều, TP Đồng Nai',
+      supplier: 'HTX Nông Nghiệp Dịch Vụ Tân Triều',
+      origin: 'Cù lao Tân Triều, Vĩnh Cửu, TP Đồng Nai',
       price: 85000,
-      unit: 'Quả (1.2 - 1.4kg)',
+      unit: 'Quả (1.1 - 1.3kg)',
       tag: 'OCOP 4 Sao',
-      imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=600&auto=format'
+      imageUrl: '/assets/nongsan/buoi-duong-la-cam.jpg'
     },
     {
       id: 'prod-saurieng-ri6-longkhanh',
-      name: 'Sầu Riêng Ri6 Long Khánh (Chín Cây)',
-      supplier: 'HTX Sinh Thái Long Khánh',
-      origin: 'Phường Xuân Lập, TP Đồng Nai',
-      price: 110000,
-      unit: 'Kg (Quả 2.5 - 4kg)',
-      tag: 'Canh tác sinh thái',
-      imageUrl: 'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=600&auto=format'
+      name: 'Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)',
+      supplier: 'HTX Nông nghiệp Xuân Lập Long Khánh',
+      origin: 'Phường Xuân Lập, TP Long Khánh, TP Đồng Nai',
+      price: 135000,
+      unit: 'Kg (Quả 2.5 - 3.5kg)',
+      tag: 'VietGAP Chín Cây',
+      imageUrl: '/assets/nongsan/sau-rieng-ri6-longkhanh.jpg'
     },
     {
       id: 'prod-hat-dieu-rang-cui',
-      name: 'Hạt Điều Rang Củi Vỏ Lụa',
-      supplier: 'HTX Nông Nghiệp Long Khánh',
-      origin: 'TP Long Khánh, TP Đồng Nai',
+      name: 'Hạt Điều Rang Củi Vỏ Lụa Đồng Nai',
+      supplier: 'Cơ sở chế biến hạt điều sạch Định Quán',
+      origin: 'Định Quán & Đông Nam Bộ, TP Đồng Nai',
       price: 140000,
       unit: 'Hộp 500g',
-      tag: 'Đặc sản Đồng Nai',
-      imageUrl: 'https://images.unsplash.com/photo-1563865436874-9aef32095fad?w=600&auto=format'
+      tag: 'HACCP Tiêu Chuẩn',
+      imageUrl: '/assets/nongsan/hat-dieu-rang-cui.jpg'
     }
   ];
 
@@ -101,9 +101,12 @@ export default function HomePage() {
               <div className="bg-white rounded-xl border border-[#E2E5DC] p-3 shadow-card">
                 <div className="aspect-[4/3] rounded-lg overflow-hidden bg-[#F1EFE8] relative">
                   <img
-                    src="https://images.unsplash.com/photo-1595855759920-86582396756a?w=1000&auto=format"
+                    src="/assets/nongsan/buoi-duong-la-cam.jpg"
                     alt="Vườn bưởi Cù lao Tân Triều, Đồng Nai"
                     className="object-cover w-full h-full"
+                    onError={(e) => {
+                      e.currentTarget.src = '/assets/nongsan/placeholder-nongsan.svg';
+                    }}
                   />
                 </div>
                 <div className="pt-3 px-1 flex items-center justify-between text-xs text-[#647067]">
@@ -243,8 +246,8 @@ export default function HomePage() {
                 Vựa trái cây trứ danh miền Đông Nam Bộ với sầu riêng Ri6 chín cây không nhúng thuốc, chôm chôm nhãn giòn ngọt và hạt điều vỏ lụa rang củi truyền thống của các hộ nhà vườn lâu năm.
               </p>
               <div className="pt-2 border-t border-[#E2E5DC] flex items-center justify-between text-xs">
-                <span className="text-[#647067]">Chủ thể: HTX Sinh Thái Long Khánh</span>
-                <Link href="/products?supplier=long-khanh" className="text-[#2C4939] font-medium hover:underline">
+                <span className="text-[#647067]">Chủ thể: HTX Xuân Lập & HTX Bình Lộc</span>
+                <Link href="/products?supplier=xuanlap" className="text-[#2C4939] font-medium hover:underline">
                   Xem nông sản Long Khánh →
                 </Link>
               </div>

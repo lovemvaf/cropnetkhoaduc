@@ -28,66 +28,66 @@ export default function SeasonalCalendarPage() {
       id: 'buoi-duong-la-cam',
       cropName: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)',
       cooperative: 'HTX Nông Nghiệp Dịch Vụ Tân Triều',
-      area: 'Phường Tân Triều, Thành phố Đồng Nai',
+      area: 'Xã Tân Bình, Huyện Vĩnh Cửu, Tỉnh Đồng Nai',
       peakMonths: [9, 10, 11, 12],
       harvestStatus: 'Đang vào chính vụ (Cao điểm thu hoạch)',
       brixRating: '11.5 - 12.5 Brix',
       tasteProfile: 'Tép mọng nước vàng óng, ngọt thanh đậm, róc vỏ, không the đắng',
       farmingNote: 'Bao trái bằng túi màng thoáng khí, tưới nước phù sa sông Đồng Nai.',
-      imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format',
-      productId: 'prod-buoi-duong-la-cam'
+      imageUrl: '/assets/nongsan/buoi-duong-la-cam.jpg',
+      productId: '1'
     },
     {
       id: 'saurieng-ri6',
       cropName: 'Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)',
-      cooperative: 'HTX Nông Nghiệp Sinh Thái Long Khánh',
-      area: 'Phường Xuân Lập, Thành phố Đồng Nai',
+      cooperative: 'HTX Nông Nghiệp - Thương Mại - Dịch Vụ Xuân Lập',
+      area: 'Phường Xuân Lập, Thành phố Long Khánh, Tỉnh Đồng Nai',
       peakMonths: [5, 6, 7, 8, 10, 11],
       harvestStatus: 'Đang thu hoạch già chín cây',
       brixRating: '26.0 - 28.5 Brix',
       tasteProfile: 'Cơm vàng dẻo béo ngậy, hạt lép, mùi thơm nồng tự nhiên',
       farmingNote: 'Gõ bộng thu hái già trên cây hoặc tự rụng, không nhúng thuốc kích chín.',
-      imageUrl: 'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=800&auto=format',
-      productId: 'prod-saurieng-ri6-longkhanh'
+      imageUrl: '/assets/nongsan/sau-rieng-ri6-longkhanh.jpg',
+      productId: '2'
     },
     {
       id: 'chomchom-nhan',
-      cropName: 'Chôm Chôm Nhãn Long Khánh',
-      cooperative: 'HTX Nông Nghiệp Sinh Thái Long Khánh',
-      area: 'Phường Xuân Lập, Thành phố Đồng Nai',
+      cropName: 'Chôm Chôm Nhãn Long Khánh (Chỉ Dẫn Địa Lý)',
+      cooperative: 'HTX Nông Nghiệp - Dịch Vụ - Thương Mại Bình Lộc',
+      area: 'Xã Bình Lộc, Thành phố Long Khánh, Tỉnh Đồng Nai',
       peakMonths: [5, 6, 7, 8, 10, 11],
       harvestStatus: 'Đang hái tươi giao trong ngày',
       brixRating: '18.0 - 20.0 Brix',
       tasteProfile: 'Cùi dày giòn tróc hạt, vị ngọt thanh tự nhiên',
-      farmingNote: 'Thu hái sáng sớm, chuyển thẳng về kho mát bảo quản.',
-      imageUrl: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format',
-      productId: 'prod-chom-chom-nhan'
+      farmingNote: 'Thu hái sáng sớm, chuyển thẳng về kho mát bảo quản tiêu chuẩn.',
+      imageUrl: '/assets/nongsan/chom-chom-nhan-longkhanh.jpg',
+      productId: '4'
     },
     {
       id: 'buoi-da-xanh',
       cropName: 'Bưởi Da Xanh Tân Triều Hữu Cơ',
       cooperative: 'HTX Nông Nghiệp Dịch Vụ Tân Triều',
-      area: 'Phường Tân Triều, Thành phố Đồng Nai',
+      area: 'Xã Tân Bình, Huyện Vĩnh Cửu, Tỉnh Đồng Nai',
       peakMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       harvestStatus: 'Thu hoạch rải vụ quanh năm',
       brixRating: '10.5 - 11.5 Brix',
       tasteProfile: 'Ruột hồng đào, tép giòn mọng, vị ngọt thanh',
-      farmingNote: 'Bón phân hữu cơ vi sinh tự ủ từ bã cà phê và trấu.',
-      imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format',
-      productId: 'prod-buoi-da-xanh'
+      farmingNote: 'Bón phân hữu cơ vi sinh tự ủ từ bã trấu và phụ phẩm nông nghiệp.',
+      imageUrl: '/assets/nongsan/buoi-da-xanh-tantrieu.jpg',
+      productId: '1'
     },
     {
       id: 'hatdieu-dongnai',
-      cropName: 'Hạt Điều Rang Củi Vỏ Lụa Đồng Nai',
-      cooperative: 'HTX Nông Nghiệp Long Khánh',
-      area: 'TP Long Khánh, Thành phố Đồng Nai',
+      cropName: 'Hạt Điều Rang Củi Vỏ Lụa Định Quán',
+      cooperative: 'Cơ Sở Chế Biến Hạt Điều Định Quán',
+      area: 'Thị trấn Định Quán, Huyện Định Quán, Tỉnh Đồng Nai',
       peakMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       harvestStatus: 'Sẵn hàng chế biến đóng hộp',
       brixRating: 'Hạt tuyển chọn loại 1',
       tasteProfile: 'Bùi béo giòn thơm, mằn mặn dịu nhẹ',
-      farmingNote: 'Rang củi truyền thống giữ nguyên vỏ lụa bảo vệ hạt.',
-      imageUrl: 'https://images.unsplash.com/photo-1563865436874-9aef32095fad?w=800&auto=format',
-      productId: 'prod-hat-dieu-rang-cui'
+      farmingNote: 'Rang củi truyền thống giữ nguyên vỏ lụa bảo vệ hạt đạt chuẩn HACCP.',
+      imageUrl: '/assets/nongsan/hat-dieu-rang-cui.jpg',
+      productId: '3'
     }
   ];
 
@@ -102,7 +102,7 @@ export default function SeasonalCalendarPage() {
             Niên Vụ Cây Ăn Trái
           </span>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#253129] tracking-tight">
-            Lịch Mùa Vụ Thu Hoạch Nông Sản Thành Phố Đồng Nai
+            Lịch Mùa Vụ Thu Hoạch Nông Sản Tỉnh Đồng Nai
           </h1>
           <p className="text-xs sm:text-sm text-[#647067] max-w-3xl leading-relaxed">
             Theo dõi thời điểm chín tự nhiên của bưởi Cù lao Tân Triều, sầu riêng và chôm chôm Long Khánh để thưởng thức đúng độ ngon nhất và đặt trước với nhà vườn.
@@ -143,7 +143,7 @@ export default function SeasonalCalendarPage() {
             <h2 className="text-base sm:text-lg font-bold text-[#253129]">
               Nông sản vào vụ trong Tháng {selectedMonth} ({activeCropsInMonth.length} loại)
             </h2>
-            <span className="text-xs text-[#8C978F]">Dữ liệu cập nhật từ HTX</span>
+            <span className="text-xs text-[#8C978F]">Dữ liệu xác minh từ HTX Đồng Nai</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -158,6 +158,9 @@ export default function SeasonalCalendarPage() {
                       src={crop.imageUrl}
                       alt={crop.cropName}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = '/assets/nongsan/placeholder-nongsan.svg';
+                      }}
                     />
                     <div className="absolute top-2.5 right-2.5 bg-white/95 text-[#2C4939] text-[11px] font-medium px-2 py-0.5 rounded border border-[#E2E5DC]">
                       Độ ngọt: {crop.brixRating}

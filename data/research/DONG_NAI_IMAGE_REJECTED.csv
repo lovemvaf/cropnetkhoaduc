@@ -1,0 +1,17 @@
+asset_id,original_path,rejection_reason,classification,resolution_status,verified_at
+REJ-IMG-01,apps/web/public/buoi-da-xanh-cai-mon.jpg,Tên tài nguyên chứa địa danh Cái Mơn (Bến Tre) không được dùng cho sản phẩm Tân Triều Đồng Nai,WRONG_PROVINCE,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-02,San pham/buoi-da-xanh-cai-mon.jpg,Tên tài nguyên chứa địa danh Cái Mơn (Bến Tre),WRONG_PROVINCE,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-03,apps/web/public/cachuabidalat.jpg,Tên tài nguyên chứa địa danh Đà Lạt (Lâm Đồng) không thuộc nông sản Đồng Nai,WRONG_PROVINCE,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-04,San pham/cachuabidalat.jpg,Tên tài nguyên chứa địa danh Đà Lạt (Lâm Đồng),WRONG_PROVINCE,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-05,apps/web/public/sau-rieng-vinh-long.jpg,Tên tài nguyên chứa địa danh Vĩnh Long không được mạo nhận sầu riêng Long Khánh,WRONG_PROVINCE,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-06,San pham/sau rieng vinh long.jpg,Tên tài nguyên chứa địa danh Vĩnh Long,WRONG_PROVINCE,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-07,apps/web/public/mang-tay-xanh.jpg,Chưa có hồ sơ cơ sở trồng và kiểm định tại Đồng Nai,LICENSE_UNKNOWN,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-08,San pham/mang tay xanh.jpg,Chưa có hồ sơ cơ sở trồng và kiểm định tại Đồng Nai,LICENSE_UNKNOWN,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-09,apps/web/public/nam-dui-ga.jpg,Chưa có hồ sơ cơ sở sản xuất nấm tại Đồng Nai,LICENSE_UNKNOWN,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-10,San pham/nam dui ga.jpg,Chưa có hồ sơ cơ sở sản xuất nấm tại Đồng Nai,LICENSE_UNKNOWN,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-11,apps/web/public/rau-muong-huu-co.jpg,Chưa có chứng nhận hữu cơ và tọa độ vùng trồng tại Đồng Nai,LICENSE_UNKNOWN,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-12,San pham/rau muong huu co.jpg,Chưa có chứng nhận hữu cơ và tọa độ vùng trồng tại Đồng Nai,LICENSE_UNKNOWN,MOVED_TO_QUARANTINE,2026-10-15
+REJ-IMG-13,https://images.unsplash.com/photo-1595855759920-86582396756a,Ảnh stock không rõ nguồn gốc địa lý được gán cho bưởi Tân Triều,GENERIC_ILLUSTRATION,REPLACED,2026-10-15
+REJ-IMG-14,https://images.unsplash.com/photo-1587132137056-bfbf0166836e,Ảnh stock không rõ nguồn gốc địa lý được gán cho sầu riêng Long Khánh,GENERIC_ILLUSTRATION,REPLACED,2026-10-15
+REJ-IMG-15,https://images.unsplash.com/photo-1550258987-190a2d41a8ba,Ảnh stock không rõ nguồn gốc địa lý được gán cho chôm chôm Long Khánh,GENERIC_ILLUSTRATION,REPLACED,2026-10-15
+REJ-IMG-16,https://images.unsplash.com/photo-1563865436874-9aef32095fad,Ảnh stock không rõ nguồn gốc địa lý được gán cho hạt điều Đồng Nai,GENERIC_ILLUSTRATION,REPLACED,2026-10-15

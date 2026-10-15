@@ -223,9 +223,12 @@ export default function CustomerDashboardPage() {
                       <div key={item.id} className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                           <img
-                            src={getAssetPath(item.product?.images?.[0]?.url || item.product?.imageUrl) || 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=150&auto=format'}
+                            src={getAssetPath(item.product?.images?.[0]?.url || item.product?.imageUrl) || '/assets/nongsan/placeholder-nongsan.svg'}
                             alt={item.product?.name}
                             className="w-12 h-12 rounded-xl object-cover border border-gray-100"
+                            onError={(e) => {
+                              e.currentTarget.src = '/assets/nongsan/placeholder-nongsan.svg';
+                            }}
                           />
                           <div>
                             <p className="font-bold text-gray-900 text-sm">{item.product?.name}</p>

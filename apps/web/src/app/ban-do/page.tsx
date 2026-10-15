@@ -33,10 +33,10 @@ export default function CooperativeMapPage() {
             <span className="text-xs text-[#8C978F]">Hệ quy chiếu WGS84</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#253129] tracking-tight">
-            Vùng Trồng Nông Sản & Hợp Tác Xã Thành Phố Đồng Nai
+            Vùng Trồng Nông Sản & Hợp Tác Xã Tỉnh Đồng Nai
           </h1>
           <p className="text-xs sm:text-sm text-[#647067] max-w-3xl leading-relaxed">
-            Hệ thống bản đồ số địa lý toàn diện bao phủ toàn bộ địa giới hiện hành Thành phố Đồng Nai (thành lập theo Nghị quyết 30/2026/QH16, bao gồm không gian tỉnh Đồng Nai và Bình Phước trước sáp nhập). 
+            Hệ thống bản đồ số địa lý toàn diện bao phủ toàn bộ các vùng chuyên canh đặc sản của Tỉnh Đồng Nai (Biên Hòa, Long Khánh, Vĩnh Cửu, Cẩm Mỹ, Xuân Lộc, Định Quán, Tân Phú...). 
             Tích hợp phân tầng 3 cấp: Vùng lãnh thổ nông nghiệp truyền thống (Tâm tham khảo), Hợp tác xã/nhà vườn xác minh hồ sơ và Lô hàng truy xuất tem QR thực tế.
           </p>
         </div>

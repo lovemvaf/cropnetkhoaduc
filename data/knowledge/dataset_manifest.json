@@ -1,0 +1,58 @@
+{
+  "name": "cropnet-dongnai-verified-knowledge-base",
+  "version": "2026.1.0",
+  "description": "Kho tri thức nông sản Thành phố Đồng Nai được xác thực phục vụ RAG và chatbot CropNet AI",
+  "generatedAt": "2026-10-15T14:48:00.000Z",
+  "verifiedBy": "Principal AI & Vietnamese Agrifood Domain Researcher",
+  "geographicScope": "THANH_PHO_DONG_NAI_ONLY",
+  "datasets": [
+    {
+      "filename": "knowledge.csv",
+      "records": 8,
+      "description": "Tài liệu tri thức cốt lõi về đặc sản và quy tắc địa lý Đồng Nai",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "knowledge_sources.csv",
+      "records": 10,
+      "description": "Danh mục cơ quan ban ngành và nguồn trích dẫn pháp lý cấp T1/T2",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "faq.csv",
+      "records": 8,
+      "description": "Bộ câu hỏi thường gặp về sản phẩm, truy xuất QR, ngân sách và nguồn gốc",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "glossary.csv",
+      "records": 11,
+      "description": "Thuật ngữ chuyên ngành nông nghiệp, chỉ dẫn địa lý, OCOP và HTX Đồng Nai",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "domain_knowledge.csv",
+      "records": 8,
+      "description": "Quy tắc miền về phân định địa giới, mùa vụ, chứng nhận và an toàn y tế",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "training_examples.csv",
+      "records": 6,
+      "description": "Ví dụ few-shot huấn luyện và định hướng intent cho LLM",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "evaluation.csv",
+      "records": 30,
+      "description": "Bộ benchmark 30 tình huống đánh giá độ chính xác, trích dẫn và chống ảo giác",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "rejected_unverified.csv",
+      "records": 8,
+      "description": "Danh mục thông tin và tuyên bố bị bác bỏ không được phép xuất bản",
+      "status": "REJECTED_AUDITED"
+    }
+  ]
+}

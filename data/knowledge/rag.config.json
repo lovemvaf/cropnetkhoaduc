@@ -1,0 +1,40 @@
+{
+  "system": {
+    "name": "CropNet Dong Nai Geo-Strict RAG Engine",
+    "version": "2026.1.0",
+    "llmProvider": "deepseek",
+    "defaultModel": "deepseek-chat",
+    "temperature": 0.25,
+    "maxTokens": 1000,
+    "requestTimeoutMs": 15000
+  },
+  "retrieval": {
+    "candidateRetrievalK": 20,
+    "finalTopK": 5,
+    "minScoreThreshold": 0.35,
+    "hybridWeights": {
+      "lexical": 0.6,
+      "exactEntity": 0.4
+    },
+    "vietnameseNormalization": {
+      "removeTones": true,
+      "caseInsensitive": true,
+      "expandSynonyms": true
+    }
+  },
+  "context": {
+    "maxContextTokens": 3000,
+    "recentMessagesCount": 12,
+    "summarizationEnabled": true,
+    "citationValidationEnabled": true,
+    "sessionIsolation": true
+  },
+  "guardrails": {
+    "geoScope": "DONG_NAI_ONLY",
+    "rejectForeignProvinces": true,
+    "medicalSafetyFilter": true,
+    "failClosedOnNotFound": true,
+    "antiPromptInjection": true,
+    "budgetConstraintStrict": true
+  }
+}

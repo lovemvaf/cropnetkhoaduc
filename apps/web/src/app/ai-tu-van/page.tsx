@@ -113,18 +113,18 @@ export default function AiConsultationPage() {
       let products: any[] = [];
 
       if (lower.includes('500k') || lower.includes('ngân sách') || lower.includes('quà biếu')) {
-        fallbackText = 'Với ngân sách 500.000đ, hệ thống đề xuất Combo Quà Tặng Nông Sản Tuyển Chọn: 2 Bưởi đường lá cam Tân Triều OCOP 4 sao (170.000đ), 1 Bưởi da xanh Tân Triều (75.000đ) và 1 Hộp hạt điều rang củi vỏ lụa (140.000đ). Tổng chi phí là 385.000đ (dư 115.000đ so với hạn mức). Quý khách có thể bấm thêm tất cả vào giỏ hàng bên dưới.';
+        fallbackText = 'Với ngân sách 500.000đ, hệ thống đề xuất Combo Quà Tặng Nông Sản Tuyển Chọn: 2 Bưởi đường lá cam Tân Triều OCOP 4 sao (170.000đ), 1 Bưởi da xanh Tân Triều (75.000đ) và 1 Hộp hạt điều rang củi vỏ lụa Định Quán (140.000đ). Tổng chi phí là 385.000đ (dư 115.000đ so với hạn mức). Quý khách có thể bấm thêm tất cả vào giỏ hàng bên dưới.';
         products = [
-          { id: 'prod-buoi-duong-la-cam', name: 'Bưởi Đường Lá Cam Tân Triều (OCOP)', price: 85000, unit: 'quả (1.2kg)', quantity: 2, total: 170000, cooperativeName: 'HTX Nông Nghiệp Tân Triều' },
-          { id: 'prod-buoi-da-xanh', name: 'Bưởi Da Xanh Tân Triều', price: 75000, unit: 'quả (1.3kg)', quantity: 1, total: 75000, cooperativeName: 'HTX Nông Nghiệp Tân Triều' },
-          { id: 'prod-hat-dieu-rang-cui', name: 'Hạt Điều Rang Củi Vỏ Lụa', price: 140000, unit: 'hộp 500g', quantity: 1, total: 140000, cooperativeName: 'HTX Nông Nghiệp Long Khánh' }
+          { id: '1', name: 'Bưởi Đường Lá Cam Tân Triều (OCOP)', price: 85000, unit: 'quả (1.2kg)', quantity: 2, total: 170000, cooperativeName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều', imageUrl: '/assets/nongsan/buoi-duong-la-cam.jpg' },
+          { id: '1', name: 'Bưởi Da Xanh Tân Triều', price: 75000, unit: 'quả (1.3kg)', quantity: 1, total: 75000, cooperativeName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều', imageUrl: '/assets/nongsan/buoi-da-xanh-tantrieu.jpg' },
+          { id: '3', name: 'Hạt Điều Rang Củi Vỏ Lụa Định Quán', price: 140000, unit: 'hộp 500g', quantity: 1, total: 140000, cooperativeName: 'Cơ Sở Chế Biến Hạt Điều Định Quán', imageUrl: '/assets/nongsan/hat-dieu-rang-cui.jpg' }
         ];
       } else if (lower.includes('300k') || lower.includes('200k')) {
         fallbackText = 'Với ngân sách 300.000đ, hệ thống đề xuất Combo Trái Cây Thanh Mát: 1 Bưởi da xanh Tân Triều (75.000đ), 2kg Chôm chôm nhãn Long Khánh (90.000đ) và 1 Bưởi đường lá cam (85.000đ). Tổng chi phí là 250.000đ (dư 50.000đ).';
         products = [
-          { id: 'prod-buoi-da-xanh', name: 'Bưởi Da Xanh Tân Triều', price: 75000, unit: 'quả', quantity: 1, total: 75000, cooperativeName: 'HTX Nông Nghiệp Tân Triều' },
-          { id: 'prod-chom-chom-nhan', name: 'Chôm Chôm Nhãn Long Khánh', price: 45000, unit: 'kg', quantity: 2, total: 90000, cooperativeName: 'HTX Sinh Thái Long Khánh' },
-          { id: 'prod-buoi-duong-la-cam', name: 'Bưởi Đường Lá Cam Tân Triều', price: 85000, unit: 'quả', quantity: 1, total: 85000, cooperativeName: 'HTX Nông Nghiệp Tân Triều' }
+          { id: '1', name: 'Bưởi Da Xanh Tân Triều', price: 75000, unit: 'quả', quantity: 1, total: 75000, cooperativeName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều', imageUrl: '/assets/nongsan/buoi-da-xanh-tantrieu.jpg' },
+          { id: '4', name: 'Chôm Chôm Nhãn Long Khánh', price: 45000, unit: 'kg', quantity: 2, total: 90000, cooperativeName: 'HTX Nông Nghiệp Bình Lộc', imageUrl: '/assets/nongsan/chom-chom-nhan-longkhanh.jpg' },
+          { id: '1', name: 'Bưởi Đường Lá Cam Tân Triều', price: 85000, unit: 'quả', quantity: 1, total: 85000, cooperativeName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều', imageUrl: '/assets/nongsan/buoi-duong-la-cam.jpg' }
         ];
       }
 

@@ -306,9 +306,12 @@ export default function OrderTrackingPageClient() {
             <div key={item.id} className="flex justify-between items-center text-xs">
               <div className="flex items-center gap-3">
                 <img 
-                  src={getAssetPath(item.product?.images?.[0]?.url || item.product?.imageUrl) || 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=100&auto=format'} 
+                  src={getAssetPath(item.product?.images?.[0]?.url || item.product?.imageUrl) || '/assets/nongsan/placeholder-nongsan.svg'} 
                   alt={item.product?.name} 
                   className="w-10 h-10 rounded-lg object-cover border border-[#E2E5DC]" 
+                  onError={(e) => {
+                    e.currentTarget.src = '/assets/nongsan/placeholder-nongsan.svg';
+                  }}
                 />
                 <div>
                   <h4 className="font-medium text-[#253129]">{item.product?.name}</h4>

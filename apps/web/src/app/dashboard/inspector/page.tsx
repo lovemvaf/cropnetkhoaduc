@@ -30,7 +30,7 @@ export default function InspectorDashboardPage() {
   const [certName, setCertName] = useState('Chứng nhận Thực hành Nông nghiệp Tốt VietGAP');
   const [certIssuer, setCertIssuer] = useState('Cục Trồng trọt - Bộ Nông nghiệp & PTNT');
   const [certValidUntil, setCertValidUntil] = useState('2028-12-31');
-  const [certImg, setCertImg] = useState('https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format');
+  const [certImg, setCertImg] = useState('/assets/nongsan/placeholder-nongsan.svg');
   const [uploading, setUploading] = useState(false);
   const [submittingCert, setSubmittingCert] = useState(false);
 

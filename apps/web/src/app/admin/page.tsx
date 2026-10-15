@@ -918,9 +918,12 @@ export default function AdminDashboardPage() {
                   <tr key={p.id} className="border-b border-gray-50 text-sm hover:bg-gray-50/50 transition-colors">
                     <td className="py-4 px-4 font-bold text-gray-955 flex items-center gap-3">
                       <img 
-                        src={p.images?.[0]?.url || p.imageUrl || 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=150&auto=format'} 
+                        src={p.images?.[0]?.url || p.imageUrl || '/assets/nongsan/placeholder-nongsan.svg'} 
                         alt={p.name} 
                         className="w-10 h-10 rounded-lg object-cover border border-gray-100" 
+                        onError={(e) => {
+                          e.currentTarget.src = '/assets/nongsan/placeholder-nongsan.svg';
+                        }}
                       />
                       <span>{p.name}</span>
                     </td>
@@ -1100,16 +1103,16 @@ export default function AdminDashboardPage() {
                 certificates.map((c: any) => (
                   <Card key={c.id} className="flex gap-4 p-4 hover:shadow-md transition-shadow">
                     <div 
-                      onClick={() => setViewCertUrl(c.imageUrl || 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format')}
+                      onClick={() => setViewCertUrl(c.imageUrl || '/assets/nongsan/placeholder-nongsan.svg')}
                       className="w-24 h-24 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0 cursor-pointer hover:opacity-80 transition-all duration-200 hover:scale-105"
                       title="Click để xem ảnh lớn"
                     >
                       <img 
-                        src={c.imageUrl || 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=150&auto=format'} 
+                        src={c.imageUrl || '/assets/nongsan/placeholder-nongsan.svg'} 
                         alt={c.name} 
                         onError={(e) => {
                           e.currentTarget.onerror = null;
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1589330694653-ded6df53f7ec?w=500&auto=format';
+                          e.currentTarget.src = '/assets/nongsan/placeholder-nongsan.svg';
                         }}
                         className="object-cover w-full h-full"
                       />

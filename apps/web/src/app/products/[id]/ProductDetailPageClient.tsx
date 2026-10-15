@@ -55,47 +55,48 @@ export default function ProductDetailPageClient() {
             idAlias: ['1', 'prod-buoi-duong-la-cam'],
             name: 'Bưởi Đường Lá Cam Tân Triều (OCOP 4 Sao)',
             price: 85000,
-            unit: 'quả (1.2kg - 1.4kg)',
-            description: 'Bưởi đường lá cam trứ danh cù lao Tân Triều, vỏ mỏng vàng ươm khi chín, tép bưởi mọng nước ngọt thanh dịu mát, không the đắng. Canh tác kết hợp hữu cơ vi sinh bồi đắp phù sa sông Đồng Nai.',
+            unit: 'quả (1.1kg - 1.3kg)',
+            description: 'Bưởi đường lá cam trứ danh Cù lao Tân Triều, vỏ mỏng vàng ươm khi chín, tép bưởi mọng nước ngọt thanh dịu mát, không the đắng. Canh tác kết hợp hữu cơ vi sinh bồi đắp phù sa sông Đồng Nai theo quy chuẩn VietGAP.',
             categoryId: 'cat-fruits',
-            tags: ['OCOP', 'Bưởi Tân Triều', 'VietGAP', 'Đặc sản Đồng Nai'],
+            tags: ['OCOP 4 Sao', 'Bưởi Tân Triều', 'VietGAP', 'Đặc sản Đồng Nai', 'Chỉ dẫn địa lý'],
             farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều',
-            address: 'Phường Tân Triều, Thành phố Đồng Nai (vùng Cù lao Tân Triều lịch sử)',
-            imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format',
+            address: 'Ấp Vĩnh Hiệp, Xã Tân Bình (Cù lao Tân Triều), Huyện Vĩnh Cửu, Thành phố Đồng Nai',
+            imageUrl: '/assets/nongsan/buoi-duong-la-cam.jpg',
             images: [
-              { url: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' }
+              { url: '/assets/nongsan/buoi-duong-la-cam.jpg' },
+              { url: '/assets/nongsan/buoi-da-xanh-tantrieu.jpg' }
             ],
             variants: [
-              { name: 'Quả tiêu chuẩn (1.2kg - 1.4kg)', price: 85000 },
-              { name: 'Quả chọn VIP (1.5kg+)', price: 110000 },
+              { name: 'Quả tiêu chuẩn (1.1kg - 1.3kg)', price: 85000 },
+              { name: 'Quả chọn VIP (1.4kg+)', price: 110000 },
               { name: 'Cặp quả biếu quà Tân Triều', price: 195000 }
             ],
             batches: [
-              { id: 'batch-buoi-tantrieu-01', batchCode: 'BATCH-BUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-10-10'), farmingArea: 'Vườn mẫu A1 - Phường Tân Triều, TP Đồng Nai', farmingProcess: 'Canh tác sinh thái kết hợp VietGAP, tưới nước phù sa sông Đồng Nai, bao trái màng thoáng khí.' }
+              { id: 'batch-buoi-tantrieu-01', batchCode: 'BATCH-BUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-10-10'), farmingArea: 'Vườn mẫu liếp 04 - HTX Tân Triều, Xã Tân Bình, Vĩnh Cửu, TP Đồng Nai', farmingProcess: 'Canh tác sinh thái kết hợp VietGAP, tưới nước phù sa sông Đồng Nai, bao trái màng thoáng khí.' }
             ]
           },
           {
             id: '2',
             slug: 'prod-buoi-da-xanh',
-            idAlias: ['2', 'prod-buoi-da-xanh'],
-            name: 'Bưởi Da Xanh Tân Triều Hữu Cơ',
+            idAlias: ['2', 'prod-buoi-da-xanh', 'prod-buoi-da-xanh-tantrieu'],
+            name: 'Bưởi Da Xanh Trồng Tại Vùng Cù Lao Tân Triều',
             price: 75000,
             unit: 'quả (1.3kg - 1.5kg)',
             description: 'Bưởi da xanh ruột hồng giòn mọng, ít hạt, vị ngọt đậm tự nhiên. Đạt tiêu chuẩn an toàn sinh thái của HTX Nông nghiệp Tân Triều.',
             categoryId: 'cat-fruits',
-            tags: ['VietGAP', 'Bưởi Tân Triều', 'Hữu cơ'],
+            tags: ['VietGAP', 'Bưởi Tân Triều', 'Sinh thái cù lao'],
             farmName: 'Hợp Tác Xã Nông Nghiệp Dịch Vụ Tân Triều',
-            address: 'Phường Tân Triều, Thành phố Đồng Nai',
-            imageUrl: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format',
+            address: 'Ấp Vĩnh Hiệp, Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai',
+            imageUrl: '/assets/nongsan/buoi-da-xanh-tantrieu.jpg',
             images: [
-              { url: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' }
+              { url: '/assets/nongsan/buoi-da-xanh-tantrieu.jpg' }
             ],
             variants: [
               { name: 'Quả vừa (1.3kg)', price: 75000 },
               { name: 'Quả lớn chọn lọc (1.5kg+)', price: 95000 }
             ],
             batches: [
-              { id: 'batch-buoi-tantrieu-01', batchCode: 'BATCH-BUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-10-10'), farmingArea: 'Khu bưởi da xanh sinh thái Tân Triều', farmingProcess: 'Bón phân hữu cơ vi sinh, tưới tiêu nước sông Đồng Nai' }
+              { id: 'batch-buoi-tantrieu-01', batchCode: 'BATCH-BUOI-TANTRIEU-2026-01', harvestDate: new Date('2026-10-10'), farmingArea: 'Khu bưởi da xanh sinh thái Tân Triều, Vĩnh Cửu', farmingProcess: 'Bón phân hữu cơ vi sinh, tưới tiêu nước sông Đồng Nai' }
             ]
           },
           {
@@ -105,44 +106,46 @@ export default function ProductDetailPageClient() {
             name: 'Sầu Riêng Ri6 Long Khánh (Chín Cây Tự Nhiên)',
             price: 135000,
             unit: 'kg (quả 2.5kg - 3.5kg)',
-            description: 'Sầu riêng Ri6 trồng trên đất đỏ bazan Long Khánh, cơm vàng hạt lép giòn mịn béo bùi. Cam kết cắt già hoặc tự rụng, tuyệt đối không ngâm hóa chất ép chín.',
+            description: 'Sầu riêng Ri6 trồng trên đất đỏ bazan Long Khánh, cơm vàng hạt lép giòn mịn béo bùi. Cam kết neo cuống chín cây tự nhiên 100%, tuyệt đối không ngâm hóa chất ép chín.',
             categoryId: 'cat-fruits',
-            tags: ['VietGAP', 'Sầu riêng Long Khánh', 'Chín tự nhiên'],
-            farmName: 'Hợp Tác Xã Sinh Thái Long Khánh',
-            address: 'Phường Xuân Lập, Thành phố Đồng Nai',
-            imageUrl: 'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=800&auto=format',
+            tags: ['VietGAP', 'Sầu riêng Long Khánh', 'Chín tự nhiên', 'Không nhúng thuốc'],
+            farmName: 'Hợp Tác Xã Nông nghiệp - Thương mại - Dịch vụ Xuân Lập',
+            address: 'Phường Xuân Lập, Thành phố Long Khánh, Thành phố Đồng Nai',
+            imageUrl: '/assets/nongsan/sau-rieng-ri6-longkhanh.jpg',
             images: [
-              { url: 'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=800&auto=format' }
+              { url: '/assets/nongsan/sau-rieng-ri6-longkhanh.jpg' }
             ],
             variants: [
               { name: 'Quả nguyên trái chín cây (2.5 - 3.5kg)', price: 135000 },
               { name: 'Khay bóc múi hút chân không (500g)', price: 180000 }
             ],
             batches: [
-              { id: 'batch-saurieng-longkhanh-01', batchCode: 'BATCH-SAURIENG-LONGKHANH-2026-01', harvestDate: new Date('2026-10-12'), farmingArea: 'Vườn mẫu B2 - Phường Xuân Lập, TP Đồng Nai', farmingProcess: 'Canh tác trên đất đỏ bazan, bón phân trùn quế, không ngâm thuốc kích chín.' }
+              { id: 'batch-saurieng-longkhanh-01', batchCode: 'BATCH-SAURIENG-LONGKHANH-2026-01', harvestDate: new Date('2026-10-12'), farmingArea: 'Vườn mẫu B2 - Phường Xuân Lập, TP Long Khánh, TP Đồng Nai', farmingProcess: 'Canh tác trên đất đỏ bazan, bón phân hữu cơ trùn quế, không ngâm thuốc kích chín.' }
             ]
           },
           {
             id: '4',
             slug: 'prod-chom-chom-nhan',
-            idAlias: ['4', 'prod-chom-chom-nhan'],
-            name: 'Chôm Chôm Nhãn Long Khánh',
+            idAlias: ['4', 'prod-chom-chom-nhan', 'prod-chom-chom-nhan-longkhanh'],
+            name: 'Chôm Chôm Nhãn Long Khánh Giòn Ngọt',
             price: 45000,
             unit: 'kg (chùm quả tươi)',
-            description: 'Chôm chôm nhãn trái nhỏ vỏ vàng đỏ, gai ngắn, cơm dày róc hạt, vị ngọt thanh giòn rụm.',
+            description: 'Chôm chôm nhãn trái nhỏ vỏ vàng đỏ, gai ngắn, cùi dày giòn tróc hạt, vị ngọt lịm đặc trưng. Đạt Chỉ dẫn địa lý Chôm chôm Long Khánh số 00080 của Cục Sở hữu trí tuệ.',
             categoryId: 'cat-fruits',
-            tags: ['Đặc sản Long Khánh', 'Đang mùa vụ'],
-            farmName: 'Hợp Tác Xã Sinh Thái Long Khánh',
-            address: 'Phường Xuân Lập, Thành phố Đồng Nai',
-            imageUrl: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format',
+            tags: ['Chỉ dẫn địa lý 00080', 'Chôm chôm Long Khánh', 'Bình Lộc', 'VietGAP'],
+            farmName: 'Hợp Tác Xã Nông nghiệp - Dịch vụ - Thương mại Bình Lộc',
+            address: 'Ấp 2, Xã Bình Lộc, Thành phố Long Khánh, Thành phố Đồng Nai',
+            imageUrl: '/assets/nongsan/chom-chom-nhan-longkhanh.jpg',
             images: [
-              { url: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=800&auto=format' }
+              { url: '/assets/nongsan/chom-chom-nhan-longkhanh.jpg' }
             ],
             variants: [
-              { name: 'Túi 1kg chùm tươi', price: 45000 },
+              { name: 'Túi 1kg chùm tươi hái trong ngày', price: 45000 },
               { name: 'Rổ quà 3kg đóng hộp', price: 130000 }
             ],
-            batches: []
+            batches: [
+              { id: 'batch-chomchom-binhloc-01', batchCode: 'BATCH-CHOMCHOM-BINHLOC-2026-01', harvestDate: new Date('2026-10-11'), farmingArea: 'Vườn sinh thái Ấp 2, Xã Bình Lộc, TP Long Khánh, TP Đồng Nai', farmingProcess: 'Thu hái tươi bằng tay, tưới tiêu vi sinh, đạt tiêu chuẩn kiểm nghiệm vi sinh TCVN.' }
+            ]
           },
           {
             id: '5',
@@ -151,41 +154,62 @@ export default function ProductDetailPageClient() {
             name: 'Hạt Điều Rang Củi Vỏ Lụa Đồng Nai',
             price: 140000,
             unit: 'hộp 500g',
-            description: 'Hạt điều Bình Lộc - Long Khánh rang củi truyền thống, giữ trọn độ ngậy béo thơm lừng, còn nguyên vỏ lụa bảo vệ hạt.',
+            description: 'Hạt điều rang củi thủ công giữ nguyên vỏ lụa từ vùng nguyên liệu Định Quán và Đông Nam Bộ, giòn bùi béo tự nhiên, đạt tiêu chuẩn quốc tế HACCP Codex.',
             categoryId: 'cat-processed',
-            tags: ['OCOP', 'Hạt điều Đồng Nai', 'Chế biến sạch'],
-            farmName: 'HTX Nông Nghiệp Long Khánh',
-            address: 'TP Long Khánh, Thành phố Đồng Nai',
-            imageUrl: 'https://images.unsplash.com/photo-1563865436874-9aef32095fad?w=800&auto=format',
+            tags: ['HACCP', 'Hạt điều Đồng Nai', 'Rang củi vỏ lụa', 'Định Quán'],
+            farmName: 'Cơ Sở Chế Biến Nông Sản Sạch Định Quán',
+            address: 'Huyện Định Quán, Thành phố Đồng Nai',
+            imageUrl: '/assets/nongsan/hat-dieu-rang-cui.jpg',
             images: [
-              { url: 'https://images.unsplash.com/photo-1563865436874-9aef32095fad?w=800&auto=format' }
+              { url: '/assets/nongsan/hat-dieu-rang-cui.jpg' }
             ],
             variants: [
               { name: 'Hộp tròn 500g', price: 140000 },
               { name: 'Hút chân không 500g', price: 135000 }
             ],
             batches: [
-              { id: 'batch-hatdieu-01', batchCode: 'BATCH-HATDIEU-DONGNAI-2026-01', harvestDate: new Date('2026-09-15'), farmingArea: 'Vùng điều xã Bình Lộc, Đồng Nai', farmingProcess: 'Thu hoạch quả chín tự nhiên, tách nhân, rang củi than đước.' }
+              { id: 'batch-hatdieu-01', batchCode: 'BATCH-HATDIEU-DONGNAI-2026-01', harvestDate: new Date('2026-10-08'), farmingArea: 'Phân xưởng chế biến nông sản sạch Định Quán, TP Đồng Nai', farmingProcess: 'Phân loại chuẩn W240, rang than củi tự nhiên, đóng gói vô trùng.' }
             ]
           },
           {
             id: '6',
             slug: 'prod-ruou-buoi-tan-trieu',
             idAlias: ['6', 'prod-ruou-buoi-tan-trieu'],
-            name: 'Rượu Bưởi Tân Triều Truyền Thống (Bình Gốm 750ml)',
+            name: 'Rượu Bưởi Truyền Thống Năm Huệ Tân Triều',
             price: 195000,
             unit: 'bình gốm 750ml',
-            description: 'Rượu lên men tự nhiên từ nước cốt bưởi đường lá cam Tân Triều và men gạo nếp truyền thống. Đựng trong bình gốm mỹ nghệ Biên Hòa đặc trưng.',
+            description: 'Rượu lên men tự nhiên từ nước cốt bưởi đường lá cam cù lao Tân Triều và men gạo nếp truyền thống. Đựng trong bình gốm mỹ nghệ Biên Hòa đặc trưng, đạt OCOP 3 sao.',
             categoryId: 'cat-processed',
-            tags: ['OCOP', 'Quà biếu tặng', 'Rượu bưởi Tân Triều'],
-            farmName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều',
-            address: 'Phường Tân Triều, Thành phố Đồng Nai',
-            imageUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format',
+            tags: ['OCOP 3 Sao', 'Quà biếu tặng', 'Rượu bưởi Tân Triều'],
+            farmName: 'Cơ Sở Rượu Bưởi Truyền Thống Năm Huệ Tân Triều',
+            address: 'Cù lao Tân Triều, Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai',
+            imageUrl: '/assets/nongsan/placeholder-nongsan.svg',
             images: [
-              { url: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format' }
+              { url: '/assets/nongsan/placeholder-nongsan.svg' }
             ],
             variants: [
               { name: 'Bình gốm trái bưởi 750ml', price: 195000 }
+            ],
+            batches: []
+          },
+          {
+            id: '7',
+            slug: 'prod-tieu-den-xuanloc',
+            idAlias: ['7', 'prod-tieu-den-xuanloc'],
+            name: 'Tiêu Đen Chân Núi Chứa Chan Xuân Lộc',
+            price: 90000,
+            unit: 'hũ 250g',
+            description: 'Hạt tiêu đen cay nồng thơm đượm từ vùng chuyên canh hồ tiêu đồi đá bazan chân núi Chứa Chan Xuân Lộc, phơi sấy tự nhiên trên bạt sạch.',
+            categoryId: 'cat-spices',
+            tags: ['Tiêu Xuân Lộc', 'Núi Chứa Chan', 'Gia vị sạch'],
+            farmName: 'Tổ Hợp Tác Nông Nghiệp Núi Chứa Chan Xuân Lộc',
+            address: 'Chân núi Chứa Chan, Huyện Xuân Lộc, Thành phố Đồng Nai',
+            imageUrl: '/assets/nongsan/tieu-den-xuanloc.jpg',
+            images: [
+              { url: '/assets/nongsan/tieu-den-xuanloc.jpg' }
+            ],
+            variants: [
+              { name: 'Hũ thủy tinh 250g', price: 90000 }
             ],
             batches: []
           }
@@ -270,7 +294,7 @@ export default function ProductDetailPageClient() {
 
   const imagesList = product.images && product.images.length > 0 
     ? product.images 
-    : [{ url: product.imageUrl || 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=800&auto=format' }];
+    : [{ url: product.imageUrl || '/assets/nongsan/placeholder-nongsan.svg' }];
 
   return (
     <div className="bg-[#FAF9F5] min-h-screen py-8 sm:py-12">
@@ -290,9 +314,12 @@ export default function ProductDetailPageClient() {
           <div className="space-y-3">
             <div className="aspect-square rounded-xl overflow-hidden bg-[#F1EFE8] border border-[#E2E5DC]">
               <img
-                src={getAssetPath(imagesList[activeImageIndex]?.url)}
+                src={getAssetPath(imagesList[activeImageIndex]?.url) || '/assets/nongsan/placeholder-nongsan.svg'}
                 alt={product.name}
                 className="object-cover w-full h-full"
+                onError={(e) => {
+                  e.currentTarget.src = '/assets/nongsan/placeholder-nongsan.svg';
+                }}
               />
             </div>
             {imagesList.length > 1 && (

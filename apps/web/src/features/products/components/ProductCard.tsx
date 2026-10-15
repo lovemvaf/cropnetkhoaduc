@@ -21,7 +21,7 @@ export default function ProductCard({
   price, 
   unit, 
   imageUrl, 
-  farmName = 'HTX Nông Nghiệp Tân Triều, TP Đồng Nai',
+  farmName = 'HTX Nông Nghiệp Tân Triều, Đồng Nai',
   tags = [],
   seasonStatus
 }: ProductCardProps) {
@@ -33,10 +33,13 @@ export default function ProductCard({
       {/* Product Image */}
       <div className="relative aspect-square bg-[#F1EFE8] overflow-hidden">
         <img
-          src={getAssetPath(imageUrl) || 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=600&auto=format'}
+          src={getAssetPath(imageUrl) || '/assets/nongsan/placeholder-nongsan.svg'}
           alt={name}
           className="object-cover w-full h-full"
           loading="lazy"
+          onError={(e) => {
+            e.currentTarget.src = '/assets/nongsan/placeholder-nongsan.svg';
+          }}
         />
         
         {/* Genuine Badges */}

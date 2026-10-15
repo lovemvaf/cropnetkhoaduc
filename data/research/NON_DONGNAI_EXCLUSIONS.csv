@@ -1,0 +1,9 @@
+item_id,raw_name,suspected_origin,exclusion_reason,quarantined_files,action_taken,verification_date
+EXC-01,Bưởi da xanh Cái Mơn,Cái Mơn - Chợ Lách - Bến Tre,Nông sản ngoài tỉnh Đồng Nai; tên tài nguyên gợi xuất xứ Cái Mơn,apps/web/public/buoi-da-xanh-cai-mon.jpg & San pham/buoi-da-xanh-cai-mon.jpg,REMOVED_TO_QUARANTINE,2026-10-15
+EXC-02,Cà chua bi Đà Lạt,Đà Lạt - Lâm Đồng,Nông sản ngoài tỉnh Đồng Nai; không thuộc vùng trồng Đồng Nai,apps/web/public/cachuabidalat.jpg & San pham/cachuabidalat.jpg,REMOVED_TO_QUARANTINE,2026-10-15
+EXC-03,Sầu riêng Vĩnh Long,Vĩnh Long - Đồng Bằng Sông Cửu Long,Nông sản ngoài tỉnh Đồng Nai; không phải sầu riêng đất đỏ bazan Long Khánh,apps/web/public/sau-rieng-vinh-long.jpg & San pham/sau rieng vinh long.jpg,REMOVED_TO_QUARANTINE,2026-10-15
+EXC-04,Măng tây xanh không rõ nguồn,Chưa xác minh đơn vị Đồng Nai,Thiếu hồ sơ pháp lý HTX và vùng trồng cụ thể tại Đồng Nai,apps/web/public/mang-tay-xanh.jpg & San pham/mang tay xanh.jpg,REMOVED_TO_QUARANTINE,2026-10-15
+EXC-05,Nấm đùi gà không rõ nguồn,Chưa xác minh đơn vị Đồng Nai,Thiếu hồ sơ HTX hoặc cơ sở nấm tại Đồng Nai,apps/web/public/nam-dui-ga.jpg & San pham/nam dui ga.jpg,REMOVED_TO_QUARANTINE,2026-10-15
+EXC-06,Rau muống hữu cơ không rõ nguồn,Chưa xác minh đơn vị Đồng Nai,Thiếu giấy chứng nhận hữu cơ và thông tin vùng trồng Đồng Nai,apps/web/public/rau-muong-huu-co.jpg & San pham/rau muong huu co.jpg,REMOVED_TO_QUARANTINE,2026-10-15
+EXC-07,Ảnh Unsplash chung chung không nguồn,Stock ảnh quốc tế,Không phản ánh đúng nông sản và giống đặc sản của Đồng Nai,Các link photo-1595855759920... trong code cũ,REPLACED_WITH_VERIFIED_ASSETS,2026-10-15
+EXC-08,HTX Nông Nghiệp Sinh Thái Long Khánh,Tên giả lập trong mã nguồn cũ,Không trùng tên pháp nhân HTX thật được cơ quan thẩm quyền công nhận,Hardcoded trong route/map,MIGRATED_TO_REAL_HTX,2026-10-15

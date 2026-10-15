@@ -43,17 +43,11 @@ function ResetPasswordForm() {
         setServerError(res.data.error?.message || (typeof res.data.error === 'string' ? res.data.error : null) || 'Đặt lại mật khẩu thất bại');
       }
     } catch (err: any) {
-      if (err.code === 'ERR_NETWORK') {
-        if (data.token === 'MOCK-RESET-123') {
-          setSuccess(true);
-          alert('Cập nhật mật khẩu thành công (Mock Mode)');
-          setTimeout(() => {
-            router.push('/login');
-          }, 1500);
-          return;
-        }
-      }
-      setServerError(err.response?.data?.error?.message || (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null) || 'Không thể kết nối đến máy chủ API');
+      setServerError(
+        err.response?.data?.error?.message ||
+        (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null) ||
+        'Không thể kết nối đến máy chủ API để đặt lại mật khẩu.'
+      );
     } finally {
       setLoading(false);
     }

@@ -1,0 +1,9 @@
+domain_id,sub_domain,key_aspect,rule_or_fact,source_ref
+DOM-01,GEOGRAPHY,Địa bàn hành chính 2026,Thành phố Đồng Nai trực thuộc Trung ương hình thành trên diện tích tỉnh Đồng Nai trước khi chuyển đổi bao gồm cả không gian hành chính mở rộng. Tách bạch các địa danh lịch sử (Long Khánh Vĩnh Cửu Xuân Lộc Định Quán Biên Hòa) khi trích nguồn.,SRC-DN-09
+DOM-02,CERTIFICATION,Phân định chứng nhận,Chỉ dẫn địa lý thuộc về vùng địa lý cho giống cây cụ thể; OCOP và VietGAP thuộc về chủ thể và sản phẩm được cấp có thời hạn. Tuyệt đối không quy nạp toàn bộ nông sản một vùng đều đạt OCOP 4 sao hay VietGAP.,SRC-DN-01
+DOM-03,HARVEST_SEASON,Mùa vụ bưởi Tân Triều,Bưởi Tân Triều thu hoạch rộ nhất vào vụ Trung thu (tháng 8 âm lịch) và vụ Tết Nguyên Đán (tháng 11-12 âm lịch). Có rải vụ quanh năm nhờ kỹ thuật tưới phù sa.,SRC-DN-02
+DOM-04,HARVEST_SEASON,Mùa vụ trái cây Long Khánh,Sầu riêng và chôm chôm Long Khánh bước vào mùa thu hoạch chín rộ từ tháng 5 đến tháng 8 hàng năm. Lễ hội trái cây Long Khánh diễn ra định kỳ vào tháng 6.,SRC-DN-05
+DOM-05,PROCESSING,Hạt điều rang củi,Hạt điều rang củi giữ nguyên lớp vỏ lụa để hạn chế dầu oxy hóa và giữ vị thơm bùi tự nhiên. Không ngâm hóa chất tẩy trắng.,SRC-DN-07
+DOM-06,SAFETY_GUARDRAILS,An toàn y tế,Nông sản là thực phẩm bổ sung dinh dưỡng không thể thay thế thuốc chữa bệnh. Từ chối khẳng định nông sản có tác dụng trị ung thư hay tiểu đường.,SRC-DN-02
+DOM-07,OUT_OF_SCOPE,Từ chối hàng ngoại tỉnh,Từ chối đưa nông sản ngoài địa bàn Đồng Nai (Cái Mơn Bến Tre Đà Lạt Lâm Đồng Vĩnh Long Bắc Giang) vào danh mục nông sản địa phương Đồng Nai. Hướng dẫn người dùng sang nông sản Đồng Nai tương đương.,SRC-DN-08
+DOM-08,TRACEABILITY_TRUTH,Minh bạch mã lô QR,Mã lô QR chỉ hiển thị khi có chứng từ và nhật ký thật. Mã không có trong hệ thống phải thông báo không tìm thấy; không sinh báo cáo PASSED giả lập.,SRC-DN-09

@@ -1,38 +1,38 @@
 import { RegionPolygonFeature } from './types';
 
 /**
- * Ranh giới ước lượng địa bàn Thành phố Đồng Nai (mở rộng theo Nghị quyết 30/2026/QH16)
+ * Ranh giới địa bàn Tỉnh Đồng Nai
  * Định dạng chuẩn GeoJSON và MapLibre: [kinh độ (lng), vĩ độ (lat)]
  */
 export const DONG_NAI_METROPOLITAN_BOUNDS = {
   // MapLibre LngLatBoundsLike: [lng, lat]
-  southWest: [106.55, 10.65] as [number, number],
-  northEast: [107.55, 12.05] as [number, number],
-  center: [107.05, 11.28] as [number, number],
-  defaultZoom: 8.8,
+  southWest: [106.70, 10.60] as [number, number],
+  northEast: [107.60, 11.60] as [number, number],
+  center: [107.15, 11.08] as [number, number],
+  defaultZoom: 9.0,
   southBounds: {
     southWest: [106.75, 10.65] as [number, number],
-    northEast: [107.50, 11.35] as [number, number],
-    center: [107.15, 10.98] as [number, number],
+    northEast: [107.50, 11.15] as [number, number],
+    center: [107.15, 10.95] as [number, number],
     zoom: 9.8
   },
   northBounds: {
-    southWest: [106.55, 11.35] as [number, number],
-    northEast: [107.45, 12.05] as [number, number],
-    center: [106.95, 11.65] as [number, number],
+    southWest: [106.90, 11.05] as [number, number],
+    northEast: [107.60, 11.60] as [number, number],
+    center: [107.25, 11.30] as [number, number],
     zoom: 9.6
   }
 };
 
 /**
- * Đa giác ranh giới đại diện cho các tiểu vùng chuyên canh đặc thù
+ * Đa giác ranh giới đại diện cho các tiểu vùng chuyên canh đặc thù Tỉnh Đồng Nai
  * Tọa độ chuẩn GeoJSON: [longitude, latitude]
  */
 export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
-  // 1. Cù Lao Tân Triều (Vùng bưởi sông Đồng Nai)
+  // 1. Cù Lao Tân Triều (Vùng bưởi sông Đồng Nai - Vĩnh Cửu)
   {
     id: 'poly-tantrieu',
-    name: 'Tiểu Vùng Cù Lao Tân Triều (Bưởi Đường Lá Cam)',
+    name: 'Tiểu Vùng Cù Lao Tân Triều (Bưởi Đường Lá Cam & Da Xanh)',
     tier: 1,
     subRegion: 'SOUTH',
     center: [106.8835, 11.0267], // [lng, lat]
@@ -47,13 +47,13 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     ],
     fillColor: '#2C4939',
     strokeColor: '#2C4939',
-    description: 'Vùng đất cù lao màu mỡ phù sa sông Đồng Nai, ranh giới tự nhiên bao bọc bởi nhánh sông bồi đắp.'
+    description: 'Vùng đất cù lao màu mỡ phù sa sông Đồng Nai (Vĩnh Cửu), cái nôi của thương hiệu bưởi đường lá cam và bưởi da xanh Tân Triều nức tiếng.'
   },
 
   // 2. Vùng Đất Đỏ Long Khánh (Sầu riêng & Chôm chôm)
   {
     id: 'poly-longkhanh',
-    name: 'Vành Đai Đất Đỏ Long Khánh - Xuân Lập',
+    name: 'Vành Đai Đất Đỏ Long Khánh - Xuân Lập - Bình Lộc',
     tier: 1,
     subRegion: 'SOUTH',
     center: [107.2412, 10.9258],
@@ -67,7 +67,7 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     ],
     fillColor: '#A46C49',
     strokeColor: '#A46C49',
-    description: 'Tiểu vùng đất đỏ bazan cổ phì nhiêu, trung tâm chuyên canh sầu riêng chín cây và cây ăn trái nhiệt đới.'
+    description: 'Tiểu vùng đất đỏ bazan cổ phì nhiêu, thủ phủ cây ăn trái nhiệt đới Đồng Nai với sầu riêng Ri6 chín cây và chôm chôm nhãn đạt Chỉ dẫn địa lý.'
   },
 
   // 3. Vùng Chân Núi Chứa Chan - Xuân Lộc
@@ -87,13 +87,13 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     ],
     fillColor: '#7B876C',
     strokeColor: '#7B876C',
-    description: 'Vùng canh tác cây ăn quả và hồ tiêu dưới chân núi Chứa Chan, độ cao và vi khí hậu đặc trưng.'
+    description: 'Vùng canh tác hồ tiêu hữu cơ, sầu riêng và cây ăn quả chân núi Chứa Chan, vi khí hậu núi cao thoát nước tốt tạo hương vị cay đậm đà.'
   },
 
   // 4. Vùng Hồ Tiêu Cẩm Mỹ
   {
     id: 'poly-cammy',
-    name: 'Vùng Đất Đỏ Hồ Tiêu & Sầu Riêng Cẩm Mỹ',
+    name: 'Vùng Đất Đỏ Hồ Tiêu & Cây Ăn Quả Cẩm Mỹ',
     tier: 1,
     subRegion: 'SOUTH',
     center: [107.2185, 10.7932],
@@ -107,15 +107,15 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     ],
     fillColor: '#7B876C',
     strokeColor: '#7B876C',
-    description: 'Vùng thâm canh hồ tiêu và cây ăn quả công nghệ cao phía nam Đồng Nai.'
+    description: 'Vùng chuyên canh hồ tiêu Lâm San và sầu riêng công nghệ cao phía nam tỉnh Đồng Nai, thương hiệu Nhãn hiệu tập thể đã khẳng định uy tín.'
   },
 
   // 5. Vùng Vành Đai Rừng Cát Tiên & Tân Phú
   {
     id: 'poly-cattien',
-    name: 'Vùng Vành Đai Sinh Thái Vườn Quốc Gia Cát Tiên',
+    name: 'Vùng Vành Đai Sinh Thái Vườn Quốc Gia Cát Tiên & Tân Phú',
     tier: 1,
-    subRegion: 'SOUTH',
+    subRegion: 'NORTH',
     center: [107.4268, 11.4285],
     coordinates: [
       [107.380, 11.485],
@@ -127,15 +127,15 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     ],
     fillColor: '#2C4939',
     strokeColor: '#2C4939',
-    description: 'Vùng đệm sinh quyển thuận tự nhiên, bảo vệ hệ sinh thái rừng tự nhiên Cát Tiên.'
+    description: 'Vùng đệm Khu dự trữ sinh quyển thế giới Đồng Nai, canh tác thuận tự nhiên không hóa chất độc hại, bảo vệ nguồn nước thượng nguồn.'
   },
 
-  // 6. Vùng Lòng Hồ Thủy Điện Trị An
+  // 6. Vùng Lòng Hồ Thủy Điện Trị An & Vĩnh Cửu
   {
     id: 'poly-trian',
-    name: 'Vùng Bán Ngập Sinh Thái Lòng Hồ Trị An',
+    name: 'Vùng Bán Ngập Sinh Thái Lòng Hồ Trị An & Vĩnh Cửu',
     tier: 1,
-    subRegion: 'SOUTH',
+    subRegion: 'NORTH',
     center: [107.0189, 11.1215],
     coordinates: [
       [106.960, 11.180],
@@ -147,87 +147,47 @@ export const DONG_NAI_REGION_POLYGONS: RegionPolygonFeature[] = [
     ],
     fillColor: '#4A6984',
     strokeColor: '#4A6984',
-    description: 'Khu vực hồ nước ngọt Trị An và vùng đất bán ngập giàu dinh dưỡng nuôi trồng thủy sản và cây có múi.'
+    description: 'Khu vực hồ nước ngọt Trị An và vành đai bán ngập giàu dinh dưỡng nuôi trồng thủy sản nước ngọt và phát triển cây ăn trái sinh thái.'
   },
 
-  // 7. Vùng Hạt Điều Đất Đỏ Đồng Xoài (Khu vực phía Bắc)
+  // 7. Vùng Hạt Điều & Nông Sản Định Quán
   {
-    id: 'poly-dongxoai',
-    name: 'Thủ Phủ Hạt Điều Đất Đỏ Đồng Xoài',
+    id: 'poly-dinhquan',
+    name: 'Vùng Chuyên Canh Điều & Ca Cao Định Quán',
     tier: 1,
     subRegion: 'NORTH',
-    center: [106.8833, 11.5333],
+    center: [107.1680, 11.2350],
     coordinates: [
-      [106.820, 11.585],
-      [106.940, 11.600],
-      [106.950, 11.490],
-      [106.860, 11.460],
-      [106.810, 11.500],
-      [106.820, 11.585]
+      [107.110, 11.280],
+      [107.220, 11.290],
+      [107.240, 11.180],
+      [107.140, 11.160],
+      [107.100, 11.210],
+      [107.110, 11.280]
     ],
     fillColor: '#A46C49',
     strokeColor: '#A46C49',
-    description: 'Vùng chuyên canh hạt điều lớn và chế biến nông sản xuất khẩu chủ lực phía Bắc Đồng Nai.'
+    description: 'Vùng đồi bazan phong hóa huyện Định Quán, nổi tiếng với diện tích điều nguyên liệu lâu năm chế biến hạt điều rang củi thủ công chất lượng cao.'
   },
 
-  // 8. Vùng Nông Lâm Phú Riềng
+  // 8. Vùng Chuối Cấy Mô & Cây Ăn Trái Thống Nhất
   {
-    id: 'poly-phurieng',
-    name: 'Vành Đai Nông Lâm & Điều Sinh Thái Phú Riềng',
+    id: 'poly-thongnhat',
+    name: 'Vùng Chuối Già Nam Mỹ & Nông Sản Thống Nhất',
     tier: 1,
-    subRegion: 'NORTH',
-    center: [106.9850, 11.7580],
+    subRegion: 'SOUTH',
+    center: [107.1250, 10.9850],
     coordinates: [
-      [106.920, 11.810],
-      [107.040, 11.830],
-      [107.060, 11.720],
-      [106.960, 11.690],
-      [106.910, 11.730],
-      [106.920, 11.810]
-    ],
-    fillColor: '#7B876C',
-    strokeColor: '#7B876C',
-    description: 'Địa bàn đồi lượn sóng kết hợp điều, cao su và sầu riêng hữu cơ.'
-  },
-
-  // 9. Vùng Nông Nghiệp CNC Chơn Thành
-  {
-    id: 'poly-chonthanh',
-    name: 'Khu Vực Nông Nghiệp Công Nghệ Cao Chơn Thành',
-    tier: 1,
-    subRegion: 'NORTH',
-    center: [106.6680, 11.4720],
-    coordinates: [
-      [106.610, 11.520],
-      [106.720, 11.530],
-      [106.730, 11.430],
-      [106.640, 11.410],
-      [106.600, 11.450],
-      [106.610, 11.520]
+      [107.080, 11.020],
+      [107.160, 11.030],
+      [107.170, 10.940],
+      [107.090, 10.930],
+      [107.070, 10.970],
+      [107.080, 11.020]
     ],
     fillColor: '#2C4939',
     strokeColor: '#2C4939',
-    description: 'Cửa ngõ kết nối Tây Nam Bộ, ứng dụng nhà màng thông minh và nông nghiệp tuần hoàn.'
-  },
-
-  // 10. Vùng Sầu Riêng Đồi Cao Bù Đăng
-  {
-    id: 'poly-budang',
-    name: 'Vùng Sầu Riêng & Điều Cổ Thụ Đồi Cao Bù Đăng',
-    tier: 1,
-    subRegion: 'NORTH',
-    center: [107.2420, 11.7650],
-    coordinates: [
-      [107.170, 11.830],
-      [107.310, 11.850],
-      [107.330, 11.720],
-      [107.220, 11.680],
-      [107.160, 11.725],
-      [107.170, 11.830]
-    ],
-    fillColor: '#A46C49',
-    strokeColor: '#A46C49',
-    description: 'Độ cao trên 300m so với mực nước biển, chất lượng sầu riêng cơm vàng hạt lép và điều hạt to đồng đều.'
+    description: 'Khu vực chuyên canh chuối cấy mô công nghệ cao quy mô lớn của tỉnh Đồng Nai, xuất khẩu chính ngạch sang nhiều thị trường quốc tế.'
   }
 ];
 

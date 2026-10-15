@@ -719,7 +719,7 @@ export default function InteractiveDongNaiMap() {
                   : 'bg-white text-[#647067] border-[#E2E5DC] hover:bg-[#FAF9F5]'
               }`}
             >
-              Toàn TP Đồng Nai
+              Toàn Tỉnh Đồng Nai
             </button>
             <button
               onClick={handleFitSouthDongNai}
@@ -729,7 +729,7 @@ export default function InteractiveDongNaiMap() {
                   : 'bg-white text-[#647067] border-[#E2E5DC] hover:bg-[#FAF9F5]'
               }`}
             >
-              Phía Nam (Biên Hòa - Long Khánh)
+              Phía Nam (Biên Hòa - Long Khánh - Cẩm Mỹ)
             </button>
             <button
               onClick={handleFitNorthDongNai}
@@ -739,7 +739,7 @@ export default function InteractiveDongNaiMap() {
                   : 'bg-white text-[#647067] border-[#E2E5DC] hover:bg-[#FAF9F5]'
               }`}
             >
-              Phía Bắc (Đồng Xoài - Bù Đăng)
+              Phía Bắc (Định Quán - Tân Phú - Trị An)
             </button>
           </div>
 
@@ -776,7 +776,7 @@ export default function InteractiveDongNaiMap() {
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#2C4939] animate-pulse"></span>
               <span className="font-semibold text-[#253129]">
-                Bản Đồ Vector Nông Nghiệp Thành Phố Đồng Nai (Nghị quyết 30/2026/QH16)
+                Bản Đồ Vector Nông Nghiệp Tỉnh Đồng Nai
               </span>
               <span className="text-[#647067] text-[11px] hidden sm:inline">
                 ({filteredPoints.length} điểm hiển thị)

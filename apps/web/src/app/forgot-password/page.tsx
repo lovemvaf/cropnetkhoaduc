@@ -35,16 +35,11 @@ export default function ForgotPasswordPage() {
         setServerError(res.data.error?.message || (typeof res.data.error === 'string' ? res.data.error : null) || 'Yêu cầu thất bại');
       }
     } catch (err: any) {
-      // Mock fallback for network error
-      if (err.code === 'ERR_NETWORK') {
-        const testEmails = ['admin@cropnet.vn', 'khachhang@gmail.com', 'farmer@nongnghiep.vn', 'logistics@cropnet.vn', 'inspector@cropnet.vn'];
-        if (testEmails.includes(data.email)) {
-          setMessage('Mã khôi phục mật khẩu đã được gửi đến email của bạn.');
-          setDemoToken('MOCK-RESET-123');
-          return;
-        }
-      }
-      setServerError(err.response?.data?.error?.message || (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null) || 'Không thể kết nối đến máy chủ API');
+      setServerError(
+        err.response?.data?.error?.message ||
+        (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null) ||
+        'Không thể kết nối đến máy chủ API để gửi mã khôi phục.'
+      );
     } finally {
       setLoading(false);
     }

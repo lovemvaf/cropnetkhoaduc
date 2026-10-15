@@ -39,35 +39,11 @@ export default function LoginPage() {
         setServerError(res.data.error?.message || (typeof res.data.error === 'string' ? res.data.error : null) || 'Đăng nhập thất bại');
       }
     } catch (err: any) {
-      // Smart offline fallback for frontend-only testing using DB seeds credentials
-      if (err.code === 'ERR_NETWORK' || !err.response) {
-        if (data.email === 'admin@cropnet.vn' && data.password === '123456') {
-          login('mock-token-admin', { id: 'mock-admin-id', email: data.email, fullName: 'Ban Quản Trị CropNet Đồng Nai', role: 'ADMIN', status: 'ACTIVE', supplierStatus: null });
-          router.push('/admin');
-          return;
-        } else if ((data.email === 'tantrieu@cropnet.vn' || data.email === 'farmer@nongnghiep.vn') && data.password === '123456') {
-          login('mock-token-farmer', { id: 'mock-farmer-id', email: data.email, fullName: 'HTX Nông Nghiệp Tân Triều', role: 'FARMER', status: 'ACTIVE', supplierId: 'mock-supplier-tantrieu', supplierStatus: 'APPROVED' });
-          router.push('/dashboard/supplier');
-          return;
-        } else if (data.email === 'longkhanh@cropnet.vn' && data.password === '123456') {
-          login('mock-token-farmer-lk', { id: 'mock-farmer-longkhanh', email: data.email, fullName: 'HTX Nông Nghiệp Sinh Thái Long Khánh', role: 'FARMER', status: 'ACTIVE', supplierId: 'mock-supplier-longkhanh', supplierStatus: 'APPROVED' });
-          router.push('/dashboard/supplier');
-          return;
-        } else if (data.email === 'khachhang@gmail.com' && data.password === '123456') {
-          login('mock-token-customer', { id: 'mock-customer-id', email: data.email, fullName: 'Nguyễn Thị Bích Ngọc (Biên Hòa)', role: 'CUSTOMER', status: 'ACTIVE', supplierStatus: null });
-          router.push('/');
-          return;
-        } else if (data.email === 'logistics@cropnet.vn' && data.password === '123456') {
-          login('mock-token-logistics', { id: 'mock-logistics-id', email: data.email, fullName: 'Vận Tải Lạnh Nông Sản Đồng Nai', role: 'LOGISTICS', status: 'ACTIVE', supplierStatus: null });
-          router.push('/dashboard/logistics');
-          return;
-        } else if (data.email === 'inspector@cropnet.vn' && data.password === '123456') {
-          login('mock-token-inspector', { id: 'mock-inspector-id', email: data.email, fullName: 'Trạm Kiểm Định Nông Sản Đồng Nai', role: 'INSPECTOR', status: 'ACTIVE', supplierStatus: null });
-          router.push('/dashboard/inspector');
-          return;
-        }
-      }
-      setServerError(err.response?.data?.error?.message || (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null) || 'Không thể kết nối đến máy chủ API');
+      setServerError(
+        err.response?.data?.error?.message ||
+        (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null) ||
+        'Không thể kết nối đến máy chủ API hoặc thông tin đăng nhập không chính xác.'
+      );
     } finally {
       setLoading(false);
     }

@@ -20,7 +20,7 @@ export default function Footer() {
             </div>
           </div>
           <p className="text-[#647067] max-w-md leading-relaxed text-xs sm:text-sm">
-            Nền tảng thương mại số hóa kết nối các vùng trồng nông sản chủ lực Thành phố Đồng Nai: 
+            Nền tảng thương mại số hóa kết nối các vùng trồng nông sản chủ lực Tỉnh Đồng Nai: 
             vùng bưởi Cù lao Tân Triều và miệt vườn sầu riêng, chôm chôm Long Khánh. 
             Giải pháp số dự thi Cuộc thi <strong>AI Digital Business Challenge 2026</strong>.
           </p>
@@ -72,11 +72,11 @@ export default function Footer() {
           <div className="space-y-2.5 text-xs text-[#647067]">
             <div>
               <p className="font-medium text-[#253129]">HTX Nông Nghiệp Dịch Vụ Tân Triều</p>
-              <p className="text-[#8C978F]">Phường Tân Triều, Thành phố Đồng Nai (Cù lao Tân Triều)</p>
+              <p className="text-[#8C978F]">Xã Tân Bình, Huyện Vĩnh Cửu, Tỉnh Đồng Nai (Cù lao Tân Triều)</p>
             </div>
             <div>
-              <p className="font-medium text-[#253129]">HTX Nông Nghiệp Sinh Thái Long Khánh</p>
-              <p className="text-[#8C978F]">Phường Xuân Lập, Thành phố Đồng Nai</p>
+              <p className="font-medium text-[#253129]">HTX Nông Nghiệp - TM - DV Xuân Lập</p>
+              <p className="text-[#8C978F]">Phường Xuân Lập, Thành phố Long Khánh, Tỉnh Đồng Nai</p>
             </div>
             <div className="pt-2 border-t border-[#E2E5DC] text-[11px] text-[#8C978F]">
               Liên hệ khảo sát & phát triển: <strong>info@cropnet.vn</strong>
@@ -92,7 +92,7 @@ export default function Footer() {
         <div className="flex items-center gap-4">
           <span>Dữ liệu khảo sát thực tế địa phương</span>
           <span>•</span>
-          <span>Thành phố Đồng Nai</span>
+          <span>Tỉnh Đồng Nai</span>
         </div>
       </div>
     </footer>

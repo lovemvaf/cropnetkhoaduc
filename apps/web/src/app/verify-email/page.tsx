@@ -68,17 +68,11 @@ function VerifyEmailForm() {
         setServerError(res.data.error?.message || (typeof res.data.error === 'string' ? res.data.error : null) || 'Xác minh thất bại');
       }
     } catch (err: any) {
-      if (err.code === 'ERR_NETWORK') {
-        if (data.token === 'MOCK-VERIFY-123') {
-          setSuccess(true);
-          alert('Xác minh email thành công (Mock Mode)');
-          setTimeout(() => {
-            router.push('/login');
-          }, 1500);
-          return;
-        }
-      }
-      setServerError(err.response?.data?.error?.message || (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null) || 'Mã xác minh không hợp lệ hoặc lỗi máy chủ');
+      setServerError(
+        err.response?.data?.error?.message ||
+        (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null) ||
+        'Mã xác minh không hợp lệ hoặc máy chủ không thể kết nối.'
+      );
     } finally {
       setLoading(false);
     }

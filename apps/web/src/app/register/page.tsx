@@ -35,18 +35,17 @@ export default function RegisterPage() {
       });
 
       if (res.data.success) {
-        alert('Đăng ký tài khoản thành công! Vui lòng đăng nhập.');
+        alert(res.data.message || 'Đăng ký tài khoản thành công! Vui lòng xác minh email trước khi đăng nhập.');
         router.push('/login');
       } else {
         setServerError(res.data.error?.message || (typeof res.data.error === 'string' ? res.data.error : null) || 'Đăng ký thất bại');
       }
     } catch (err: any) {
-      if (err.code === 'ERR_NETWORK' || !err.response) {
-        alert('Đăng ký giả lập thành công (Môi trường phát triển)!');
-        router.push('/login');
-        return;
-      }
-      setServerError(err.response?.data?.error?.message || (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null) || 'Không thể kết nối đến máy chủ API');
+      setServerError(
+        err.response?.data?.error?.message ||
+        (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null) ||
+        'Không thể kết nối đến máy chủ API để tạo tài khoản.'
+      );
     } finally {
       setLoading(false);
     }
@@ -116,9 +115,7 @@ export default function RegisterPage() {
               className="w-full bg-[#FAF9F5] border border-[#E2E5DC] px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#2C4939] focus:bg-white text-xs text-[#253129] transition-colors"
             >
               <option value="CUSTOMER">Người tiêu dùng (Khách hàng lẻ & Bếp ăn)</option>
-              <option value="FARMER">Nhà vườn / Hợp tác xã (Nhà cung cấp)</option>
-              <option value="LOGISTICS">Đơn vị vận tải / Giao vận</option>
-              <option value="INSPECTOR">Kiểm định viên chất lượng / OCOP</option>
+              <option value="FARMER">Nhà vườn / Hợp tác xã (Đăng ký xét duyệt)</option>
             </select>
           </div>
 
