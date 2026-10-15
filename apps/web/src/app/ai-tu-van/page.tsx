@@ -58,6 +58,7 @@ export default function AiConsultationPage() {
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const addItem = useCartStore((state) => state.addItem);
 
   const scrollToBottom = () => {
@@ -80,7 +81,12 @@ export default function AiConsultationPage() {
     };
 
     setMessages((prev) => [...prev, userMsg]);
-    if (!customText) setInputMessage('');
+    if (!customText) {
+      setInputMessage('');
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+      }
+    }
     setLoading(true);
 
     try {
@@ -343,7 +349,7 @@ export default function AiConsultationPage() {
                           : 'bg-white text-[#253129] border border-[#E2E5DC]'
                       }`}
                     >
-                      <div className="whitespace-pre-line">{m.text}</div>
+                      <div className="whitespace-pre-wrap break-words">{m.text}</div>
                       <span
                         className={`block text-[10px] mt-2 font-mono ${
                           m.sender === 'user' ? 'text-white/70 text-right' : 'text-[#8C978F]'
@@ -446,24 +452,43 @@ export default function AiConsultationPage() {
                   e.preventDefault();
                   handleSendMessage();
                 }}
-                className="flex items-center gap-2"
+                className="flex items-end gap-2"
               >
-                <input
-                  type="text"
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  placeholder="Nhập yêu cầu: 'Combo 500k quà biếu', 'Sầu riêng Long Khánh thu hoạch tháng mấy?'..."
-                  className="flex-1 px-3.5 py-2.5 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-xs sm:text-sm text-[#253129] placeholder-[#8C978F] focus:outline-none focus:border-[#2C4939]"
-                />
+                <div className="flex-1 relative">
+                  <textarea
+                    ref={textareaRef}
+                    rows={1}
+                    value={inputMessage}
+                    onChange={(e) => {
+                      setInputMessage(e.target.value);
+                      e.target.style.height = 'auto';
+                      e.target.style.height = `${Math.min(e.target.scrollHeight, 130)}px`;
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
+                    placeholder="Nhập yêu cầu tư vấn (Shift + Enter để xuống dòng): 'Combo 500k quà biếu', 'Sầu riêng Long Khánh thu hoạch tháng mấy?'..."
+                    className="w-full px-3.5 py-2.5 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-xs sm:text-sm text-[#253129] placeholder-[#8C978F] focus:outline-none focus:border-[#2C4939] resize-none leading-relaxed transition-all block"
+                    style={{ minHeight: '42px', maxHeight: '130px' }}
+                  />
+                </div>
                 <button
                   type="submit"
                   disabled={loading || !inputMessage.trim()}
-                  className="bg-[#2C4939] hover:bg-[#233C2F] text-white p-2.5 rounded-lg flex-shrink-0 transition-colors disabled:opacity-40"
+                  className="bg-[#2C4939] hover:bg-[#233C2F] text-white p-2.5 sm:px-4 sm:py-2.5 rounded-lg flex-shrink-0 transition-colors disabled:opacity-40 flex items-center justify-center gap-1.5 h-[42px]"
                   aria-label="Gửi tin nhắn"
                 >
                   <Send className="w-4 h-4" />
+                  <span className="hidden sm:inline text-xs font-medium">Gửi</span>
                 </button>
               </form>
+              <div className="text-[11px] text-[#8C978F] mt-1.5 flex items-center justify-between px-1">
+                <span>Mẹo: Nhấn <strong>Shift + Enter</strong> để xuống dòng • <strong>Enter</strong> để gửi tin</span>
+                <span className="hidden sm:inline">Dữ liệu đối soát HTX Đồng Nai</span>
+              </div>
             </div>
           </div>
         </div>

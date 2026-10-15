@@ -20,6 +20,7 @@ Tuân thủ nghiêm ngặt nguyên tắc **GEO-LOCKED FACT RESEARCH & DIGITAL AS
 | `chom-chom-nhan-longkhanh.jpg` | *Nephelium lappaceum* (Chôm chôm nhãn) | Iifar | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Rambutans_with_seed.jpg) | CC BY-SA 4.0 | Cho phép (Kèm ghi công) | Quả chôm chôm cùi dày giòn ngọt đại diện giống chôm chôm nhãn Long Khánh |
 | `hat-dieu-rang-cui.jpg` | *Anacardium occidentale* (Hạt điều rang) | TaurusEmerald | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Roasted_Cashew_Nuts_(52746470588).jpg) | CC BY 2.0 | Cho phép (Kèm ghi công) | Hạt điều rang củi vỏ lụa nguyên hạt đại diện nông sản chế biến Định Quán |
 | `tieu-den-xuanloc.jpg` | *Piper nigrum* (Hạt tiêu đen khô) | Gnangcomapp | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Black_peppercorns_gn.jpg) | CC BY-SA 4.0 | Cho phép (Kèm ghi công) | Hạt tiêu đen khô đại diện vùng hồ tiêu chân núi Chứa Chan Xuân Lộc |
+| `ruou-buoi-nam-hue.jpg` | *Citrus maxima ferment* (Rượu bưởi bình gốm) | Cơ sở Năm Huệ | Chụp thực tế sản phẩm | Authorized Commercial Asset | Quyền sử dụng thương mại sản phẩm | Bình gốm trái bưởi men bóng, nhãn Làng Bưởi Năm Huệ Tân Triều OCOP 3 sao |
 | `placeholder-nongsan.svg` | Vector biểu tượng CropNet | CropNet Team | Thiết kế nội bộ nền tảng | Proprietary Open Use | Toàn quyền sử dụng | Khung hiển thị hồ sơ số hóa khi nhà vườn đang cập nhật ảnh thực địa |
 
 ---

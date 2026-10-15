@@ -183,9 +183,9 @@ export default function ProductDetailPageClient() {
             tags: ['OCOP 3 Sao', 'Quà biếu tặng', 'Rượu bưởi Tân Triều'],
             farmName: 'Cơ Sở Rượu Bưởi Truyền Thống Năm Huệ Tân Triều',
             address: 'Cù lao Tân Triều, Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai',
-            imageUrl: '/assets/nongsan/placeholder-nongsan.svg',
+            imageUrl: '/assets/nongsan/ruou-buoi-nam-hue.jpg',
             images: [
-              { url: '/assets/nongsan/placeholder-nongsan.svg' }
+              { url: '/assets/nongsan/ruou-buoi-nam-hue.jpg' }
             ],
             variants: [
               { name: 'Bình gốm trái bưởi 750ml', price: 195000 }
