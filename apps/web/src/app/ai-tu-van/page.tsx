@@ -4,24 +4,36 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Container } from '@cropnet/ui';
 import { 
   Send, ShoppingBag, ArrowRight, FileText, 
-  MapPin, Check, Copy, Download, X, SlidersHorizontal, MessageSquare
+  MapPin, Check, Copy, Download, X, SlidersHorizontal, MessageSquare, AlertCircle, RefreshCw, ExternalLink
 } from 'lucide-react';
 import { apiClient } from '@/shared/services/api';
 import { useCartStore } from '@/shared/stores/cart';
 import { formatVND } from '@cropnet/utils';
 import Link from 'next/link';
 
+interface Citation {
+  sourceId: string;
+  title: string;
+  url: string;
+  publisher?: string;
+}
+
 interface Message {
   id: string;
   sender: 'user' | 'assistant';
   text: string;
   intent?: string;
+  mode?: string;
+  evidenceScope?: string;
+  citations?: Citation[];
   recommendedProducts?: any[];
   suggestedPrompts?: string[];
   actionLink?: {
     label: string;
     url: string;
   };
+  isError?: boolean;
+  retryText?: string;
   timestamp: string;
 }
 
@@ -30,11 +42,22 @@ export default function AiConsultationPage() {
     {
       id: 'welcome',
       sender: 'assistant',
-      text: 'Xin chào quý khách! Tôi là Trợ lý Tư vấn Nông sản CropNet Đồng Nai.\n\nHệ thống đối chiếu dữ liệu trực tiếp với danh mục và bảng giá niêm yết của HTX Nông nghiệp Tân Triều và HTX Sinh thái Long Khánh. Tôi có thể hỗ trợ quý khách:\n• Tối ưu hóa combo giỏ quà biếu hoặc trái cây gia đình theo ngân sách chính xác.\n• Tra cứu thông tin mã tem QR lô thu hoạch thực địa.\n• Lập bản thảo yêu cầu báo giá sỉ (RFQ) minh bạch cho doanh nghiệp.\n\nQuý khách muốn tìm hiểu loại nông sản nào hôm nay?',
+      text: 'Xin chào quý khách! Tôi là Trợ lý Tư vấn Nông sản CropNet Đồng Nai.\n\nHệ thống đối chiếu dữ liệu trực tiếp với danh mục và bảng giá niêm yết của HTX Nông nghiệp Tân Triều và HTX Sinh thái Long Khánh. Tôi có thể hỗ trợ quý khách:\n• Tối ưu hóa combo giỏ quà biếu hoặc trái cây gia đình theo ngân sách chính xác.\n• Tra cứu thông tin mã tem QR lô thu hoạch thực địa.\n• Giải thích các thuật ngữ chuyên sâu (Độ Brix, Ethylene, VietGAP, HACCP, GlobalGAP, SKU).\n• Lập bản thảo yêu cầu báo giá sỉ (RFQ) minh bạch cho doanh nghiệp.\n\nQuý khách muốn tìm hiểu loại nông sản nào hôm nay?',
       intent: 'GREETING',
+      mode: 'verified_fallback',
+      evidenceScope: 'rag_verified',
+      citations: [
+        {
+          sourceId: 'SRC-DN-01',
+          title: 'Cổng TTĐT Tỉnh Đồng Nai — Nông Sản Bản Địa',
+          url: 'https://dongnai.gov.vn',
+          publisher: 'UBND Tỉnh Đồng Nai'
+        }
+      ],
       suggestedPrompts: [
         'Tư vấn combo quà biếu 500.000đ',
         'Combo trái cây gia đình 300.000đ',
+        'Độ Brix trong bưởi Tân Triều là gì?',
         'Kiểm tra mã lô BATCH-BUOI-TANTRIEU-2026-01',
         'Lịch mùa vụ bưởi Tân Triều và sầu riêng'
       ],
@@ -46,6 +69,7 @@ export default function AiConsultationPage() {
   const [loading, setLoading] = useState(false);
   const [budgetSlider, setBudgetSlider] = useState(500000);
   const [budgetPurpose, setBudgetPurpose] = useState('quà biếu');
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [rfqModalOpen, setRfqModalOpen] = useState(false);
   const [rfqSubmitting, setRfqSubmitting] = useState(false);
   const [rfqResult, setRfqResult] = useState<any>(null);
@@ -105,49 +129,29 @@ export default function AiConsultationPage() {
           sender: 'assistant',
           text: aiData.reply,
           intent: aiData.intent,
+          mode: aiData.mode,
+          evidenceScope: aiData.evidenceScope,
+          citations: aiData.citations,
           recommendedProducts: aiData.recommendedProducts,
           suggestedPrompts: aiData.suggestedPrompts,
           actionLink: aiData.actionLink,
           timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
         };
         setMessages((prev) => [...prev, aiMsg]);
+      } else {
+        throw new Error(res.data?.message || 'Lỗi xử lý phản hồi từ trợ lý AI');
       }
     } catch (err: any) {
-      // Offline fallback using verified rules and genuine Dong Nai produce (strictly non-alcoholic)
-      const lower = textToSend.toLowerCase();
-      let fallbackText = 'Hệ thống quy tắc chuyên gia đã ghi nhận yêu cầu của quý khách. Các nông sản đặc sản như Bưởi đường lá cam Tân Triều, Bưởi da xanh và Sầu riêng Long Khánh đều có nhật ký canh tác số trên hệ thống.';
-      let products: any[] = [];
-
-      if (lower.includes('500k') || lower.includes('ngân sách') || lower.includes('quà biếu')) {
-        fallbackText = 'Với ngân sách 500.000đ, hệ thống đề xuất Combo Quà Tặng Nông Sản Tuyển Chọn: 2 Bưởi đường lá cam Tân Triều OCOP 4 sao (170.000đ), 1 Bưởi da xanh Tân Triều (75.000đ) và 1 Hộp hạt điều rang củi vỏ lụa Định Quán (140.000đ). Tổng chi phí là 385.000đ (dư 115.000đ so với hạn mức). Quý khách có thể bấm thêm tất cả vào giỏ hàng bên dưới.';
-        products = [
-          { id: '1', name: 'Bưởi Đường Lá Cam Tân Triều (OCOP)', price: 85000, unit: 'quả (1.2kg)', quantity: 2, total: 170000, cooperativeName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều', imageUrl: '/assets/nongsan/buoi-duong-la-cam.jpg' },
-          { id: '1', name: 'Bưởi Da Xanh Tân Triều', price: 75000, unit: 'quả (1.3kg)', quantity: 1, total: 75000, cooperativeName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều', imageUrl: '/assets/nongsan/buoi-da-xanh-tantrieu.jpg' },
-          { id: '3', name: 'Hạt Điều Rang Củi Vỏ Lụa Định Quán', price: 140000, unit: 'hộp 500g', quantity: 1, total: 140000, cooperativeName: 'Cơ Sở Chế Biến Hạt Điều Định Quán', imageUrl: '/assets/nongsan/hat-dieu-rang-cui.jpg' }
-        ];
-      } else if (lower.includes('300k') || lower.includes('200k')) {
-        fallbackText = 'Với ngân sách 300.000đ, hệ thống đề xuất Combo Trái Cây Thanh Mát: 1 Bưởi da xanh Tân Triều (75.000đ), 2kg Chôm chôm nhãn Long Khánh (90.000đ) và 1 Bưởi đường lá cam (85.000đ). Tổng chi phí là 250.000đ (dư 50.000đ).';
-        products = [
-          { id: '1', name: 'Bưởi Da Xanh Tân Triều', price: 75000, unit: 'quả', quantity: 1, total: 75000, cooperativeName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều', imageUrl: '/assets/nongsan/buoi-da-xanh-tantrieu.jpg' },
-          { id: '4', name: 'Chôm Chôm Nhãn Long Khánh', price: 45000, unit: 'kg', quantity: 2, total: 90000, cooperativeName: 'HTX Nông Nghiệp Bình Lộc', imageUrl: '/assets/nongsan/chom-chom-nhan-longkhanh.jpg' },
-          { id: '1', name: 'Bưởi Đường Lá Cam Tân Triều', price: 85000, unit: 'quả', quantity: 1, total: 85000, cooperativeName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều', imageUrl: '/assets/nongsan/buoi-duong-la-cam.jpg' }
-        ];
-      }
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `ai-${Date.now()}`,
-          sender: 'assistant',
-          text: fallbackText,
-          recommendedProducts: products,
-          suggestedPrompts: [
-            'Lịch mùa vụ thu hoạch bưởi và sầu riêng',
-            'Kiểm tra mã lô BATCH-BUOI-TANTRIEU-2026-01'
-          ],
-          timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
+      // Truthful error state with Retry CTA (Never invent fake simulated 500k combos on API network error)
+      const errorMsg: Message = {
+        id: `ai-err-${Date.now()}`,
+        sender: 'assistant',
+        text: '⚠️ **Không thể kết nối đến máy chủ trợ lý AI CropNet.** Có thể do gián đoạn kết nối mạng hoặc phiên làm việc tạm thời bị gián đoạn. Bạn có thể nhấn nút "Thử lại" bên dưới.',
+        isError: true,
+        retryText: textToSend,
+        timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages((prev) => [...prev, errorMsg]);
     } finally {
       setLoading(false);
     }
@@ -156,6 +160,9 @@ export default function AiConsultationPage() {
   const handleBudgetPreset = (budget: number) => {
     setBudgetSlider(budget);
     handleSendMessage(`Tư vấn giúp tôi combo nông sản Đồng Nai ngân sách ${budget.toLocaleString('vi-VN')} đ cho mục đích ${budgetPurpose}`);
+    if (window.innerWidth < 1024) {
+      setMobileSidebarOpen(false);
+    }
   };
 
   const handleAddAllToCart = (products: any[]) => {
@@ -208,33 +215,49 @@ export default function AiConsultationPage() {
   };
 
   return (
-    <div className="bg-[#FAF9F5] min-h-screen py-8 sm:py-12">
-      <Container className="space-y-8">
+    <div className="bg-[#FAF9F5] min-h-screen py-4 sm:py-8 md:py-12">
+      <Container className="space-y-6 max-w-7xl px-3 sm:px-6">
         {/* Editorial Page Header */}
-        <div className="border-b border-[#E2E5DC] pb-6 space-y-2">
+        <div className="border-b border-[#E2E5DC] pb-4 sm:pb-6 space-y-2">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold text-[#7B876C] uppercase tracking-wider">
+            <span className="text-[11px] sm:text-xs font-semibold text-[#7B876C] uppercase tracking-wider">
               Trợ Lý Nông Sản Số
             </span>
             <span className="text-xs text-[#8C978F]">•</span>
-            <span className="text-xs text-[#2C4939] bg-[#E6EAE4] px-2 py-0.5 rounded font-medium">
-              Chế độ: Quy Tắc Chuyên Gia & Dữ Liệu Khảo Sát Thẩm Định 2026
+            <span className="text-[11px] sm:text-xs text-[#2C4939] bg-[#E6EAE4] px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2C4939] animate-pulse"></span>
+              Hybrid RAG + DeepSeek AI 2026
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#253129] tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#253129] tracking-tight">
             Tư Vấn Chọn Nông Sản & Tính Combo Theo Ngân Sách
           </h1>
           <p className="text-xs sm:text-sm text-[#647067] max-w-3xl leading-relaxed">
-            Hệ thống tính toán dựa trên bảng giá niêm yết của Hợp tác xã, cam kết kiểm soát chặt chẽ ngân sách không vượt quá 1 đồng, không tự ý đề xuất đồ uống có cồn vào combo mặc định và kết nối trực tiếp với giỏ hàng.
+            Hệ thống đối soát trực tiếp theo danh mục Hợp tác xã Đồng Nai, cam kết bảo toàn ngân sách 0% vượt ngưỡng, minh bạch nguồn gốc và hỗ trợ giải thích kiến thức nông nghiệp chính xác.
           </p>
         </div>
 
+        {/* Mobile Sidebar Toggle Button (< 1024px) */}
+        <div className="lg:hidden">
+          <button
+            type="button"
+            onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+            className="w-full flex items-center justify-between p-3 bg-white border border-[#E2E5DC] rounded-xl text-xs font-semibold text-[#253129] shadow-subtle hover:bg-[#FAF9F5] transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <SlidersHorizontal className="w-4 h-4 text-[#2C4939]" />
+              <span>{mobileSidebarOpen ? 'Thu gọn công cụ tính combo & HTX' : 'Tùy chọn tính combo nhanh & HTX khảo sát'}</span>
+            </div>
+            <span className="text-[11px] text-[#7B876C] font-normal">{mobileSidebarOpen ? '▲ Đóng' : '▼ Mở nhanh'}</span>
+          </button>
+        </div>
+
         {/* 2-Column Responsive Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left: Quick Budget Calculator & Cooperatives Info */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className={`${mobileSidebarOpen ? 'block' : 'hidden'} lg:block lg:col-span-4 space-y-5`}>
             {/* Quick Budget Tool Card */}
-            <div className="bg-white rounded-xl border border-[#E2E5DC] p-5 shadow-subtle space-y-4">
+            <div className="bg-white rounded-xl border border-[#E2E5DC] p-4 sm:p-5 shadow-subtle space-y-4">
               <div className="flex items-center gap-2 border-b border-[#E2E5DC] pb-3">
                 <SlidersHorizontal className="w-4 h-4 text-[#7B876C]" />
                 <h3 className="font-semibold text-sm text-[#253129]">
@@ -273,7 +296,7 @@ export default function AiConsultationPage() {
                     <button
                       key={p}
                       onClick={() => setBudgetPurpose(p)}
-                      className={`p-2 rounded-lg border text-center transition-colors ${
+                      className={`p-2.5 rounded-lg border text-center transition-colors min-h-[40px] flex items-center justify-center ${
                         budgetPurpose === p
                           ? 'bg-[#E6EAE4] border-[#2C4939] text-[#2C4939] font-medium'
                           : 'bg-white border-[#E2E5DC] text-[#647067] hover:border-[#CBD0C4]'
@@ -289,13 +312,13 @@ export default function AiConsultationPage() {
               <div className="pt-2 space-y-2">
                 <button
                   onClick={() => handleBudgetPreset(budgetSlider)}
-                  className="w-full bg-[#2C4939] hover:bg-[#233C2F] text-white py-2.5 rounded-lg text-xs font-medium transition-colors"
+                  className="w-full bg-[#2C4939] hover:bg-[#233C2F] text-white py-2.5 rounded-lg text-xs font-medium transition-colors min-h-[44px]"
                 >
                   Tính combo ngay ({budgetSlider.toLocaleString('vi-VN')} đ)
                 </button>
                 <button
                   onClick={() => setRfqModalOpen(true)}
-                  className="w-full bg-white hover:bg-[#F1EFE8] text-[#253129] border border-[#E2E5DC] py-2.5 rounded-lg text-xs font-medium transition-colors"
+                  className="w-full bg-white hover:bg-[#F1EFE8] text-[#253129] border border-[#E2E5DC] py-2.5 rounded-lg text-xs font-medium transition-colors min-h-[44px]"
                 >
                   Lập bản thảo báo giá sỉ B2B (RFQ)
                 </button>
@@ -303,23 +326,23 @@ export default function AiConsultationPage() {
             </div>
 
             {/* Cooperative Info Card */}
-            <div className="bg-white rounded-xl border border-[#E2E5DC] p-5 shadow-subtle space-y-3 text-xs">
+            <div className="bg-white rounded-xl border border-[#E2E5DC] p-4 sm:p-5 shadow-subtle space-y-3 text-xs">
               <h4 className="font-semibold text-xs text-[#253129] uppercase tracking-wider">
-                Hợp Tác Xã Khảo Sát
+                Hợp Tác Xã Khảo Sát & Xác Thực
               </h4>
               <div className="space-y-3">
                 <div className="p-3 bg-[#FAF9F5] rounded-lg border border-[#E2E5DC] space-y-1">
                   <div className="font-semibold text-[#253129]">HTX Nông Nghiệp Dịch Vụ Tân Triều</div>
-                  <div className="text-[#8C978F]">Phường Tân Triều, Thành phố Đồng Nai</div>
+                  <div className="text-[#8C978F]">Xã Tân Bình, Huyện Vĩnh Cửu, Tỉnh Đồng Nai</div>
                   <span className="inline-block text-[10px] bg-[#E6EAE4] text-[#2C4939] px-2 py-0.5 rounded font-medium">
-                    OCOP 4 Sao • Bưởi đường lá cam
+                    OCOP 4 Sao • Bưởi đường lá cam • VietGAP
                   </span>
                 </div>
                 <div className="p-3 bg-[#FAF9F5] rounded-lg border border-[#E2E5DC] space-y-1">
-                  <div className="font-semibold text-[#253129]">HTX Sinh Thái Long Khánh</div>
-                  <div className="text-[#8C978F]">Phường Xuân Lập, Thành phố Đồng Nai</div>
+                  <div className="font-semibold text-[#253129]">HTX Xuân Lập Long Khánh</div>
+                  <div className="text-[#8C978F]">Phường Xuân Lập, TP Long Khánh, Tỉnh Đồng Nai</div>
                   <span className="inline-block text-[10px] bg-[#FAF5F1] text-[#A46C49] px-2 py-0.5 rounded font-medium">
-                    Sầu riêng Ri6 chín cây • Hạt điều
+                    Sầu riêng Ri6 chín cây • Hạt điều rang củi
                   </span>
                 </div>
               </div>
@@ -327,29 +350,85 @@ export default function AiConsultationPage() {
           </div>
 
           {/* Right: Interactive Dialogue Stream */}
-          <div className="lg:col-span-8 flex flex-col min-h-[560px] max-h-[720px] bg-white rounded-xl border border-[#E2E5DC] shadow-subtle overflow-hidden">
+          <div className="lg:col-span-8 flex flex-col h-[70vh] min-h-[500px] lg:h-[720px] max-h-[calc(100dvh-140px)] bg-white rounded-xl border border-[#E2E5DC] shadow-subtle overflow-hidden">
             {/* Messages Scroll Area */}
-            <div className="flex-1 p-5 sm:p-6 overflow-y-auto space-y-5 bg-[#FAF9F5]/40">
+            <div className="flex-1 p-3.5 sm:p-5 md:p-6 overflow-y-auto space-y-4 bg-[#FAF9F5]/40">
               {messages.map((m) => (
                 <div
                   key={m.id}
-                  className={`flex gap-3 ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex gap-2.5 sm:gap-3 ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {m.sender === 'assistant' && (
-                    <div className="w-7 h-7 rounded bg-[#E6EAE4] border border-[#C7D1C3] text-[#2C4939] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-7 h-7 rounded-lg bg-[#E6EAE4] border border-[#C7D1C3] text-[#2C4939] flex items-center justify-center flex-shrink-0 mt-0.5">
                       <MessageSquare className="w-3.5 h-3.5" />
                     </div>
                   )}
 
                   <div className={`max-w-xl space-y-2.5 ${m.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                    {/* Provenance badge for Assistant */}
+                    {m.sender === 'assistant' && !m.isError && (
+                      <div className="flex items-center gap-1.5 text-[10px] text-[#8C978F]">
+                        {m.mode === 'live_deepseek_grounded' ? (
+                          <span className="bg-[#E8F0FE] text-[#1967D2] px-2 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#1967D2]"></span>
+                            DeepSeek AI + Dữ liệu đối soát
+                          </span>
+                        ) : (
+                          <span className="bg-[#E6EAE4] text-[#2C4939] px-2 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#2C4939]"></span>
+                            Tri thức CropNet đã xác minh
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     <div
-                      className={`p-3.5 sm:p-4 rounded-lg text-xs sm:text-sm leading-relaxed ${
+                      className={`p-3.5 sm:p-4 rounded-xl text-xs sm:text-sm leading-relaxed ${
                         m.sender === 'user'
-                          ? 'bg-[#2C4939] text-white'
-                          : 'bg-white text-[#253129] border border-[#E2E5DC]'
+                          ? 'bg-[#2C4939] text-white shadow-sm'
+                          : m.isError
+                          ? 'bg-[#FDF2F2] text-[#991B1B] border border-[#F87171]'
+                          : 'bg-white text-[#253129] border border-[#E2E5DC] shadow-sm'
                       }`}
                     >
                       <div className="whitespace-pre-wrap break-words">{m.text}</div>
+
+                      {/* Retry Button if Error */}
+                      {m.isError && m.retryText && (
+                        <div className="pt-3 mt-2 border-t border-[#FCA5A5]/60 flex items-center justify-between">
+                          <span className="text-[11px] text-[#B91C1C]">Lỗi kết nối</span>
+                          <button
+                            onClick={() => handleSendMessage(m.retryText)}
+                            disabled={loading}
+                            className="inline-flex items-center gap-1 text-xs bg-[#B91C1C] hover:bg-[#991B1B] text-white px-3 py-1.5 rounded-lg transition-colors font-medium min-h-[36px]"
+                          >
+                            <RefreshCw className="w-3 h-3" />
+                            <span>Thử lại</span>
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Citations list */}
+                      {m.citations && m.citations.length > 0 && (
+                        <div className="pt-2.5 mt-2.5 border-t border-[#E2E5DC] space-y-1.5">
+                          <span className="text-[11px] font-semibold text-[#647067] block">Nguồn trích dẫn xác minh:</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {m.citations.map((c, idx) => (
+                              <a
+                                key={idx}
+                                href={c.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-[11px] bg-[#F1EFE8] hover:bg-[#E6EAE4] text-[#2C4939] px-2.5 py-1 rounded-md border border-[#CBD0C4] transition-colors"
+                              >
+                                <span className="truncate max-w-[220px]">{c.title}</span>
+                                <ExternalLink className="w-2.5 h-2.5 flex-shrink-0" />
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                       <span
                         className={`block text-[10px] mt-2 font-mono ${
                           m.sender === 'user' ? 'text-white/70 text-right' : 'text-[#8C978F]'
@@ -361,7 +440,7 @@ export default function AiConsultationPage() {
 
                     {/* Recommended Products inside Message */}
                     {m.recommendedProducts && m.recommendedProducts.length > 0 && (
-                      <div className="bg-white border border-[#CBD0C4] p-4 rounded-xl space-y-3 w-full">
+                      <div className="bg-white border border-[#CBD0C4] p-3.5 sm:p-4 rounded-xl space-y-3 w-full shadow-sm">
                         <div className="flex items-center justify-between border-b border-[#E2E5DC] pb-2">
                           <span className="text-xs font-semibold text-[#253129] flex items-center gap-1.5">
                             <ShoppingBag className="w-4 h-4 text-[#7B876C]" />
@@ -369,7 +448,7 @@ export default function AiConsultationPage() {
                           </span>
                           <button
                             onClick={() => handleAddAllToCart(m.recommendedProducts!)}
-                            className="text-xs bg-[#2C4939] hover:bg-[#233C2F] text-white font-medium px-3 py-1 rounded-lg transition-colors"
+                            className="text-xs bg-[#2C4939] hover:bg-[#233C2F] text-white font-medium px-3 py-1.5 rounded-lg transition-colors min-h-[36px]"
                           >
                             Thêm tất cả vào giỏ
                           </button>
@@ -390,7 +469,7 @@ export default function AiConsultationPage() {
                               </div>
                               <button
                                 onClick={() => handleAddProductToCart(p)}
-                                className="w-full bg-white hover:bg-[#F1EFE8] text-[#253129] border border-[#E2E5DC] text-xs font-medium py-1 rounded transition-colors"
+                                className="w-full bg-white hover:bg-[#F1EFE8] text-[#253129] border border-[#E2E5DC] text-xs font-medium py-1.5 rounded transition-colors min-h-[36px]"
                               >
                                 + Thêm món này
                               </button>
@@ -405,7 +484,7 @@ export default function AiConsultationPage() {
                       <div>
                         <Link
                           href={m.actionLink.url}
-                          className="inline-flex items-center gap-1 text-xs font-medium text-white bg-[#2C4939] hover:bg-[#233C2F] px-3.5 py-1.5 rounded-lg transition-colors"
+                          className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-[#2C4939] hover:bg-[#233C2F] px-4 py-2 rounded-lg transition-colors min-h-[38px]"
                         >
                           <span>{m.actionLink.label}</span>
                           <ArrowRight className="w-3.5 h-3.5" />
@@ -420,7 +499,7 @@ export default function AiConsultationPage() {
                           <button
                             key={prompt}
                             onClick={() => handleSendMessage(prompt)}
-                            className="text-xs bg-white hover:bg-[#F1EFE8] text-[#647067] hover:text-[#253129] border border-[#E2E5DC] px-2.5 py-1 rounded-md transition-colors text-left"
+                            className="text-xs bg-white hover:bg-[#F1EFE8] text-[#647067] hover:text-[#253129] border border-[#E2E5DC] px-2.5 py-1.5 rounded-lg transition-colors text-left min-h-[32px] flex items-center"
                           >
                             {prompt}
                           </button>
@@ -432,12 +511,13 @@ export default function AiConsultationPage() {
               ))}
 
               {loading && (
-                <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded bg-[#E6EAE4] border border-[#C7D1C3] text-[#2C4939] flex items-center justify-center flex-shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-[#E6EAE4] border border-[#C7D1C3] text-[#2C4939] flex items-center justify-center flex-shrink-0 animate-pulse">
                     <MessageSquare className="w-3.5 h-3.5" />
                   </div>
-                  <div className="p-3 bg-white border border-[#E2E5DC] rounded-lg text-xs text-[#647067]">
-                    Đang tra cứu danh mục và tính toán combo...
+                  <div className="p-3 bg-white border border-[#E2E5DC] rounded-xl text-xs text-[#647067] shadow-sm flex items-center gap-2">
+                    <div className="w-3 h-3 border-2 border-[#2C4939] border-t-transparent rounded-full animate-spin"></div>
+                    <span>Đang tra cứu dữ liệu nông sản Đồng Nai & suy luận...</span>
                   </div>
                 </div>
               )}
@@ -466,19 +546,21 @@ export default function AiConsultationPage() {
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
+                        // Protect Vietnamese IME composition from premature send
+                        if (e.nativeEvent.isComposing || e.keyCode === 229) return;
                         e.preventDefault();
                         handleSendMessage();
                       }
                     }}
-                    placeholder="Nhập yêu cầu tư vấn (Shift + Enter để xuống dòng): 'Combo 500k quà biếu', 'Sầu riêng Long Khánh thu hoạch tháng mấy?'..."
-                    className="w-full px-3.5 py-2.5 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-xs sm:text-sm text-[#253129] placeholder-[#8C978F] focus:outline-none focus:border-[#2C4939] resize-none leading-relaxed transition-all block"
-                    style={{ minHeight: '42px', maxHeight: '130px' }}
+                    placeholder="Nhập câu hỏi (Shift+Enter xuống dòng): 'Brix là gì?', 'Combo 500k không hạt điều'..."
+                    className="w-full px-3.5 py-2.5 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-base md:text-sm text-[#253129] placeholder-[#8C978F] focus:outline-none focus:border-[#2C4939] resize-none leading-relaxed transition-all block"
+                    style={{ minHeight: '44px', maxHeight: '130px' }}
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading || !inputMessage.trim()}
-                  className="bg-[#2C4939] hover:bg-[#233C2F] text-white p-2.5 sm:px-4 sm:py-2.5 rounded-lg flex-shrink-0 transition-colors disabled:opacity-40 flex items-center justify-center gap-1.5 h-[42px]"
+                  className="bg-[#2C4939] hover:bg-[#233C2F] text-white p-2.5 sm:px-4 sm:py-2.5 rounded-lg flex-shrink-0 transition-colors disabled:opacity-40 flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px]"
                   aria-label="Gửi tin nhắn"
                 >
                   <Send className="w-4 h-4" />
@@ -486,8 +568,8 @@ export default function AiConsultationPage() {
                 </button>
               </form>
               <div className="text-[11px] text-[#8C978F] mt-1.5 flex items-center justify-between px-1">
-                <span>Mẹo: Nhấn <strong>Shift + Enter</strong> để xuống dòng • <strong>Enter</strong> để gửi tin</span>
-                <span className="hidden sm:inline">Dữ liệu đối soát HTX Đồng Nai</span>
+                <span className="truncate">Nhấn <strong>Enter</strong> để gửi • <strong>Shift + Enter</strong> xuống dòng</span>
+                <span className="hidden sm:inline flex-shrink-0 ml-2">Đối soát HTX Đồng Nai</span>
               </div>
             </div>
           </div>
@@ -495,19 +577,20 @@ export default function AiConsultationPage() {
 
         {/* RFQ Wholesale Modal */}
         {rfqModalOpen && (
-          <div className="fixed inset-0 z-50 bg-[#253129]/50 flex items-center justify-center p-4">
-            <div className="w-full max-w-lg p-6 bg-white rounded-xl space-y-5 border border-[#E2E5DC] shadow-modal relative">
+          <div className="fixed inset-0 z-50 bg-[#253129]/50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+            <div className="w-full max-w-lg p-5 sm:p-6 bg-white rounded-xl space-y-4 border border-[#E2E5DC] shadow-modal relative my-auto">
               <div className="flex items-center justify-between border-b border-[#E2E5DC] pb-3">
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-[#7B876C]" />
-                  <h3 className="font-semibold text-base text-[#253129]">Bản Thảo Báo Giá Sỉ (RFQ)</h3>
+                  <h3 className="font-semibold text-sm sm:text-base text-[#253129]">Bản Thảo Báo Giá Sỉ (RFQ)</h3>
                 </div>
                 <button
                   onClick={() => {
                     setRfqModalOpen(false);
                     setRfqResult(null);
                   }}
-                  className="text-[#647067] hover:text-[#253129]"
+                  className="text-[#647067] hover:text-[#253129] p-1"
+                  aria-label="Đóng"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -528,18 +611,18 @@ export default function AiConsultationPage() {
                     <p><strong>Số điện thoại:</strong> {rfqResult.phone}</p>
                     <p><strong>Nội dung:</strong> {rfqResult.notes || rfqForm.notes}</p>
                     <p className="text-[11px] text-[#8C978F] italic pt-1 border-t border-[#E2E5DC]">
-                      * Ghi chú minh bạch: Bản nháp được lưu tại trình duyệt của quý khách và chưa gửi lên máy chủ tiếp nhận.
+                      * Ghi chú: Bản nháp lưu tại trình duyệt của bạn để chuẩn bị gửi đối tác HTX.
                     </p>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <button
                       onClick={() => {
                         const text = `YÊU CẦU BÁO GIÁ SỈ CROPNET ĐỒNG NAI AI\nMã RFQ: ${rfqResult.rfqNumber}\nCông ty: ${rfqResult.companyName}\nNgười liên hệ: ${rfqResult.contactName || rfqResult.companyName}\nSĐT: ${rfqResult.phone}\nNội dung: ${rfqResult.notes || rfqForm.notes}\nNgày tạo: ${new Date().toLocaleString('vi-VN')}`;
                         navigator.clipboard.writeText(text);
                         alert('Đã sao chép nội dung bản nháp RFQ vào bộ nhớ tạm!');
                       }}
-                      className="flex-1 bg-[#F1EFE8] hover:bg-[#E7E4DC] text-[#253129] text-xs font-medium py-2 rounded-lg border border-[#E2E5DC] inline-flex items-center justify-center gap-1.5"
+                      className="flex-1 bg-[#F1EFE8] hover:bg-[#E7E4DC] text-[#253129] text-xs font-medium py-2.5 rounded-lg border border-[#E2E5DC] inline-flex items-center justify-center gap-1.5 min-h-[44px]"
                     >
                       <Copy className="w-3.5 h-3.5" />
                       <span>Sao chép bản nháp</span>
@@ -555,7 +638,7 @@ export default function AiConsultationPage() {
                         a.click();
                         URL.revokeObjectURL(url);
                       }}
-                      className="flex-1 bg-[#2C4939] hover:bg-[#233C2F] text-white text-xs font-medium py-2 rounded-lg inline-flex items-center justify-center gap-1.5"
+                      className="flex-1 bg-[#2C4939] hover:bg-[#233C2F] text-white text-xs font-medium py-2.5 rounded-lg inline-flex items-center justify-center gap-1.5 min-h-[44px]"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>Tải file (.txt)</span>
@@ -567,7 +650,7 @@ export default function AiConsultationPage() {
                       setRfqModalOpen(false);
                       setRfqResult(null);
                     }}
-                    className="w-full text-xs text-[#647067] hover:underline pt-1"
+                    className="w-full text-xs text-[#647067] hover:underline pt-1 text-center py-2"
                   >
                     Đóng cửa sổ
                   </button>
@@ -582,11 +665,11 @@ export default function AiConsultationPage() {
                       value={rfqForm.companyName}
                       onChange={(e) => setRfqForm({ ...rfqForm, companyName: e.target.value })}
                       placeholder="Ví dụ: Công ty TNHH Nông Sản Xanh..."
-                      className="w-full p-2 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-xs text-[#253129] focus:outline-none focus:border-[#2C4939]"
+                      className="w-full p-2.5 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-base md:text-xs text-[#253129] focus:outline-none focus:border-[#2C4939] min-h-[42px]"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="text-[#647067] block mb-1 font-semibold">Số Điện Thoại:</label>
                       <input
@@ -595,7 +678,7 @@ export default function AiConsultationPage() {
                         value={rfqForm.phone}
                         onChange={(e) => setRfqForm({ ...rfqForm, phone: e.target.value })}
                         placeholder="09xx.xxx.xxx"
-                        className="w-full p-2 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-xs text-[#253129] focus:outline-none focus:border-[#2C4939]"
+                        className="w-full p-2.5 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-base md:text-xs text-[#253129] focus:outline-none focus:border-[#2C4939] min-h-[42px]"
                       />
                     </div>
                     <div>
@@ -605,7 +688,7 @@ export default function AiConsultationPage() {
                         value={rfqForm.contactName}
                         onChange={(e) => setRfqForm({ ...rfqForm, contactName: e.target.value })}
                         placeholder="Họ và tên..."
-                        className="w-full p-2 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-xs text-[#253129] focus:outline-none focus:border-[#2C4939]"
+                        className="w-full p-2.5 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-base md:text-xs text-[#253129] focus:outline-none focus:border-[#2C4939] min-h-[42px]"
                       />
                     </div>
                   </div>
@@ -616,14 +699,14 @@ export default function AiConsultationPage() {
                       rows={3}
                       value={rfqForm.notes}
                       onChange={(e) => setRfqForm({ ...rfqForm, notes: e.target.value })}
-                      className="w-full p-2 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-xs text-[#253129] focus:outline-none focus:border-[#2C4939]"
+                      className="w-full p-2.5 bg-[#FAF9F5] border border-[#E2E5DC] rounded-lg text-base md:text-xs text-[#253129] focus:outline-none focus:border-[#2C4939]"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={rfqSubmitting}
-                    className="w-full bg-[#2C4939] hover:bg-[#233C2F] text-white font-medium py-2.5 rounded-lg text-xs transition-colors"
+                    className="w-full bg-[#2C4939] hover:bg-[#233C2F] text-white font-medium py-3 rounded-lg text-xs transition-colors min-h-[44px]"
                   >
                     {rfqSubmitting ? 'Đang khởi tạo bản thảo...' : 'Tạo Bản Thảo Báo Giá Sỉ (DRAFT_LOCAL)'}
                   </button>

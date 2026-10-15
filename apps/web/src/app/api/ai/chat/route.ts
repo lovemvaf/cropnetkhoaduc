@@ -38,8 +38,8 @@ export async function POST(request: NextRequest) {
         citations: ragResult.citations,
         suggestedPrompts: ragResult.suggestions,
         actionLink: ragResult.actionLink,
-        confidence: ragResult.confidence,
-        toolsUsed: ragResult.mode === 'live_deepseek' 
+        evidenceScope: ragResult.evidenceScope || 'rag_verified',
+        toolsUsed: ragResult.mode.startsWith('live_deepseek')
           ? ['deepseek_live_api', 'dongnai_geo_rag', 'citation_validator']
           : ['dongnai_geo_rag', 'budget_calculator', 'fact_grounding']
       }

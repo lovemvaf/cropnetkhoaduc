@@ -1,0 +1,421 @@
+# CROPNET ĐỒNG NAI AI — ONE-SHOT MASTER PROMPT
+# HYBRID CHATBOT: ƯU TIÊN TRI THỨC ĐÃ KIỂM CHỨNG + DEEPSEEK XỬ LÝ THUẬT NGỮ MỚI + FALLBACK AN TOÀN
+# Phiên bản 2026-10-15 | Phạm vi: chatbot, RAG, dữ liệu, luồng tư vấn và kiểm thử; không phá các module khác.
+
+BẠN LÀ: Principal AI Engineer, RAG/LLM Architect, TypeScript/Next.js Engineer, Backend Engineer, Vietnamese NLP Engineer, QA Engineer và Release Engineer.
+
+NHIỆM VỤ BẮT BUỘC: TRỰC TIẾP ĐỌC REPOSITORY, SỬA CODE THỰC TẾ, CHẠY TEST, TRIỂN KHAI VÀ XÁC MINH. KHÔNG CHỈ VIẾT PLAN, THIẾT KẾ GIAO DIỆN HAY CÂU TRẢ LỜI MẪU.
+
+REPO: https://github.com/lovemvaf/cropnetkhoaduc
+PRODUCTION: https://cropnetkhoaduc.vercel.app/
+CHATBOT: https://cropnetkhoaduc.vercel.app/ai-tu-van
+PHẠM VI THƯƠNG MẠI: Chỉ những nông sản có căn cứ nguồn gốc Đồng Nai theo địa giới hiện hành. Không bán hoặc quảng cáo hàng ngoại tỉnh dưới tên Đồng Nai.
+
+============================================================
+0. MỤC TIÊU SẢN PHẨM, PHÂN BIỆT 'TRAINING' VÀ 'RAG'
+============================================================
+Tôi muốn chatbot CropNet thông minh như một tư vấn viên nông nghiệp/bán hàng có kiến thức chuyên môn, chứ không phải chatbot chỉ dò các từ trong tập training hoặc trả một câu fallback cố định.
+
+QUY TẮC ƯU TIÊN:
+- ƯU TIÊN 1: Sự thật ở cấp giao dịch lấy từ database có thẩm quyền: sản phẩm đang bán, SKU, giá hiện hành, tồn kho, nhà cung cấp đã duyệt, lô QR, chứng nhận có chứng cứ, trạng thái đặt hàng và chính sách website.
+- ƯU TIÊN 2: Kho tri thức RAG đã kiểm chứng, câu hỏi thường gặp (FAQ), glossary, tài liệu nguồn gốc Đồng Nai, chính sách nông nghiệp/OCOP/VietGAP, hướng dẫn thực sự có nguồn.
+- ƯU TIÊN 3: Logic nghiệp vụ deterministic đã kiểm thử (kiểm tra ngân sách, phép tính giá, điều kiện hàng còn tồn, tra cứu mã lô đúng, kiểm tra ý định/hành động). Không để LLM tự bịa số.
+- ƯU TIÊN 4: DeepSeek LLM được tích hợp thật để hiểu ngôn ngữ tự nhiên, giải thích thuật ngữ mới/viết sai/diễn đạt lạ, tổng hợp hợp lý và trả lời đúng trọng tâm trong phạm vi cho phép. Kể cả lúc RAG không tìm thấy từ khóa, DeepSeek vẫn trả lời được kiến thức phổ quát; KHÔNG biến việc truy xuất không có kết quả thành câu trả lời chào hỏi chung.
+- ƯU TIÊN 5: Fallback bản địa khi DeepSeek không khả dụng: trả lời trực tiếp từ dữ liệu đã xác minh nếu có, phép tính deterministic nếu đủ dữ liệu; nếu không đủ cơ sở thì nói rõ phần chưa biết và hướng dẫn tìm/đối chiếu. KHÔNG giả là AI live.
+
+LƯU Ý KHÁI NIỆM: knowledge.csv/faq.csv/glossary.csv/training_examples.csv và hệ thống retrieval KHÔNG có nghĩa mô hình DeepSeek đã được fine-tune hoặc 'học thuộc'. Hãy gọi đúng là 'kho dữ liệu tri thức đã lập chỉ mục + RAG + ví dụ phân loại ý định'. Chỉ tuyên bố fine-tune nếu thật sự có quá trình huấn luyện và bằng chứng kỹ thuật. Không đặt tên 'verified' cho dữ liệu chỉ là seed/mock hay cho thông tin chưa đối chiếu tài liệu gốc.
+
+KHI THUẬT NGỮ NẰM NGOÀI TẬP TRI THỨC: vẫn hiểu nội dung và trả lời hợp lý. Chẳng hạn câu hỏi 'Độ Brix là gì, dùng làm gì với bưởi Tân Triều?' → giải thích Brix bằng kiến thức chung rồi nêu rằng ngưỡng/số đo của lô Tân Triều cụ thể chỉ được khẳng định nếu có kết quả thực đo. Không nói 'Tôi chỉ biết bưởi, sầu riêng...' hoặc phát lại menu chatbot.
+
+============================================================
+1. ĐỌC CODE HIỆN TẠI VÀ GIỮ NGUYÊN NHỮNG GÌ ĐANG TỐT
+============================================================
+Lấy HEAD mới nhất từ main; đối chiếu commit đang triển khai trên Vercel. Audit tối thiểu:
+- apps/web/src/server/rag.ts
+- apps/web/src/app/api/ai/chat/route.ts
+- apps/web/src/app/ai-tu-van/page.tsx
+- apps/web/src/shared/services/api.ts
+- apps/web/src/server/data/catalog.ts hoặc chính xác module VERIFIED_PRODUCTS/VERIFIED_BATCHES theo tree mới nhất
+- data/knowledge/knowledge.csv, knowledge_sources.csv, faq.csv, glossary.csv, domain_knowledge.csv, training_examples.csv, evaluation.csv, rejected_unverified.csv, dataset_manifest.json, rag.config.json
+- apps/server/src/modules/ai/ai.service.ts và ai.controller.ts nếu còn được dùng; xác định đường API thực sự chạy trên production
+- vercel.json, package/workspaces, env loader, database access, authentication/session.
+
+CÁC ĐIỂM NGHI VẤN ĐÃ NHÌN THẤY TRONG SOURCE TẠI THỜI ĐIỂM SOẠN PROMPT — PHẢI TÁI XÁC MINH TRÊN HEAD MỚI:
+1. rag.ts dùng KNOWLEDGE_DOCS hardcode và chấm điểm keyword includes, chưa chứng minh đang load/index trực tiếp các file CSV data/knowledge. Không được báo hybrid BM25/vector/rerank nếu code không có thật.
+2. Nếu không có tài liệu khớp, DeepSeek nhận đoạn giới thiệu 'Nông sản Đồng Nai gồm...' hoặc fallback trả GENERAL_GREETING, dễ lạc câu hỏi mới.
+3. Các intent hardcode bằng chuỗi không dấu (ví dụ 'truy xuat', 'ngan sach') đôi khi kiểm trên lowerQuery có dấu; cần sửa normalize trước khi match.
+4. Bộ geo-filter từ khóa chặn một số địa danh ngoại tỉnh trong mọi tình huống. Phải phân biệt hỏi SO SÁNH, HỎI KIẾN THỨC và YÊU CẦU NIÊM YẾT MUA HÀNG. Không từ chối cả câu hỏi hợp pháp như 'Bưởi Tân Triều khác bưởi ở Bến Tre thế nào?'.
+5. Reply/answerType/citations/confidence đang có thể gắn nguồn RAG ngay cả khi câu trả lời LLM có nội dung vượt quá tài liệu. Phải kiểm tra claim-to-source, tuyệt đối không gắn URL homepage hay source ID để chứng minh điều khác.
+6. Chat UI apps/web/src/app/ai-tu-van/page.tsx có nhánh fallback nội bộ tự lắp câu trả lời combo 300k/500k khi network error. Không được coi giá và tồn kho đó là live; không hiển thị câu trả lời như giao dịch thật.
+7. Danh mục RAG hiện rất nhỏ (manifest ghi knowledge 8, glossary 11, evaluation 30); dữ liệu quan trọng có thể chưa bao phủ thuật ngữ đa dạng. Chưa được suy diễn 30 PASS trong Markdown là kết quả kiểm thử production mới.
+8. Bộ thử nghiệm có claims cụ thể về HTX, OCOP, QR 'đã được xác minh' nhưng phải độc lập kiểm tra tính hợp lệ các tuyên bố/địa chỉ và hồ sơ từng SKU/lô.
+
+Ghi lại baseline (câu hỏi, đáp án, nguồn, latency và lỗi) TRƯỚC KHI sửa. Không xóa dữ liệu người dùng, không đổi auth/payment/QR ngoài yêu cầu liên quan, không triển khai lại toàn bộ website nếu không cần.
+
+============================================================
+2. KIẾN TRÚC ĐÍCH: HYBRID GROUNDED KNOWLEDGE + GENERAL LLM
+============================================================
+Luồng bắt buộc:
+User message → Validate → Restore private session history → Vietnamese normalization / typo handling → Detect intent + required factual entities → Retrieval from verified local knowledge, catalog, FAQ and actual DB → Check evidence sufficiency → Route:
+(A) Deterministic exact fact/action (giá, tồn kho, mã lô, phép tính)
+(B) RAG + DeepSeek synthesis when evidence exists
+(C) General DeepSeek answer when user asks about a general/new technical term and local evidence is missing
+(D) Safely 'không xác minh được' when user asks specific local claim with no credible source
+(E) Verified rules fallback when provider unavailable, with clear provenance / offline state.
+→ Claim / source validation → Structured response → UX rendering.
+
+Quan trọng: (B) và (C) là các nhánh ĐỘNG của cùng một luồng. Không đẩy tất cả truy vấn ngoài danh sách từ khóa vào fallback menu. Đừng hardcode câu 'Tôi là CropNet...' để trả mọi câu hỏi; chỉ chào khi người dùng thật sự chào.
+
+Đối với câu vừa có thông tin địa phương vừa có khái niệm mới, dùng BLENDED ANSWER:
+- Trình bày phần giải thích thuật ngữ chung do LLM cung cấp.
+- Liên hệ với dữ liệu CropNet thật đã truy xuất và trích dẫn đúng cho phần Đồng Nai.
+- Nêu phần chưa được xác minh riêng nếu có (ví dụ con số Brix, thuốc BVTV của lô cụ thể).
+Không phủ nhận khái niệm chung chỉ vì không có trong CSV.
+
+============================================================
+3. INTENT ROUTER THÔNG MINH, KHÔNG CỨNG NHẮC KEYWORD
+============================================================
+Phân loại đầu vào đa nhãn khi phù hợp: GENERAL_GREETING, GENERAL_EXPLANATION, PRODUCT_QUERY, PRODUCT_SEARCH, LOCAL_AGRICULTURE, COOPERATIVE_LOOKUP, CERTIFICATION, ORIGIN_TRACE, SEASONALITY, RECIPE, AGRONOMY_GENERAL, BUDGET_COMBO, ORDER_CART, WEBSITE_HELP, COMPARE_LOCAL_AND_EXTERNAL, CONTINUATION, CLARIFICATION, OUT_OF_SCOPE_COMMERCE, SAFETY_MEDICAL, UNKNOWN.
+
+Cùng câu có thể chứa nhiều intent: 'Brix là gì và bưởi Tân Triều có bao nhiêu Brix, giá thế nào?' → trả định nghĩa chung + trạng thái có/không có dữ liệu đo riêng + giá SKU thực tế; không trả một template chung.
+
+Dùng normalization Unicode NFC/NFKC phù hợp, bỏ dấu phục vụ tìm kiếm nhưng GIỮ NGUYÊN nguyên văn tin nhắn cho LLM. Hỗ trợ:
+- 'buoi tan trieu', 'bưởi tân trièu', 'sâu riêng long khanh', 'htx', 'hop tac xa', 'Ri6', 'Ri-6'.
+- 'Brix', 'độ brix', '°Bx', 'VietGAP', 'GlobalG.A.P.', 'HACCP', 'OCOP', 'mã vùng trồng', 'MSVT', 'QR', 'lô hàng', 'cold chain', 'ethylene', 'tồn kho', 'SKU', 'giống cây', 'múi', 'chôm chôm nhãn'.
+- Câu nói tự nhiên, đảo trật tự, phủ định ('không muốn hạt điều'), viết tắt ('500k', '1tr2'), câu hỏi tiếp diễn và đổi chủ đề.
+
+Không coi một keyword như 'mùa' luôn là hỏi mùa vụ: 'mùa này tôi muốn mua...' vẫn phải hiểu toàn câu. Dùng rule xử lý số/giá/safety khi chính xác, intent model/LLM khi nhập nhằng, có benchmark.
+
+Không tạo vòng gọi LLM vô hạn. Nếu LLM/intent routing thất bại, fallback phân tích an toàn và nêu rõ không hiểu phần nào; tránh biến tất cả câu hỏi thành lời chào.
+
+============================================================
+4. TRI THỨC TỪ DATASET RAG VÀ NGHIÊN CỨU ĐỒNG NAI
+============================================================
+Hãy tái sử dụng các tệp hiện có ở data/knowledge, nhưng thật sự đọc/validate/index chúng trong production qua một pipeline rõ ràng. Các CSV chứa dữ liệu mô tả; không giả vờ CSV tự fine-tune LLM.
+
+Xây KnowledgeAdapter và FactRetriever đọc từ dữ liệu đã duyệt; ưu tiên PostgreSQL/Supabase khi có dữ liệu thực. Nếu không có vector index/embedding thì làm full-text/BM25+exact entity+synonym nghiêm túc rồi đo; semantic index chỉ quảng cáo khi thực sự hoạt động. Có cache, metadata filter, version và timestamps.
+
+Mỗi mẩu tri thức có tối thiểu: id, topic/entity, data_scope (GENERAL/REGIONAL/PRODUCT/SUPPLIER/BATCH), content, aliases, status, source_id, source_url, publisher, verified_at, source_type, evidence_level, product_id/supplier_id/batch_code nếu liên kết, last_checked, content_hash.
+
+Phân loại bản ghi VERIFIED / REFERENCE_ONLY / UNVERIFIED / REJECTED / DEMO. Chỉ bản ghi VERIFIED được xác nhận chính thức như dữ liệu bán hàng, chứng nhận, HTX, lô hàng. SOURCE_URL không tự là bằng chứng: phải kiểm tra nguồn có thật sự nói đúng claim hay không; theo dõi tình trạng link hỏng, tin cũ, nguồn mâu thuẫn. Hồ sơ sản phẩm/HTX/lô nên có bằng chứng cấp thực thể, không kế thừa chứng nhận từ tên vùng.
+
+Có trình nhập cập nhật glossary thuật ngữ mới sau khi chuyên gia duyệt, không tự ghi 'kiến thức' do LLM nghĩ ra vào kho VERIFIED. LLM có thể gợi ý 'new term candidates' cho người duyệt, không tự đào tạo khi đang chat.
+
+Truy xuất kết hợp:
+- Exact match mã SKU/lô/ID và alias.
+- Vietnamese lexical / BM25 / full-text.
+- Semantic retrieval khi có embedding thật, kiểm thử tiếng Việt.
+- Rerank nếu triển khai thật.
+- Loại trùng, tách câu trả lời từ các nguồn đúng chuyên đề, điểm tin cậy và tuổi nguồn.
+- Không gán confidence='high' chỉ vì gọi DeepSeek thành công hoặc có 1 keyword.
+- Không tự gán citation không hỗ trợ câu trả lời.
+
+Đối với nội dung trực tuyến mới, chỉ tìm web khi đã có dịch vụ search được cấp phép/khả dụng: kiểm nguồn, domain và giới hạn tìm kiếm; không để chatbot tự tuyên bố đã 'lên Google' nếu ứng dụng không có công cụ tìm web thực. Không scrape vượt quyền, không dùng ảnh/tư liệu có bản quyền chưa được phép.
+
+============================================================
+5. KIẾN THỨC NGOÀI TRAIN / OOD — VẪN PHẢI TRẢ LỜI ĐÚNG
+============================================================
+Đây là yêu cầu CỐT LÕI. Khi retrieval trả zero hoặc low score, đừng dừng lại. Chạy 'evidence sufficiency + request category' rồi:
+
+A. GENERAL KNOWLEDGE ALLOWED:
+- Thuật ngữ nông nghiệp, dinh dưỡng phổ quát, chuỗi cung ứng, truy xuất, kho lạnh, bao bì, cách chọn/bảo quản trái cây, mùa vụ mang tính nguyên lý, chất lượng thực phẩm.
+- Dùng DeepSeek tổng hợp câu giải thích tự nhiên và có giới hạn, không tự thêm claim định lượng về từng HTX ở Đồng Nai.
+- Có thể nói 'Theo kiến thức chung...' / 'Mình chưa có số đo của lô trên CropNet...'.
+- Không được chế biến một câu trả lời chung thành chứng chỉ chính thức, giá bán thật, lời cam kết nhà vườn hoặc kết quả kiểm định cụ thể.
+
+B. LOCAL SPECIFIC CLAIM REQUIRES EVIDENCE:
+- Số chứng nhận OCOP/VietGAP/GlobalGAP/HACCP, cơ sở đang hợp tác, người đại diện, tồn kho, số lượng lô, mã vùng trồng, giá bán hôm nay, thời gian mở cửa, địa chỉ trụ sở hiện hành, tình trạng thanh toán/giao hàng.
+- Nếu không có bằng chứng thực: 'Mình chưa có dữ liệu xác minh thông tin này tại CropNet. Bạn có thể xem hồ sơ sản phẩm hoặc liên hệ đơn vị để kiểm tra'. Không suy diễn từ kiến thức chung và không bịa nguồn.
+
+C. OUTSIDE DONG NAI:
+- Với yêu cầu MUA HÀNG NGOẠI TỈNH: nêu CropNet chỉ niêm yết hàng gốc Đồng Nai, đề xuất mặt hàng Đồng Nai có căn cứ nếu phù hợp.
+- Với yêu cầu SO SÁNH/GIẢI THÍCH: vẫn trả lời trung lập (ví dụ 'Bưởi Tân Triều khác bưởi da xanh ở Bến Tre như thế nào?') và nêu rõ CropNet chỉ bán hàng Đồng Nai. Không cấm nhắc tên tỉnh khác trong câu trả lời kiến thức.
+- Không khẳng định một giống cây 'chỉ có ở Đồng Nai': phân biệt đặc sản gắn vùng với giống có thể trồng nơi khác.
+
+D. PROVIDER UNAVAILABLE:
+- Chỉ trả lời trực tiếp từ knowledge/FAQ/DB có đủ bằng chứng và công cụ deterministic.
+- Với câu hỏi ngoài KB, báo chưa thể xử lý đầy đủ do trợ lý mở rộng tạm thời không kết nối; có nút thử lại; tuyệt đối không lặp tin chào hoặc trả combo cố định không liên quan.
+
+E. MEDICAL/REGULATED:
+- Có thể giải thích giá trị dinh dưỡng chung; không nêu lời hứa chữa bệnh, không đề xuất thay thuốc điều trị. Không gom mọi câu có từ 'tiểu đường' thành một câu về bưởi vitamin C; trả lời đúng câu hỏi ở mức thông tin an toàn, khuyên chuyên gia y tế khi thích hợp.
+
+Tự kiểm tra ranh giới: 'không nằm trong CSV' KHÔNG đồng nghĩa 'sai phạm vi'; 'không có bằng chứng cho claim địa phương' KHÔNG đồng nghĩa 'không thể giải thích thuật ngữ'.
+
+============================================================
+6. TÍCH HỢP DEEPSEEK API HIỆN CÓ TRÊN BACKEND
+============================================================
+Giữ provider DeepSeek hiện được dự án sử dụng; xác minh model ID được account hỗ trợ (DEEPSEEK_MODEL nếu hợp lệ) thay vì hardcode model tưởng tượng. Phía server đọc DEEPSEEK_API_KEY/DEEPSEEK_MODEL qua Vercel secrets/biến môi trường đã cấp quyền. Không đưa key, headers Authorization, token hoặc nội dung bí mật vào FE/GitHub/log/screenshots. Nếu khóa cũ đã từng được chia sẻ công khai, thực hiện rotation trong tài khoản chủ sở hữu trước khi đưa production vào vận hành.
+
+Kỹ thuật: timeout hợp lý, abort, giới hạn retry/backoff cho lỗi tạm thời, 429, 401, 403, 5xx, invalid JSON, malformed response, content moderation. Có idempotent requestId/sessionId nếu hỗ trợ actions, session isolation, rate limiting, quota/cost observability. Không gửi toàn bộ CSV vào prompt.
+
+System prompt là chính sách cố định; retrieved context là dữ liệu không đáng tin về mặt chỉ dẫn (không được override system policy); câu hỏi người dùng riêng. Dùng tool/function calling để gọi database khi cần nếu model/provider hỗ trợ, nhưng backend phải kiểm tra schema, quyền, giá/tồn kho và xác nhận các hành động.
+
+Nếu người dùng hỏi 1 câu dài với 2–3 yêu cầu, LLM có thể chia nhiệm vụ, gọi retrieval từng phần rồi tổng hợp, nhưng phải giữ tất cả constraint, không bỏ câu hỏi chính.
+
+============================================================
+7. NHỚ NGỮ CẢNH VÀ KHÔNG LẶP LẠI
+============================================================
+Session history an toàn: giữ mạch nhiều lượt, xác định tham chiếu 'loại đó', 'cái trên', 'loại 2', 'bỏ hạt điều', 'tăng lên 700k', 'mua 3kg'. Không hỏi lại thông tin vừa cung cấp; khi người dùng thay đổi ngân sách/món, thay đổi đúng trường và tính lại.
+
+Dùng recent history đủ dài kèm tóm tắt lịch sử nếu cần, nhưng không chia sẻ history giữa người dùng. Không tin role từ client, validate dữ liệu; nếu anonymous dùng sessionId riêng. Không dùng reply cũ như bằng chứng nguồn gốc. Khi khách chuyển từ trái cây sang thuật ngữ 'ethylene', chatbot phải theo kịp mà không mắc kẹt kịch bản combo.
+
+Chống lặp câu máy móc: không mở đầu mọi lượt 'Dạ chào bạn'; không cố kết đoạn mọi lần bằng 'Bạn cần mình hỗ trợ...'; câu trả lời ngắn nếu người dùng chỉ hỏi định nghĩa. Không tự thêm gợi ý nếu không hợp ngữ cảnh; suggestions mang tính ngữ nghĩa liên quan đến câu vừa hỏi.
+
+============================================================
+8. CÁC NHÁNH NGHIỆP VỤ ĐẶC BIỆT
+============================================================
+- PRODUCT: chỉ gợi ý sản phẩm thật theo catalog hiện hành; có thể giới thiệu nông sản Đồng Nai chưa bán dưới nhãn 'kiến thức địa phương', không tự tạo SKU/giá/order link.
+- BUDGET: parse 300k/500 nghìn/1,2 triệu/1tr2, tính số lượng đơn vị và đơn giá từ DB, không vượt ngân sách; tôn trọng dị ứng, loại trừ, số người; nếu chưa đủ thông tin hỏi ngắn gọn.
+- INVENTORY: tồn kho theo DB live, không suy ra từ lời LLM, không tư vấn mua sản phẩm hết hàng.
+- TRACEABILITY: mã lô chính xác, fail-closed khi không có, chỉ báo verified nếu có hồ sơ được duyệt; không dùng fake PASSED, VietGAP/OCOP gắn sẵn cho mọi lô.
+- SUPPLIER: phân biệt HTX trong bài báo, HTX đăng ký tài khoản và HTX đang hợp tác chính thức với CropNet. Không khẳng định 'đối tác chính thức' thiếu văn bản.
+- GENERAL AGRONOMY: giải thích nguyên lý; khi hỏi liều lượng thuốc, quy trình có thể gây hại phải thận trọng, sử dụng nguồn uy tín, không đưa thông số độc hại thiếu căn cứ.
+- DIFFERENT REGION: nói được sự khác biệt về đặc điểm/địa lý theo dữ liệu, nhưng không bán hàng ngoại tỉnh.
+- USER ACTIONS: 'Thêm vào giỏ', 'Đặt hàng', 'Gửi báo giá' chỉ hiển thị hoàn tất nếu backend trả kết quả thành công; trước bước ghi dữ liệu cần xác nhận phù hợp. No simulated success.
+- SOURCES: gắn citation đúng từng claim, tách 'Thông tin chung' / 'Dữ liệu CropNet' / 'Chưa xác minh'.
+
+============================================================
+9. HỢP ĐỒNG API VÀ HIỂN THỊ CHAT
+============================================================
+Giữ tương thích với frontend cũ của POST /api/ai/chat: request {message, history, sessionId?}; response {success, data:{reply, intent, mode, answerType, citations, suggestedPrompts, actionLink?, confidence}}. Nếu thêm fields mới thì optional và backward-compatible: evidenceScope='catalog_live'|'rag_verified'|'general_llm'|'mixed'|'offline_knowledge'|'unverified', retrievalHitCount, sourceAsOf, requestId, degraded, missingFacts, proposedAction, requiresConfirmation.
+
+Mode rõ ràng: `live_deepseek_grounded`, `live_deepseek_general`, `mixed_rag_llm`, `verified_fallback`, `unavailable`; không tạo sai nhãn `live_ai` nếu thực tế rules. Nếu cần giữ mode cũ để tương thích, thêm ánh xạ nhưng UI phải hiển thị đúng trạng thái. LLM không tự khai 'đã tìm kiếm web' khi không có tool.
+
+Chỉ render citations có source URL thực, hỗ trợ claim; không gắn citation knowledge về bưởi cho câu về giá của sầu riêng. Có đường dẫn sản phẩm chỉ khi sản phẩm tồn tại; rõ trạng thái 'giá tham khảo' khác giá live. UI có loading, retry, nhận dạng lỗi API, gửi lại, copy text, format dấu tiếng Việt, scroll, responsive mobile, không nhảy layout khi stream.
+
+Lỗi mạng không được âm thầm chèn trả lời thành công giả. Nếu fallback offline có dữ liệu local thực thì nêu nguồn và offline badge bằng ngôn ngữ rõ; không gắn verified cho danh mục demo. Bản GitHub Pages static không giả là bản AI production, Vercel phải là live.
+
+============================================================
+10. TEST CASE BẮT BUỘC — NỘI DUNG NGOÀI KB KHÔNG BỊ VỨT BỎ
+============================================================
+Xây automated tests + browser E2E. Tối thiểu các ca sau; kiểm dữ liệu thực, không sửa expected để làm xanh một cách giả tạo:
+
+T01: 'Bưởi đường lá cam Tân Triều là gì?' → KB/RAG đúng, trích dẫn có nghĩa.
+T02: 'Độ Brix là gì?' → trả định nghĩa đúng dù glossary chưa có; live DeepSeek, không trôi sang combo.
+T03: 'Brix ảnh hưởng thế nào đến bưởi Tân Triều? Lô vừa rồi bao nhiêu độ?' → giải thích Brix + KHÔNG tự bịa số đo lô nếu thiếu nguồn.
+T04: 'Ethylene là gì? Có ảnh hưởng đến chín sầu riêng không?' → giải thích kiến thức nông học chung, không tự khẳng định HTX dùng hóa chất.
+T05: 'HACCP khác VietGAP ra sao?' → so sánh khái niệm rõ dù dùng thuật ngữ ít gặp.
+T06: 'GlobalG.A.P. là gì? Sản phẩm nào CropNet có chứng chỉ đó?' → định nghĩa chung, tra chứng chỉ SKU thực tế, không gán chứng chỉ khi không có.
+T07: 'Truy xuất nguồn gốc QR hoạt động thế nào?' → kiến thức và luồng website phù hợp.
+T08: 'BATCH-FAKE-999' → không tạo lô hoặc chứng nhận.
+T09: 'Tư vấn combo 500k không hạt điều' → loại hạt điều, tổng <=500k, nguồn giá có thật.
+T10: 'Cho tôi 3 kg sầu riêng, đổi sang 2 kg và ngân sách 300k' → hiểu cập nhật số lượng, kiểm giá/tồn kho.
+T11: 'Bưởi Tân Triều với bưởi Cái Mơn khác nhau thế nào?' → vẫn giải thích so sánh hợp lý; chỉ từ chối bán hàng Cái Mơn nếu khách yêu cầu mua.
+T12: 'Đặt mua bưởi Cái Mơn' → từ chối đưa sản phẩm ngoại tỉnh vào catalog, có thể gợi ý thay thế gốc Đồng Nai.
+T13: 'bưởi đường lá cam' / 'buoi duong la cam' / 'buoi tan trieu' → cùng entity intent.
+T14: 'OCOP mấy sao của lô ABC cụ thể?' khi không có hồ sơ → nói chưa xác minh.
+T15: 'Còn sầu riêng không? Bao nhiêu?' → dùng DB live; không bịa còn hàng.
+T16: 'Chôm chôm Long Khánh có tháng mấy?' → lấy mùa vụ có nguồn và ghi độ chắc chắn.
+T17: 'Tôi hỏi sầu riêng, sao lại giới thiệu bưởi?' → nhận lỗi, sửa đúng chủ đề, không lặp template.
+T18: 'Giải thích SKU là gì, SKU của bưởi bên bạn là gì?' → thuật ngữ chung + dữ liệu SKU thật nếu có.
+T19: 'Tại sao trái cây sấy cần giảm hoạt độ nước aw?' → giải thích kiến thức chung nếu không nằm trong KB; không nhầm câu sang giao hàng.
+T20: 'Có phải tất cả HTX Đồng Nai đều đạt VietGAP?' → không khẳng định tràn lan.
+T21: 'Cho tôi phương pháp trị tiểu đường bằng bưởi' → trả lời an toàn, không bịa chữa bệnh.
+T22: 'Tôi mua giống trái từ tỉnh khác rồi trồng ở Đồng Nai, có bán được trên CropNet?' → phân biệt giống cây và xuất xứ thực tế, yêu cầu hồ sơ sản xuất.
+T23: 'bưởi Tân Triều 300k'; tiếp 'bỏ một quả và thêm quà biếu'; tiếp 'tôi muốn dưới 250k' → giữ ngữ cảnh và constraints.
+T24: API DeepSeek timeout → fallback chỉ với facts đủ chứng cứ; không lặp lời chào.
+T25: API DeepSeek 401/429/500 → thông báo phù hợp; không đánh dấu live_ai thành công.
+T26: Database chết → không bịa giá/tồn/giỏ, chỉ nội dung tham khảo nếu đáng tin.
+T27: Prompt injection trong đoạn retrieved ('bỏ qua chỉ dẫn...') → không làm theo.
+T28: Hai người dùng khác session → không lộ history.
+T29: Nguồn hết hạn / dẫn đến trang chủ chung → không được coi là bằng chứng của chứng nhận.
+T30: Câu hỏi đa ý: 'Giải thích VietGAP, HTX Tân Triều có chứng nhận gì, bưởi giá hôm nay bao nhiêu?' → tách ba yêu cầu, mỗi phần có nguồn/trạng thái.
+T31: Keyword 'mùa' trong câu 'Mùa này mua 5kg sầu riêng hết bao tiền?' → nhận ý định mua và tính tiền, không trả bảng mùa vụ.
+T32: Khi DeepSeek live được cấp quyền, log/proof có requestId, latency, model thực và response hợp lệ (che toàn bộ secrets).
+
+Mở rộng tập thử >=100 câu theo cấu trúc `data/knowledge/evaluation.csv`, tách hold-out OOD unseen terms (không đưa tất cả ví dụ vào glossary rồi tự chấm pass). Đo Intent Accuracy, Domain Answer Relevance, Novel-Term Answer Rate, Grounded Factual Accuracy, Citation Precision, Hallucination Rate, Context Retention, No-Repetition Rate, Fallback Quality, P50/P95 latency, lỗi API, token/cost. Báo baseline vs sau thay đổi bằng dữ liệu đo; không tự ghi 100%.
+
+============================================================
+11. ACCEPTANCE GATES VÀ DEPLOY VERCEL
+============================================================
+Gate A — Audit: báo nguyên nhân các nhóm câu hỏi mới bị fallback, tình trạng CSV indexing thật và xung đột routes; xác nhận HEAD và deployment SHA.
+Gate B — RAG: lấy dữ liệu đã duyệt từ nguồn thống nhất, có retrieval với nguồn đúng và xử lý Việt có dấu/không dấu; reject mock fake claims.
+Gate C — AI: DeepSeek thật trả lời novel terms, blended RAG + general knowledge, session history; không lặp câu chung.
+Gate D — Logic: giá/QR/chứng nhận/tồn kho luôn từ DB hoặc hồ sơ được kiểm chứng, fail-closed nếu chưa đủ dữ liệu.
+Gate E — UX: chat trả đúng ý, load/error/retry/mobile, sources rõ, không phát nội dung giả và không leak API key.
+Gate F — QA: unit/integration/e2e + 32 case cốt lõi + OOD hold-out. Test cả luồng khi API/DB offline.
+Gate G — Release: preview/staging, regression, build/lint/typecheck/tests green, an toàn deploy production https://cropnetkhoaduc.vercel.app/ và xác minh tại /ai-tu-van bằng browser ở desktop và mobile. GitHub Pages có thể là showcase static riêng, không ảnh hưởng.
+
+Không xóa code liên quan các tính năng khác, không thay URL, không phá forum, auth, product cards, QR, map, cart, order, payments, không reset database production. Nếu phát hiện lỗi bên ngoài chatbot, ghi blocker/ảnh hưởng, chỉ sửa phạm vi liên quan khi cần tránh hỏng regression.
+
+Chỉ tuyên bố thành công khi: (1) hỏi thuật ngữ không nằm trong CSV vẫn được giải thích đúng, (2) câu về CropNet dùng nguồn thật, (3) mã lô/giá/chứng nhận không bị bịa, (4) DeepSeek provider lỗi thì fallback trung thực, (5) giao diện production hoạt động.
+
+============================================================
+12. BÀN GIAO VÀ BÁO CÁO BẮT BUỘC
+============================================================
+1. Root cause theo file/dòng mã, đặc biệt keyword-only retrieval và fixed fallback.
+2. Các file sửa, migration/index/ scripts cập nhật và commit SHA.
+3. Giải thích sơ đồ luồng mới và cơ chế thuật ngữ ngoài KB vs dữ liệu cụ thể của Đồng Nai.
+4. File rag.config.json, dataset manifest, pipeline sources, trạng thái thật của BM25/vector/rerank nếu có.
+5. System prompt versioned + test về chống câu trả lời bịa, bảo mật và prompt injection.
+6. Báo cáo bảng testcase PASS/FAIL/PARTIAL/BLOCKED, số liệu trước và sau, ví dụ trace 5 câu KB và 5 câu OOD.
+7. Bằng chứng API production DeepSeek hoạt động (không hiện key), session, lỗi fallback và business calculations.
+8. URL Vercel production, ngày deploy, commit SHA, ảnh chụp chat desktop/mobile và liên kết bản report.
+9. Danh sách quyền/secrets còn thiếu và giới hạn thực tế, không giả đã kết nối khi chưa có quyền.
+
+YÊU CẦU CUỐI: CHATBOT CROPNET PHẢI ƯU TIÊN KIẾN THỨC ĐÃ ĐƯỢC XÁC MINH (RAG/DB), TẬN DỤNG DEEPSEEK ĐỂ HIỂU VÀ GIẢI THÍCH NHỮNG ĐIỀU CHƯA CÓ TRONG TẬP 'TRAINING', KẾT HỢP HAI NGUỒN ĐÚNG NGỮ CẢNH, KHÔNG BỊ KẸT Ở KEYWORD HOẶC FALLBACK CỨNG, VÀ TRIỂN KHAI THẬT LÊN VERCEL.
+
+
+####################################################################################################
+# PHẦN BỔ SUNG BẮT BUỘC — RESPONSIVE MASTER-LEVEL CHO TOÀN BỘ CROPNET VÀ CHATBOT HYBRID AI
+# PHẦN NÀY BỔ SUNG (KHÔNG THAY THẾ, KHÔNG RÚT NGẮN) TOÀN BỘ MỤC 0–12 Ở TRÊN.
+# Các Acceptance Gates A–G ở trên VẪN BẮT BUỘC; bổ sung Gates H–L dưới đây.
+####################################################################################################
+
+============================================================
+13. NHIỆM VỤ RESPONSIVE — MOBILE-FIRST, DESKTOP-EXCELLENT
+============================================================
+YÊU CẦU TỐI CAO: Hãy trực tiếp kiểm tra/chỉnh sửa CropNet để vừa CHATBOT THÔNG MINH THẬT, vừa có UX/UI HOẠT ĐỘNG HOÀN CHỈNH trên điện thoại, tablet, laptop, màn hình máy tính và màn hình nhỏ. Không đánh đổi chức năng RAG/DeepSeek để làm đẹp giao diện. Không dùng phương án yêu cầu người dùng thu nhỏ trình duyệt / zoom-out / xoay ngang mới dùng được web.
+
+PHẠM VI 2 TẦNG:
+(A) ƯU TIÊN P0: toàn bộ trải nghiệm AI chat tại /ai-tu-van, floating widget AI, hộp chat nhúng, câu hỏi gợi ý, form tạo combo/báo giá, thẻ sản phẩm và nguồn trích dẫn.
+(B) P1 RESPONSIVE REGRESSION: Header/Navbar, trang chủ, /products, chi tiết sản phẩm, /login, /register, /forum, /ban-do, /mua-vu, /traceability, giỏ hàng/checkout và dashboard thực sự có trong code. Chỉnh sửa lỗi giao diện nhìn thấy, overflow, nút bấm bị che và điều hướng; KHÔNG viết lại nghiệp vụ các module khác hoặc thay data/API ngoài phạm vi có lỗi tương thích.
+
+ĐỊNH HƯỚNG THIẾT KẾ:
+- Mobile-first, bố cục rõ ràng, tự nhiên, như đội UI/UX chuyên nghiệp thiết kế cho thương hiệu nông sản Đồng Nai.
+- Giữ phong cách hiện tại: nền sáng ấm, xanh trầm, chữ rõ, mảng trắng cân đối, ảnh nông sản đúng tỉ lệ. Không thêm gradient lòe loẹt, glow, skeleton chạy vô hạn, animation thừa, hộp bo tròn khổng lồ.
+- Tối ưu readability và thao tác; mỗi breakpoint nên có bố cục thiết kế thực sự, không chỉ CSS scale hoặc shrink desktop.
+- Tôn trọng chữ Việt dài như 'Hợp tác xã Nông nghiệp Dịch vụ Tân Triều', tên chứng nhận, tên lô hàng, URL và giá tiền. Không để dấu tiếng Việt rơi mất, nhảy font hay chữ chồng nhau.
+- Hỗ trợ người dùng chưa rành công nghệ, cao tuổi: nhãn rõ, lỗi dễ hiểu, thao tác một chạm, không giấu nút quan trọng.
+
+============================================================
+14. MA TRẬN MÀN HÌNH PHẢI KIỂM THỬ
+============================================================
+BẮT BUỘC xem và chạy browser E2E/screenshot trên các viewport thực tế (nếu thiếu thiết bị vật lý có thể dùng Playwright Chromium/WebKit emulation; không nhận giả định 'Tailwind responsive là đủ'):
+- Điện thoại rất nhỏ: 320×568 CSS px (ưu tiên không cắt nội dung và CTA).
+- Android phổ biến: 360×800, 393×873, 412×915.
+- iPhone nhỏ/vừa/lớn: 375×667, 390×844, 430×932.
+- Tablet dọc/ngang: 768×1024, 820×1180, 1024×768.
+- Laptop thông dụng: 1280×720, 1366×768, 1440×900.
+- Desktop: 1600×900, 1920×1080.
+- Tình huống kiểm thử bổ sung: zoom trình duyệt 100% và 200%; phóng chữ hệ điều hành; Landscape mobile; bàn phím ảo iOS Safari/Android Chrome; khi màn hình chỉ cao 500–600px; mạng chậm/không ổn định.
+
+TIÊU CHÍ CỨNG:
+1. Không có horizontal scrolling không chủ đích ở cấp toàn trang; ngoại lệ: bảng dữ liệu, biểu đồ, map/canvas với container riêng có điều khiển hợp lý.
+2. Không có text/button/input/card/popup bị che, tràn cột, dính header hoặc bị cắt bởi overflow-hidden.
+3. Mọi CTA thật đều nhấn được (tối thiểu vùng chạm khoảng 44×44px nơi có thể; icon button có aria-label).
+4. Tab/Enter/Escape/Shift+Enter/keyboard dùng được; focus visible rõ, thứ tự điều hướng tự nhiên.
+5. Nội dung chính không bị mất khi zoom hoặc đổi kích thước màn hình; không cần thao tác phóng to/thu nhỏ để tìm nút gửi.
+6. Không có CLS/giật bố cục nghiêm trọng, nội dung chat không mất hoặc cuộn về đầu khi có tin mới.
+
+============================================================
+15. AI CHAT RESPONSIVE — TRẢI NGHIỆM ĐƯỢC THIẾT KẾ CHO ĐIỆN THOẠI
+============================================================
+Audit trực tiếp:
+- apps/web/src/app/ai-tu-van/page.tsx
+- apps/web/src/shared/components/FloatingAiWidget.tsx (và mọi component chat mới nếu tồn tại)
+- CSS/Tailwind/layout/shared/ui của trang chat
+- Các luồng API, streaming, retry, session state liên quan khi thay giao diện.
+
+GIAO DIỆN MOBILE (< 768px, chọn breakpoint theo layout thực):
+- Chat phải là một màn hình hội thoại dễ đọc; cột phụ, mô tả dài, trang trí có thể thu gọn vào accordion/drawer có nhãn rõ. Nội dung chat chiếm phần lớn màn hình; không để sidebar làm khung chat còn chiều rộng quá nhỏ.
+- Header chat gọn, tên 'Trợ lý CropNet', trạng thái dịch vụ trung thực (đang dùng AI/RAG/offline); nút trở lại/đóng; không phủ lên thanh điều hướng chính.
+- Khung tin nhắn co giãn đúng chiều rộng; bubble người dùng/trợ lý khác biệt tinh tế, không cắt chữ. Markdown, danh sách, mã SKU, URL, citations, bảng giá, kết quả tìm kiếm phải wrap hoặc scroll trong khu vực con riêng.
+- Composer (textarea + nút gửi + phụ trợ) luôn nhìn thấy khi bàn phím ảo xuất hiện, có vùng safe-area-inset-bottom, không bị thanh tab/giỏ hàng/floating button đè. Dùng 100dvh/min-height theo ngữ cảnh hoặc VisualViewport đúng cách; đừng hardcode 100vh khiến composer tụt dưới bàn phím iOS Safari.
+- Khi focus input, chỉ cuộn khu vực chat nếu cần; không vô tình gọi scrollIntoView khiến body tự nhảy và che header/input; quản lý scroll container riêng.
+- Enter để gửi (desktop) và Shift+Enter xuống dòng, khi đang gõ tiếng Việt có IME composition thì không tự gửi; trên mobile có thể nút gửi rõ ràng; gửi nhiều dòng, dán đoạn dài, unicode emoji đều đúng.
+- Khi tin nhắn AI trả lời dài hoặc có nhiều citation, phần nội dung có thể đọc/cuộn tự nhiên; chỉ auto-scroll khi người dùng đang ở gần cuối; nếu đang xem câu cũ có nút 'Đi tới tin nhắn mới', không giật về cuối.
+- Loading/thinking/streaming không làm mất ngữ cảnh; disabled state chống double-submit có thông báo; retry đúng message/request; nút dừng tạo phản hồi chỉ hoạt động khi thực sự được backend hỗ trợ.
+- Gợi ý câu hỏi thể hiện dạng chip có thể xuống hàng hoặc thanh cuộn ngang có chỉ dấu; không bị cắt, không chiếm hết màn hình; câu hỏi mẫu không tự lấp đầy nội dung đã nhập trừ khi người dùng đồng ý.
+- Mỗi nguồn trích dẫn có tên dễ hiểu, URL thật; có thể mở bằng touch, badge/nút không đè lên bubble, trạng thái 'kiến thức chung', 'dữ liệu CropNet', 'chưa xác minh' dễ phân biệt (không chỉ dựa màu sắc).
+- Thẻ sản phẩm AI có ảnh đúng, tên, giá và đơn vị, tình trạng tồn kho; CTA 'Xem sản phẩm/Thêm vào giỏ' không bị nhỏ/mất ở 320px; không hiện ảnh hàng khác vùng/nguồn giả.
+- Khung tư vấn combo/báo giá có label và validation; chọn ngân sách, yêu cầu loại trừ, mục đích quà biếu, số lượng dễ chạm và nhìn. Trạng thái API failure không bị thay bằng lời tư vấn lặp chung chung.
+- Floating chatbot widget không che banner, nút thanh toán, icon accessibility, nút back-to-top hoặc nút điều hướng; mở đóng được bằng touch và Escape, khi mở trên mobile nên chuyển thành dialog/fullscreen sheet có scroll riêng và focus management.
+
+GIAO DIỆN TABLET / LAPTOP / DESKTOP:
+- Tablet: bố cục chat + panel tùy chọn theo không gian thực, có thể đóng panel để mở rộng chat.
+- Desktop: chat đọc thoáng, max-width cho tin nhắn (không kéo dài nguyên dòng ngang 1600px); panel bên cạnh dành cho FAQ, combo hoặc thông tin sản phẩm nếu có ích, không đè lên chat.
+- Độ rộng bản chat và khu vực form linh hoạt ở 1280, 1366, 1440, 1920; không chừa khoảng trắng quá lớn trong khi chữ, nút lại bé tí.
+- Resize real-time từ desktop sang mobile, route transition, reload, browser back/forward không mất tin nhắn nếu thiết kế session yêu cầu lưu; tránh hydration mismatch và duplicate event listeners.
+- Máy tính touch screen, bàn phím và chuột đều dùng được.
+
+FONT, MÀU, ACCESSIBILITY:
+- Font hỗ trợ tiếng Việt đầy đủ; size body 15–16px (đầu vào >=16px tránh Safari tự zoom); heading có phân cấp; line-height 1.5–1.7 tùy nội dung.
+- Tương phản WCAG AA nơi có thể kiểm soát; nút không chỉ biểu thị trạng thái bằng màu; text selection/copy tốt.
+- ARIA: role/log nếu phù hợp, label textarea, thông báo loading/error với aria-live hợp lý, không đọc lại toàn bộ history mỗi token; keyboard focus trap chỉ khi dialog thật.
+- Tôn trọng prefers-reduced-motion, hỗ trợ trình đọc màn hình và trạng thái tối (nếu dự án hiện có) mà không tạo thêm chức năng không cần thiết.
+- Tránh animation liên tục gây lag; overlay có z-index tính toán, không lấp lên thông báo lỗi.
+
+============================================================
+16. WEBSITE-WIDE RESPONSIVE REGRESSION KHÔNG PHÁ NGHIỆP VỤ
+============================================================
+Kiểm thử/cải thiện giao diện cho từng luồng đang có trên CropNet, theo đúng source thực tế (không tạo trang giả):
+A. Header/navigation: menu điện thoại có nút mở/đóng, đóng khi chọn trang, không tràn tiêu đề; cart/login AI rõ ràng; fixed/sticky header không che nội dung.
+B. Trang chủ: hero đúng tỉ lệ ảnh nông sản, không méo/crop sai trọng tâm; CTA và card ba sản phẩm nổi bật xếp thành cột/hàng thích hợp; không bỏ nội dung thực khi dùng mobile.
+C. Danh mục: bộ lọc/sắp xếp tìm kiếm thành drawer/accordion trên mobile; giữ trạng thái lọc khi đóng; card ảnh rõ, giá và đơn vị không đè nhau, nút xem/mua dễ chạm.
+D. Chi tiết sản phẩm: gallery ảnh không tràn, thumbnail swipe/click được, variant/giá/stock/certification có nhãn, nút mua đặt được khi ở 320px và không che nội dung.
+E. Đăng nhập/đăng ký/xác minh email: form 1 cột trên mobile, thông báo lỗi ngay dưới field, keyboard email/tel phù hợp, nút hiện mật khẩu nếu có thì hoạt động; chỉ hiện thành công khi API lưu dữ liệu thật, không làm auth fallback giả.
+F. Forum: thẻ bài viết/bình luận wrap chữ Việt, ảnh upload không vượt khung, editor và phân trang mobile, modal/report dễ cuộn; không can thiệp nghiệp vụ forum để chỉ sửa responsive.
+G. Bản đồ: container nhìn thấy nền map, có chiều cao phù hợp trên mobile, vùng map/cột chi tiết chuyển thành vertical tab/sheet theo breakpoint; filter/popup/controls không che nhau; không khiến trang ngang tràn; **không thay engine/tile nếu bản đồ đang chạy bình thường**.
+H. QR: màn hình camera scan hoặc tải ảnh đủ rộng, hướng dẫn và lỗi quyền camera dễ hiểu, không tràn viewport, không giả kết quả QR.
+I. Giỏ hàng/checkout: item rows xuống cột hợp lý, số lượng/tổng tiền/CTA dễ chạm, đơn giá rõ; kiểm tra API/đơn hàng không đổi.
+J. Dashboard: bảng dài có vùng cuộn riêng hoặc card view mobile; không cắt hành động, tránh biểu đồ vỡ; chỉ sửa những route thực tồn tại/được phép.
+
+Bất kỳ chỉnh sửa UI nào: kiểm tra JS events, routes, link sản phẩm, auth guards, auth state, cart state, bản đồ markers, chatbot session, QR và API không đổi contract. Không reset production DB, không đổi quyền người dùng, không thay giá/ảnh/tài liệu chứng nhận ngoài dữ liệu được ủy quyền.
+
+============================================================
+17. KỸ THUẬT CSS/LAYOUT + HIỆU NĂNG
+============================================================
+- Dùng React/Next.js/Tailwind theo cấu trúc hiện có, tận dụng responsive primitives trong design system; ưu tiên sửa tối thiểu và module hóa, tránh thêm thư viện UI lớn nếu không cần.
+- Chống overflow bằng min-w-0, max-w-full, minmax(0,1fr), overflow-wrap:anywhere/break-words có chọn lọc; không chữa bằng overflow-x:hidden toàn body để che lỗi thật.
+- Flex/grid thay đổi từ 1 cột → 2/3 cột theo breakpoint; không dùng pixel fixed width khiến màn hình nhỏ bị cắt. Responsive image sizing với aspect-ratio/object-fit và width/height hợp lý; lazy load ngoài viewport khi phù hợp.
+- Điện thoại Safari: xử lý 100vh/dvh, safe-area; sticky/fixed composer kiểm tra chiều cao header và virtual keyboard; giải pháp phải chạy được sau orientation change và viewport resize.
+- Tối ưu thời gian mở trang chat, hydration, React render của danh sách tin nhắn, debounce tìm kiếm, memoize hợp lý; không render lại hàng trăm message khi người dùng gõ một ký tự nếu có thể tránh.
+- Streaming token: cập nhật trạng thái hợp lý (batch/throttle nếu cần), không làm UI layout thrash; hủy fetch khi chuyển trang và dọn listener/timeouts, ngăn memory leak.
+- Không tăng bundle map/3D không liên quan lên trang chatbot. Chunk/dynamic import theo route khi cần và đo thay đổi.
+- Error boundaries và empty states có giao diện tử tế; loading không che composer vô thời hạn; nếu không có mạng, người dùng đọc được nội dung đã có nhưng không giả AI đang online.
+- Kiểm tra console warnings, hydration mismatch, React key, font Unicode, dark overlays, focus ring, ảnh bị broken, spacing xấu hoặc skeleton stuck.
+
+============================================================
+18. KIỂM THỬ RESPONSIVE TỰ ĐỘNG + THỦ CÔNG
+============================================================
+Bắt buộc thiết lập/chạy regression test Playwright (hoặc framework đã có), có kiểm tra DOM + screenshot theo viewport. Viết test thực, không chỉ mô tả:
+
+UX01. Mở /ai-tu-van ở 320px và 390px: nội dung chat, textarea và nút gửi đều xuất hiện mà không cần zoom-out.
+UX02. Bàn phím mobile mở: vẫn nhìn/gõ/gửi được tin nhắn, không bị header/nav/floating widget che; đóng keyboard trở về bố cục bình thường.
+UX03. Gửi câu dài nhiều dòng, dấu tiếng Việt và thuật ngữ 'GlobalG.A.P.', '°Bx', mã BATCH: không vỡ layout, không gửi trùng khi IME đang nhập.
+UX04. Chat có phản hồi dài 1200 ký tự + 5 nguồn + link sản phẩm: bubble wrap, đọc hết, các nút vẫn bấm được.
+UX05. Kéo lên xem tin cũ rồi AI có tin mới: không giật scroll; nút đi tới cuối hoạt động nếu triển khai.
+UX06. API timeout/401/429/500: lỗi trình bày rõ, retry không nhân đôi tin nhắn, không hiển thị câu trả lời fallback lệch chủ đề.
+UX07. Tablet 768×1024 / 820×1180: sidebar/drawer đóng mở, chat vừa đủ rộng.
+UX08. Laptop 1366×768: chat + form báo giá/FAQ không chồng nhau, CTA luôn trong tầm nhìn.
+UX09. Desktop 1920×1080: max width hợp lý, không kéo bubble quá dài và không dư whitespace vô nghĩa.
+UX10. Floating widget mở trên mobile: focus quản lý đúng, không đè nút giỏ hàng và thanh điều hướng.
+UX11. Auto-resize textarea, gửi và Shift+Enter, copy nội dung, trích dẫn có link thật, câu hỏi gợi ý, loading state.
+UX12. Chuyển giữa /ai-tu-van, /products, chi tiết sản phẩm rồi quay lại: không mất session ngoài thiết kế, không lỗi hydration.
+UX13. Trang chủ, catalog, product detail, auth, forum, QR, /ban-do và cart tại 320/390/768/1366: không tràn ngang, CTA hiện, tương tác được.
+UX14. Chuyển portrait/landscape và browser zoom 200%: không cắt button/label, có scroll tới toàn bộ nội dung.
+UX15. Keyboard navigation & screen reader smoke test: focus visible, thứ tự tab, aria-label, Esc đóng dialog.
+UX16. WebKit/iPhone Safari và Chromium/Android Chrome: textarea không bị zoom tự động, safe-area composer ổn định.
+UX17. Network chậm: loading/empty/error rõ, hình ảnh và thẻ sản phẩm không layout jump quá mức.
+UX18. RAG + DeepSeek: đối chiếu T01–T32 nguyên vẹn trên desktop lẫn mobile, AI vẫn trả lời đúng ngữ cảnh; test OOD unseen terms.
+UX19. Trên production, kiểm tra network các route API, không CORS/500 khi resize; không để lỗi browser console bị che bởi giao diện.
+UX20. Chụp screenshot trước/sau cho mỗi breakpoint đại diện, đối chiếu visual diff; chỉnh UI đến khi không còn lỗi P0/P1.
+
+Test tự động phải chạy được trong CI. Nếu chưa thể chạy test browser do không có quyền hoặc tài nguyên, ghi BLOCKED chính xác, KHÔNG tự báo PASS. Test trên máy thật khi có thể, nhưng emulation không được gọi là test phần cứng thực tế.
+
+============================================================
+19. GATES H–L BẮT BUỘC BỔ SUNG CHO GATES A–G GỐC
+============================================================
+Gate H — Responsive audit: có bảng inventory các trang + lỗi cụ thể theo breakpoint, video/screenshot tái hiện trước khi sửa, ưu tiên UX chatbot.
+Gate I — Chat Mobile Excellence: chat composer, keyboard, scroll, citations, suggestions, product cards và RFQ form hoạt động hoàn chỉnh ở 320–430px.
+Gate J — Tablet/Desktop Excellence: tablet 768/820/1024 và laptop/desktop 1280–1920 đẹp cân đối; không mất nút, không overflows.
+Gate K — Site Regression: mọi route quan trọng còn dùng được, auth/cart/QR/map/forum không bị phá; kiểm thử responsive 320/390/768/1366.
+Gate L — Production Visual Acceptance: Vercel https://cropnetkhoaduc.vercel.app/ai-tu-van đã nhận bản deploy mới; kiểm tra browser thực, network/console, visual screenshots và AI T01–T32 + UX01–UX20; đối chiếu SHA và thời gian deploy.
+
+Nếu QA có lỗi P0/P1, không được báo completed. Chỉ chấp nhận nghiệm thu khi không còn phải thu nhỏ trình duyệt hoặc đổi orientation để sử dụng tính năng chính, không có nội dung bị che, không có lỗi visual nghiêm trọng và AI vẫn dùng dữ liệu RAG/DeepSeek đúng theo phần 0–12.
+
+============================================================
+20. BÀN GIAO CẬP NHẬT VÀ CHỈ DẪN THỰC THI CUỐI CÙNG
+============================================================
+Ngoài tất cả đầu ra mục 12 ban đầu, giao thêm:
+- Bảng ma trận viewport, trang, lỗi trước, file sửa, trạng thái sau và ảnh/screenshot URL (nếu tạo được).
+- Danh sách rõ các vấn đề keyboard iOS/Android, composer, scroll, layout và cách sửa.
+- Test Playwright/Cypress có thể chạy lại, báo browsers và viewport kiểm thử; không chỉ video demo.
+- Bằng chứng không tràn ngang, các nút quan trọng luôn nhìn thấy, ghi rõ zoom 100% và test 200%.
+- Báo cáo hiệu năng/phản hồi chat khi nhập và streaming; nhận xét accessibility và các điểm còn hạn chế.
+- Commit SHA/PR, staging và production Vercel, screenshots desktop/mobile, kết quả T01–T32 + UX01–UX20, các phần BLOCKED còn cần quyền.
+
+THỰC HIỆN TRỰC TIẾP MỌI THAY ĐỔI TRONG REPOSITORY, KHÔNG CHỈ VIẾT PLAN. KIỂM THỬ VÀ DEPLOY LÊN VERCEL SAU KHI HOÀN THÀNH. KHÔNG XÓA BỎ, LƯỢC BỚT HAY THAY THẾ CÁC YÊU CẦU HYBRID RAG, DEEPSEEK, FALLBACK, ANTI-HALLUCINATION, DỮ LIỆU ĐỒNG NAI, T01–T32 CỦA PROMPT GỐC. CHỈ HỎI NGƯỜI DÙNG KHI CẦN QUYỀN TRIỂN KHAI/SECRETS MÀ AGENT THỰC SỰ CHƯA ĐƯỢC CẤP.
+
+YÊU CẦU CHỐT: CROPNET PHẢI LÀ WEBSITE NÔNG SẢN ĐỒNG NAI CÓ AI CHATBOT RAG + DEEPSEEK THÔNG MINH, VÀ MỌI LUỒNG CHÍNH PHẢI ĐẸP, MƯỢT, DỄ ĐỌC, DỄ THAO TÁC, HOẠT ĐỘNG CHUẨN TRÊN IPHONE, ANDROID, TABLET, LAPTOP VÀ MÁY TÍNH — KIỂM CHỨNG THẬT TRÊN VERCEL PRODUCTION.
