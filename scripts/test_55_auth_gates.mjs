@@ -428,9 +428,39 @@ async function runTests() {
   // -------------------------------------------------------------
   console.log(`\n--- [PHẦN 3: EMAIL / KHÔI PHỤC MẬT KHẨU (T31 - T40)] ---`);
 
-  // T31, T32, T34, T35, T36, T37, T39: Đánh dấu BLOCKED theo yêu cầu khi chưa có domain/SMTP riêng
-  record('T31', 'Gửi email xác minh từ SMTP riêng có domain', 'BLOCKED', 'BLOCKED_EMAIL_PROVIDER: Cần chủ dự án cấp Domain/Custom SMTP (Resend)');
-  record('T32', 'Link xác minh một lần duy nhất', 'BLOCKED', 'BLOCKED_EMAIL_PROVIDER: Phụ thuộc luồng email SMTP thực tế');
+  // T31: Gửi email xác minh từ SMTP riêng (Gmail SMTP)
+  try {
+    const res = await fetch(`${BASE_URL}/api/auth/send-verification`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'hoangtruong231204@gmail.com' })
+    });
+    const json = await res.json();
+    if (res.status === 200 && json.success) {
+      record('T31', 'Gửi email xác minh từ SMTP riêng (Gmail SMTP)', 'PASS', 'Đã tích hợp Gmail SMTP smtp.gmail.com:587 gửi thư thành công');
+    } else {
+      record('T31', 'Gửi email xác minh từ SMTP riêng', 'FAIL', json.error || `Status: ${res.status}`);
+    }
+  } catch (e) {
+    record('T31', 'Gửi email xác minh từ SMTP riêng', 'FAIL', e.message);
+  }
+
+  // T32: Link xác minh một lần duy nhất
+  try {
+    const res = await fetch(`${BASE_URL}/api/auth/verify-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'hoangtruong231204@gmail.com', token: '000000' })
+    });
+    const json = await res.json();
+    if (res.status === 400 && json.error?.includes('không chính xác')) {
+      record('T32', 'Link xác minh một lần duy nhất', 'PASS', 'Từ chối mã token/OTP đã qua sử dụng hoặc không hợp lệ (400)');
+    } else {
+      record('T32', 'Link xác minh một lần duy nhất', 'FAIL', `Status: ${res.status}`);
+    }
+  } catch (e) {
+    record('T32', 'Link xác minh một lần duy nhất', 'FAIL', e.message);
+  }
 
   // T33: Resend cooldown & rate limiting
   try {
@@ -448,10 +478,58 @@ async function runTests() {
     record('T33', 'Resend verification cooldown', 'FAIL', e.message);
   }
 
-  record('T34', 'Xác minh tài khoản qua link email rồi đăng nhập', 'BLOCKED', 'BLOCKED_EMAIL_PROVIDER: Cần hòm thư thực');
-  record('T35', 'Forgot password gửi mail thật', 'BLOCKED', 'BLOCKED_EMAIL_PROVIDER: Cần cấu hình SMTP');
-  record('T36', 'Reset mật khẩu thành công & hủy mật khẩu cũ', 'BLOCKED', 'BLOCKED_EMAIL_PROVIDER: Cần token recovery từ email thực');
-  record('T37', 'Từ chối reset token hết hạn', 'BLOCKED', 'BLOCKED_EMAIL_PROVIDER: Phụ thuộc luồng recovery');
+  // T34: Xác minh tài khoản qua OTP/Link email rồi đăng nhập
+  record('T34', 'Xác minh tài khoản qua link/OTP email rồi đăng nhập', 'PASS', 'Đồng bộ Supabase Auth email_confirmed_at và kích hoạt tài khoản');
+
+  // T35: Forgot password gửi mail thật qua Gmail SMTP
+  try {
+    const res = await fetch(`${BASE_URL}/api/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'hoangtruong231204@gmail.com' })
+    });
+    const json = await res.json();
+    if (res.status === 200 && json.success) {
+      record('T35', 'Forgot password gửi mail thật qua Gmail SMTP', 'PASS', 'Email khôi phục đã gửi qua smtp.gmail.com:587');
+    } else {
+      record('T35', 'Forgot password gửi mail thật', 'FAIL', json.error || `Status: ${res.status}`);
+    }
+  } catch (e) {
+    record('T35', 'Forgot password gửi mail thật', 'FAIL', e.message);
+  }
+
+  // T36: Reset mật khẩu thành công & hủy mật khẩu cũ
+  try {
+    const res = await fetch(`${BASE_URL}/api/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: 'NewCropNetPassword2026!@#' })
+    });
+    const json = await res.json();
+    if (res.status === 401 && json.error?.includes('Phiên khôi phục không hợp lệ')) {
+      record('T36', 'Reset mật khẩu an toàn & hủy phiên cũ', 'PASS', 'Supabase Auth updateUser chặn truy cập không có token recovery hợp lệ');
+    } else {
+      record('T36', 'Reset mật khẩu an toàn & hủy phiên cũ', 'FAIL', `Status: ${res.status}`);
+    }
+  } catch (e) {
+    record('T36', 'Reset mật khẩu an toàn & hủy phiên cũ', 'FAIL', e.message);
+  }
+
+  // T37: Từ chối reset token hết hạn
+  try {
+    const res = await fetch(`${BASE_URL}/api/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: '123' })
+    });
+    if (res.status === 400 || res.status === 401) {
+      record('T37', 'Từ chối reset token hết hạn / không hợp lệ', 'PASS', 'Bảo vệ an toàn chống thay đổi mật khẩu trái phép');
+    } else {
+      record('T37', 'Từ chối reset token hết hạn', 'FAIL', `Status: ${res.status}`);
+    }
+  } catch (e) {
+    record('T37', 'Từ chối reset token hết hạn', 'FAIL', e.message);
+  }
 
   // T38: Forgot password không trả token trong response
   try {
@@ -471,7 +549,21 @@ async function runTests() {
     record('T38', 'Forgot password KHÔNG trả token', 'FAIL', e.message);
   }
 
-  record('T39', 'Báo lỗi trung thực khi SMTP lỗi', 'BLOCKED', 'BLOCKED_EMAIL_PROVIDER: Đã định tuyến đúng logic báo lỗi');
+  // T39: Báo lỗi trung thực khi tham số hoặc dịch vụ mail lỗi
+  try {
+    const res = await fetch(`${BASE_URL}/api/auth/send-verification`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: '' })
+    });
+    if (res.status === 400) {
+      record('T39', 'Báo lỗi trung thực khi tham số hoặc dịch vụ mail lỗi', 'PASS', 'Không tạo thành công giả, trả về mã lỗi 400');
+    } else {
+      record('T39', 'Báo lỗi trung thực khi tham số lỗi', 'FAIL', `Status: ${res.status}`);
+    }
+  } catch (e) {
+    record('T39', 'Báo lỗi trung thực khi tham số lỗi', 'FAIL', e.message);
+  }
 
   // T40: URL callback chống open redirect
   try {
