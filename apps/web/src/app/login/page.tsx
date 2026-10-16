@@ -1,48 +1,69 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, Container } from '@cropnet/ui';
 import { useForm } from 'react-hook-form';
 import { useAuthStore } from '@/shared/stores/auth';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/shared/services/api';
 import Link from 'next/link';
+import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+
+interface LoginFormInputs {
+  email: string;
+  password: string;
+  rememberMe?: boolean;
+}
 
 export default function LoginPage() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [capsLockActive, setCapsLockActive] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [loginSuccess, setLoginSuccess] = useState(false);
+
   const { login } = useAuthStore();
   const router = useRouter();
 
-  const onSubmit = async (data: any) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.getModifierState && e.getModifierState('CapsLock')) {
+      setCapsLockActive(true);
+    } else {
+      setCapsLockActive(false);
+    }
+  };
+
+  const onSubmit = async (data: LoginFormInputs) => {
+    if (loading) return; // Prevent double submit
     setLoading(true);
     setServerError(null);
+
     try {
-      // API call to Express auth service
       const res = await apiClient.post('/auth/login', {
         email: data.email,
         password: data.password,
         rememberMe: !!data.rememberMe
       });
 
-      if (res.data.success) {
-        const { accessToken, user } = res.data.data;
-        login(accessToken, user);
-        alert('Đăng nhập thành công!');
-        if (user.role === 'ADMIN') router.push('/admin');
-        else if (user.role === 'FARMER') router.push('/dashboard/supplier');
-        else if (user.role === 'LOGISTICS') router.push('/dashboard/logistics');
-        else if (user.role === 'INSPECTOR') router.push('/dashboard/inspector');
-        else router.push('/');
+      if (res.data.success && res.data.data?.user) {
+        const user = res.data.data.user;
+        login(user);
+        setLoginSuccess(true);
+
+        setTimeout(() => {
+          if (user.role === 'ADMIN') router.push('/admin');
+          else if (user.role === 'FARMER') router.push('/dashboard/supplier');
+          else if (user.role === 'LOGISTICS') router.push('/dashboard/logistics');
+          else if (user.role === 'INSPECTOR') router.push('/dashboard/inspector');
+          else router.push('/dashboard/customer');
+        }, 800);
       } else {
-        setServerError(res.data.error?.message || (typeof res.data.error === 'string' ? res.data.error : null) || 'Đăng nhập thất bại');
+        setServerError(res.data.error || 'Đăng nhập không thành công. Vui lòng thử lại.');
       }
     } catch (err: any) {
       setServerError(
-        err.response?.data?.error?.message ||
-        (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null) ||
-        'Không thể kết nối đến máy chủ API hoặc thông tin đăng nhập không chính xác.'
+        err.response?.data?.error ||
+        'Email hoặc mật khẩu không chính xác hoặc không thể kết nối đến máy chủ.'
       );
     } finally {
       setLoading(false);
@@ -50,8 +71,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-[#FAF9F5] min-h-[85vh] flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md bg-white border border-[#E2E5DC] rounded-xl p-8 space-y-6 shadow-sm">
+    <div className="bg-[#FAF9F5] min-h-[calc(100vh-64px)] flex items-center justify-center py-8 px-4 sm:px-6">
+      <div className="w-full max-w-md bg-white border border-[#E2E5DC] rounded-xl p-6 sm:p-8 space-y-6 shadow-sm overflow-hidden">
+        {/* Header */}
         <div className="text-center space-y-1.5">
           <Link href="/" className="inline-block font-serif font-bold text-xl text-[#2C4939] tracking-tight">
             CropNet Đồng Nai
@@ -60,45 +82,99 @@ export default function LoginPage() {
           <p className="text-xs text-[#647067]">Thương mại nông sản số & Truy xuất nguồn gốc</p>
         </div>
 
+        {/* Feedback Alerts */}
         {serverError && (
-          <div className="bg-red-50 text-red-700 text-xs p-3 rounded-lg border border-red-200">
-            {serverError}
+          <div
+            role="alert"
+            className="bg-red-50 text-red-700 text-xs p-3.5 rounded-lg border border-red-200 flex items-start gap-2.5 animate-fadeIn"
+          >
+            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-600" />
+            <div className="leading-relaxed">{serverError}</div>
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {loginSuccess && (
+          <div
+            role="status"
+            className="bg-green-50 text-[#2C4939] text-xs p-3.5 rounded-lg border border-[#C7D1C3] flex items-center gap-2.5"
+          >
+            <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-[#2C4939]" />
+            <span>Đăng nhập thành công! Đang chuyển hướng về trang làm việc...</span>
+          </div>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
           <div>
-            <label className="block text-xs font-medium text-[#253129] mb-1">Email đăng nhập</label>
+            <label htmlFor="login-email" className="block text-xs font-medium text-[#253129] mb-1">
+              Email đăng nhập
+            </label>
             <input
+              id="login-email"
               type="email"
+              autoComplete="email"
+              aria-required="true"
+              aria-invalid={errors.email ? 'true' : 'false'}
               {...register('email', {
                 required: 'Email không được để trống',
                 pattern: {
-                  value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                  message: 'Email không đúng định dạng'
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: 'Email không đúng định dạng hợp lệ'
                 }
               })}
-              className="w-full bg-[#FAF9F5] border border-[#E2E5DC] px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#2C4939] focus:bg-white text-xs text-[#253129] transition-colors"
+              className={`w-full bg-[#FAF9F5] border px-3.5 py-2.5 rounded-lg focus:outline-none text-xs text-[#253129] transition-colors ${
+                errors.email ? 'border-red-400 focus:border-red-500' : 'border-[#E2E5DC] focus:border-[#2C4939] focus:bg-white'
+              }`}
               placeholder="nhapmail@gmail.com"
             />
             {errors.email && (
-              <span className="text-red-500 text-[11px] mt-1 block">{errors.email.message as string}</span>
+              <span role="alert" className="text-red-500 text-[11px] mt-1 block">
+                {errors.email.message}
+              </span>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-[#253129] mb-1">Mật khẩu</label>
-            <input
-              type="password"
-              {...register('password', {
-                required: 'Mật khẩu không được để trống',
-                minLength: { value: 6, message: 'Mật khẩu tối thiểu 6 ký tự' }
-              })}
-              className="w-full bg-[#FAF9F5] border border-[#E2E5DC] px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#2C4939] focus:bg-white text-xs text-[#253129] transition-colors"
-              placeholder="••••••••"
-            />
+            <div className="flex items-center justify-between mb-1">
+              <label htmlFor="login-password" className="block text-xs font-medium text-[#253129]">
+                Mật khẩu
+              </label>
+              {capsLockActive && (
+                <span className="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                  Caps Lock đang bật
+                </span>
+              )}
+            </div>
+            <div className="relative">
+              <input
+                id="login-password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                aria-required="true"
+                aria-invalid={errors.password ? 'true' : 'false'}
+                onKeyDown={handleKeyDown}
+                {...register('password', {
+                  required: 'Mật khẩu không được để trống',
+                  minLength: { value: 6, message: 'Mật khẩu tối thiểu 6 ký tự' }
+                })}
+                className={`w-full bg-[#FAF9F5] border px-3.5 py-2.5 pr-10 rounded-lg focus:outline-none text-xs text-[#253129] transition-colors ${
+                  errors.password ? 'border-red-400 focus:border-red-500' : 'border-[#E2E5DC] focus:border-[#2C4939] focus:bg-white'
+                }`}
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiển thị mật khẩu'}
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8C978F] hover:text-[#253129] transition-colors p-1"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
             {errors.password && (
-              <span className="text-red-500 text-[11px] mt-1 block">{errors.password.message as string}</span>
+              <span role="alert" className="text-red-500 text-[11px] mt-1 block">
+                {errors.password.message}
+              </span>
             )}
           </div>
 
@@ -121,10 +197,17 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-[#2C4939] text-white font-medium text-xs rounded-lg hover:bg-[#233C2F] transition-colors flex items-center justify-center gap-2"
+            disabled={loading || loginSuccess}
+            className="w-full py-3 bg-[#2C4939] text-white font-medium text-xs rounded-lg hover:bg-[#233C2F] disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 shadow-sm"
           >
-            {loading ? 'Đang xác thực...' : 'Đăng Nhập'}
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Đang xác thực tài khoản...</span>
+              </>
+            ) : (
+              'Đăng Nhập'
+            )}
           </button>
         </form>
 

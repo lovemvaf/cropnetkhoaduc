@@ -129,72 +129,9 @@ function saveToDisk(data: DatabaseState): void {
   }
 }
 
-// Initial seed users with strong bcrypt hashes (min 10 rounds)
+// Initial database state without hardcoded production demo credentials
 function generateInitialState(): DatabaseState {
-  // Pre-hashed passwords for test accounts: 'MatKhauBaoMat2026@'
-  const salt = bcrypt.genSaltSync(10);
-  const adminHash = bcrypt.hashSync('AdminDongNai2026!@#', salt);
-  const farmerHash = bcrypt.hashSync('FarmerDongNai2026!@#', salt);
-  const customerHash = bcrypt.hashSync('Customer2026!@#', salt);
-
-  const initialUsers: UserRecord[] = [
-    {
-      id: 'usr-admin-01',
-      email: 'admin@cropnet.vn',
-      passwordHash: adminHash,
-      fullName: 'Ban Quản Trị CropNet Đồng Nai',
-      phone: '0901234567',
-      role: 'ADMIN',
-      status: 'ACTIVE',
-      isEmailVerified: true,
-      verificationToken: null,
-      createdAt: '2026-10-01T00:00:00.000Z',
-      updatedAt: '2026-10-01T00:00:00.000Z'
-    },
-    {
-      id: 'usr-farmer-tantrieu',
-      email: 'tantrieu@cropnet.vn',
-      passwordHash: farmerHash,
-      fullName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều',
-      phone: '02513851234',
-      role: 'FARMER',
-      status: 'ACTIVE',
-      farmName: 'HTX Nông Nghiệp Dịch Vụ Tân Triều',
-      address: 'Xã Tân Bình, Vĩnh Cửu, Thành phố Đồng Nai',
-      isEmailVerified: true,
-      verificationToken: null,
-      createdAt: '2026-10-01T00:00:00.000Z',
-      updatedAt: '2026-10-01T00:00:00.000Z'
-    },
-    {
-      id: 'usr-farmer-xuanlap',
-      email: 'xuanlap@cropnet.vn',
-      passwordHash: farmerHash,
-      fullName: 'HTX Nông nghiệp Xuân Lập Long Khánh',
-      phone: '02513875678',
-      role: 'FARMER',
-      status: 'ACTIVE',
-      farmName: 'HTX Nông nghiệp - Thương mại - Dịch vụ Xuân Lập',
-      address: 'Phường Xuân Lập, TP Long Khánh, Thành phố Đồng Nai',
-      isEmailVerified: true,
-      verificationToken: null,
-      createdAt: '2026-10-02T00:00:00.000Z',
-      updatedAt: '2026-10-02T00:00:00.000Z'
-    },
-    {
-      id: 'usr-customer-01',
-      email: 'khachhang@gmail.com',
-      passwordHash: customerHash,
-      fullName: 'Nguyễn Thị Bích Ngọc (Biên Hòa)',
-      phone: '0918765432',
-      role: 'CUSTOMER',
-      status: 'ACTIVE',
-      isEmailVerified: true,
-      verificationToken: null,
-      createdAt: '2026-10-03T00:00:00.000Z',
-      updatedAt: '2026-10-03T00:00:00.000Z'
-    }
-  ];
+  const initialUsers: UserRecord[] = [];
 
   const initialForumPosts: ForumPostRecord[] = [
     {

@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Attach user profile if authenticated
-    const currentUser = getUserFromRequest(request);
+    const currentUser = await getUserFromRequest(request);
 
     const newPost = db.createForumPost({
       title: title.trim(),

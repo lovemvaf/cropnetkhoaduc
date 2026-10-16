@@ -10,7 +10,7 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const user = getUserFromRequest(request);
+    const user = await getUserFromRequest(request);
     const userId = user?.id || 'anonymous-user';
     const result = db.toggleLikePost(id, userId);
 

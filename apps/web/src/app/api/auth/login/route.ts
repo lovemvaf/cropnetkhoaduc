@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import { db } from '@/server/db';
-import { generateTokens, setAuthCookies } from '@/server/auth';
+import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,64 +13,90 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // 1. Look up user
-    const user = db.findUserByEmail(email);
-    if (!user) {
+    const normalizedEmail = String(email).toLowerCase().trim();
+
+    // Check Supabase environment configuration
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return NextResponse.json({
+        success: false,
+        error: 'Cơ sở dữ liệu Supabase chưa được cấu hình biến môi trường trên hệ thống.'
+      }, { status: 503 });
+    }
+
+    const supabase = await createClient();
+
+    // 1. Authenticate with Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email: normalizedEmail,
+      password
+    });
+
+    if (authError || !authData.user) {
       return NextResponse.json({
         success: false,
         error: 'Email hoặc mật khẩu không chính xác.'
       }, { status: 401 });
     }
 
-    // 2. Compare password with bcrypt
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
-    if (!isPasswordValid) {
-      return NextResponse.json({
-        success: false,
-        error: 'Email hoặc mật khẩu không chính xác.'
-      }, { status: 401 });
+    const authUser = authData.user;
+
+    // 2. Fetch authoritative profile from public.profiles
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id, email, full_name, phone, role, status')
+      .eq('id', authUser.id)
+      .single();
+
+    // Fetch supplier info if user is farmer
+    let supplierProfile = null;
+    if (profile?.role === 'FARMER' || authUser.user_metadata?.role === 'FARMER') {
+      const { data: sProfile } = await supabase
+        .from('supplier_profiles')
+        .select('farm_name, address, status')
+        .eq('profile_id', authUser.id)
+        .single();
+      supplierProfile = sProfile;
     }
+
+    const role = profile?.role || authUser.user_metadata?.role || 'CUSTOMER';
+    const status = profile?.status || 'ACTIVE';
 
     // 3. Status checks
-    if (user.status === 'SUSPENDED') {
+    if (status === 'SUSPENDED') {
+      await supabase.auth.signOut();
       return NextResponse.json({
         success: false,
         error: 'Tài khoản của bạn đã bị tạm khóa. Vui lòng liên hệ hỗ trợ CropNet.'
       }, { status: 403 });
     }
 
-    // 4. Generate JWT tokens
-    const { accessToken, refreshToken } = generateTokens(user);
-
-    // 5. Build user response object (exclude passwordHash)
+    // 4. Construct sanitized user profile
     const safeUser = {
-      id: user.id,
-      email: user.email,
-      fullName: user.fullName,
-      phone: user.phone || null,
-      role: user.role,
-      status: user.status,
-      farmName: user.farmName || null,
-      address: user.address || null,
-      isEmailVerified: user.isEmailVerified,
-      supplierStatus: user.role === 'FARMER' ? user.status : null
+      id: authUser.id,
+      email: authUser.email || normalizedEmail,
+      fullName: profile?.full_name || authUser.user_metadata?.full_name || 'Thành viên CropNet',
+      phone: profile?.phone || authUser.user_metadata?.phone || null,
+      role,
+      status,
+      farmName: supplierProfile?.farm_name || authUser.user_metadata?.farm_name || null,
+      address: supplierProfile?.address || authUser.user_metadata?.address || null,
+      isEmailVerified: !!authUser.email_confirmed_at,
+      supplierStatus: role === 'FARMER' ? (supplierProfile?.status || 'PENDING') : null
     };
 
     const response = NextResponse.json({
       success: true,
       message: 'Đăng nhập thành công!',
       data: {
-        accessToken,
         user: safeUser
       }
     });
 
-    // 6. Set HttpOnly cookies
-    setAuthCookies(response, accessToken, refreshToken);
-
+    response.headers.set('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
     return response;
+
   } catch (error: any) {
-    console.error('Login error:', error);
+    console.error('Login API error:', error);
     return NextResponse.json({
       success: false,
       error: error.message || 'Lỗi xử lý đăng nhập'

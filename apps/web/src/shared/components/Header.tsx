@@ -12,22 +12,23 @@ export default function Header() {
   const pathname = usePathname();
   const cartItems = useCartStore((state) => state.items);
   const totalItems = cartItems.reduce((acc, curr) => acc + curr.quantity, 0);
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, logout, fetchCurrentUser } = useAuthStore();
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    fetchCurrentUser();
+  }, [fetchCurrentUser]);
 
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     setShowLogoutConfirm(false);
   };
 

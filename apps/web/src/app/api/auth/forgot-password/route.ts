@@ -1,42 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
-import { db } from '@/server/db';
+import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email } = body;
 
-    if (!email) {
+    if (!email || typeof email !== 'string') {
       return NextResponse.json({
         success: false,
         error: 'Vui lòng cung cấp email tài khoản.'
       }, { status: 400 });
     }
 
-    const user = db.findUserByEmail(email);
-    if (!user) {
-      // Anti-enumeration: Return success even if not found
+    const normalizedEmail = email.toLowerCase().trim();
+
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       return NextResponse.json({
-        success: true,
-        message: 'Nếu email tồn tại trong hệ thống, hướng dẫn đặt lại mật khẩu đã được gửi.'
-      });
+        success: false,
+        error: 'Cơ sở dữ liệu Supabase chưa được cấu hình.'
+      }, { status: 503 });
     }
 
-    const resetToken = crypto.randomBytes(16).toString('hex').toUpperCase();
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString(); // 1 hour
+    const supabase = await createClient();
 
-    db.updateUser(user.id, {
-      resetPasswordToken: resetToken,
-      resetPasswordExpires: expiresAt
+    // Determine safe redirect URL
+    const origin = request.nextUrl.origin || 'https://cropnetkhoaduc.vercel.app';
+    const redirectTo = `${origin}/reset-password`;
+
+    // Request password reset email
+    const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+      redirectTo
     });
 
+    if (error) {
+      if (error.message.toLowerCase().includes('rate limit') || error.status === 429) {
+        return NextResponse.json({
+          success: false,
+          error: 'Vui lòng đợi vài phút trước khi gửi lại yêu cầu đặt lại mật khẩu.'
+        }, { status: 429 });
+      }
+      console.warn('Reset password error from Supabase:', error.message);
+    }
+
+    // Anti-enumeration: Always return the same neutral success message
     return NextResponse.json({
       success: true,
-      message: 'Mã khôi phục mật khẩu đã được tạo thành công!',
-      data: {
-        resetToken // Provided for test & development environment verification
-      }
+      message: 'Nếu email tồn tại trong hệ thống CropNet, liên kết khôi phục mật khẩu đã được gửi đến hòm thư của bạn.'
     });
 
   } catch (error: any) {

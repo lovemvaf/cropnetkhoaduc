@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import { db } from '@/server/db';
+import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token, password } = body;
+    const { password } = body;
 
-    if (!token || !password) {
+    if (!password || typeof password !== 'string') {
       return NextResponse.json({
         success: false,
-        error: 'Vui lòng cung cấp mã khôi phục và mật khẩu mới.'
+        error: 'Vui lòng cung cấp mật khẩu mới.'
       }, { status: 400 });
     }
 
@@ -21,24 +20,36 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    const cleanToken = token.trim().toUpperCase();
-    const user = db.findUserByResetToken(cleanToken);
-
-    if (!user) {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       return NextResponse.json({
         success: false,
-        error: 'Mã khôi phục không chính xác hoặc đã hết hạn.'
-      }, { status: 400 });
+        error: 'Cơ sở dữ liệu Supabase chưa được cấu hình.'
+      }, { status: 503 });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, salt);
+    const supabase = await createClient();
 
-    db.updateUser(user.id, {
-      passwordHash,
-      resetPasswordToken: null,
-      resetPasswordExpires: null
+    // Verify that user is currently in authenticated recovery session
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      return NextResponse.json({
+        success: false,
+        error: 'Phiên khôi phục không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu lại liên kết đặt lại mật khẩu.'
+      }, { status: 401 });
+    }
+
+    // Update user password
+    const { error: updateError } = await supabase.auth.updateUser({
+      password
     });
+
+    if (updateError) {
+      return NextResponse.json({
+        success: false,
+        error: updateError.message || 'Không thể cập nhật mật khẩu.'
+      }, { status: 400 });
+    }
 
     return NextResponse.json({
       success: true,

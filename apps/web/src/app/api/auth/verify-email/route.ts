@@ -1,33 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/server/db';
+import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token } = body;
+    const { token, email, token_hash, type = 'signup' } = body;
 
-    if (!token || typeof token !== 'string') {
+    if (!token && !token_hash) {
       return NextResponse.json({
         success: false,
-        error: 'Vui lòng cung cấp mã xác minh.'
+        error: 'Vui lòng cung cấp mã hoặc liên kết xác minh.'
       }, { status: 400 });
     }
 
-    const cleanToken = token.trim().toUpperCase();
-    const user = db.findUserByVerificationToken(cleanToken);
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return NextResponse.json({
+        success: false,
+        error: 'Cơ sở dữ liệu Supabase chưa được cấu hình.'
+      }, { status: 503 });
+    }
 
-    if (!user) {
+    const supabase = await createClient();
+
+    let verifyResult;
+    if (token_hash) {
+      verifyResult = await supabase.auth.verifyOtp({
+        token_hash,
+        type: type as any,
+      });
+    } else {
+      if (!email) {
+        return NextResponse.json({
+          success: false,
+          error: 'Vui lòng cung cấp email cùng mã xác minh OTP.'
+        }, { status: 400 });
+      }
+
+      verifyResult = await supabase.auth.verifyOtp({
+        email: email.toLowerCase().trim(),
+        token: token.trim(),
+        type: 'signup',
+      });
+    }
+
+    if (verifyResult.error) {
       return NextResponse.json({
         success: false,
         error: 'Mã xác minh không chính xác, đã hết hạn hoặc đã được sử dụng.'
       }, { status: 400 });
     }
-
-    // Mark email as verified and invalidate token
-    db.updateUser(user.id, {
-      isEmailVerified: true,
-      verificationToken: null
-    });
 
     return NextResponse.json({
       success: true,

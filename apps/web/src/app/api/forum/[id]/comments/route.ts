@@ -17,7 +17,7 @@ export async function POST(
       return NextResponse.json({ success: false, error: 'Bình luận không được để trống' }, { status: 400 });
     }
 
-    const user = getUserFromRequest(request);
+    const user = await getUserFromRequest(request);
     const authorId = user?.id || 'anonymous-customer';
     const authorName = user?.fullName || 'Thành viên Đồng Nai';
 

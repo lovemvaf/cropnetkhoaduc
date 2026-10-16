@@ -1,52 +1,71 @@
 import { create } from 'zustand';
 
-interface User {
+export interface User {
   id: string;
   email: string;
   fullName: string;
+  phone?: string | null;
   role: 'ADMIN' | 'CUSTOMER' | 'FARMER' | 'LOGISTICS' | 'INSPECTOR';
   status: string;
+  farmName?: string | null;
+  address?: string | null;
+  isEmailVerified?: boolean;
   supplierId?: string | null;
   supplierStatus?: string | null;
 }
 
 interface AuthStore {
-  accessToken: string | null;
   user: User | null;
   isAuthenticated: boolean;
-  login: (accessToken: string, user: User) => void;
-  logout: () => void;
-  setAccessToken: (token: string) => void;
+  isLoading: boolean;
+  login: (user: User) => void;
+  logout: () => Promise<void>;
+  setUser: (user: User | null) => void;
+  fetchCurrentUser: () => Promise<User | null>;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
-  // Load initial state safely checking for server-side rendering boundary
-  accessToken: typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null,
-  user: typeof window !== 'undefined' && localStorage.getItem('user') 
-    ? JSON.parse(localStorage.getItem('user') || 'null') 
-    : null,
-  isAuthenticated: typeof window !== 'undefined' ? !!localStorage.getItem('accessToken') : false,
-  
-  login: (accessToken, user) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('user', JSON.stringify(user));
-    }
-    set({ accessToken, user, isAuthenticated: true });
+export const useAuthStore = create<AuthStore>((set, get) => ({
+  user: null,
+  isAuthenticated: false,
+  isLoading: true,
+
+  login: (user: User) => {
+    set({ user, isAuthenticated: true, isLoading: false });
   },
-  
-  logout: () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('user');
+
+  logout: async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+      // ignore
     }
-    set({ accessToken: null, user: null, isAuthenticated: false });
+    set({ user: null, isAuthenticated: false, isLoading: false });
   },
-  
-  setAccessToken: (token) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('accessToken', token);
+
+  setUser: (user: User | null) => {
+    set({ user, isAuthenticated: !!user, isLoading: false });
+  },
+
+  fetchCurrentUser: async () => {
+    try {
+      set({ isLoading: true });
+      const res = await fetch('/api/auth/me', {
+        method: 'GET',
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-store' }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data?.user) {
+          const user = json.data.user;
+          set({ user, isAuthenticated: true, isLoading: false });
+          return user;
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to fetch session profile:', e);
     }
-    set({ accessToken: token, isAuthenticated: true });
+    set({ user: null, isAuthenticated: false, isLoading: false });
+    return null;
   }
 }));

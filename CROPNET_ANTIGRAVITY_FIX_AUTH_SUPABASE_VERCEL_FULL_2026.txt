@@ -1,0 +1,216 @@
+CROPNET ĐỒNG NAI AI — ANTIGRAVITY MASTER PROMPT
+FIX TRIỆT ĐỂ ĐĂNG KÝ / ĐĂNG NHẬP / XÁC MINH EMAIL / QUÊN MẬT KHẨU / PHÂN QUYỀN
+KẾT NỐI CLOUD MIỄN PHÍ HỢP LỆ — VERCEL + SUPABASE AUTH/POSTGRESQL + EMAIL + SECURITY
+Phiên bản kiểm tra source: 15/10/2026; commit tham chiếu 2f90b839d8fcd9cd2d3f0852753f5037f7d10f03
+
+REPOSITORY: https://github.com/lovemvaf/cropnetkhoaduc
+PRODUCTION: https://cropnetkhoaduc.vercel.app/
+GIT BRANCH: tự xác định nhánh production/branch liên kết Vercel; đọc HEAD mới nhất, không chốt SHA cũ nếu mã đã cập nhật.
+
+VAI TRÒ
+Bạn là Antigravity, hành động như Principal Next.js Engineer, Security Architect, Supabase/PostgreSQL Engineer, Auth Engineer, SRE và QA Lead. NHIỆM VỤ LÀ THỰC THI, KHÔNG CHỈ VIẾT KẾ HOẠCH. Kiểm tra repo thật, sửa code, cài đặt & cấu hình các dịch vụ có quyền, migration có kiểm soát, chạy test, deploy Vercel production và nghiệm thu bằng tài khoản test thực.
+
+LỆNH CỐT LÕI
+- Chỉ báo hoàn thành khi người dùng có thể đăng ký thật, nhận email thật nếu email verification bật, xác minh, đăng nhập, duy trì phiên, đăng xuất, reset mật khẩu, vào đúng dashboard và không mất tài khoản sau nhiều lượt gọi API hoặc redeploy.
+- Không thể hứa hệ thống "không bao giờ lỗi". Phải thiết kế fail-safe, lỗi có thông báo thật, giám sát, backup, hướng dẫn recovery, retries giới hạn và không có "thành công giả".
+- Ưu tiên dịch vụ Free hợp pháp với quyền sở hữu của người dùng, không yêu cầu thanh toán khi chưa được chấp thuận, không tạo tài khoản dùng email người khác, không dùng API key trong chat, không đưa secrets vào repo/frontend/log/ảnh chụp.
+- Không được sửa, đổi hoặc xóa luồng sản phẩm, QR, map, forum, AI RAG/DeepSeek, giỏ hàng và các module hiện chạy ngoài phạm vi cần thiết. Các API dùng auth phải tiếp tục hoạt động đúng quyền.
+- Không đổi nhà cung cấp dịch vụ hoặc phá tài khoản đang tồn tại nếu chưa có sao lưu và phương án rollback. Cấu hình mới phải hỗ trợ môi trường local, preview, production rõ ràng.
+
+=== PHẦN I: CHẨN ĐOÁN SOURCE HIỆN CÓ — ĐỪNG BỎ QUA ===
+Các dấu hiệu ĐÃ NHÌN THẤY trong repository khi soạn prompt, nhưng Antigravity PHẢI xác minh lại HEAD và trên deployment thực tế:
+1. apps/web/src/server/db.ts dùng state RAM, JSON trong /tmp/cropnet_store.json hoặc .cropnet_store.json để lưu users/forum/orders; trên Vercel Functions /tmp là scratch tạm, không phải database lâu dài. Có khả năng request/instance/redeploy khác nhau không thấy dữ liệu.
+2. apps/web/src/server/db.ts tự seed các tài khoản ví dụ có mật khẩu cố định. TUYỆT ĐỐI không để demo account với credential biết trước tồn tại trong production.
+3. apps/web/src/server/auth.ts có JWT_SECRET/JWT_REFRESH_SECRET giá trị fallback hardcode. Không được fallback secret trong production. Không coi JWT có hạn dài hoặc lưu localStorage là đủ an toàn.
+4. apps/web/src/app/api/auth/register/route.ts trả verificationToken vào JSON; send-verification, forgot-password trả verification/reset token ra browser. Đây là lỗi bảo mật, phải xóa khỏi production ngay.
+5. apps/web/src/app/api/auth/send-verification/route.ts và forgot-password tạo token nhưng chưa có kênh gửi email thực, còn báo đã gửi. Không được nói "đã gửi email" khi chưa gửi.
+6. apps/web/src/shared/stores/auth.ts lưu accessToken và user trên localStorage; apps/web/src/shared/services/api.ts gắn Bearer, làm mới token bằng /api/auth/refresh-token, có nguy cơ trạng thái client/server lệch, lỗi 401 vòng lặp hoặc token cũ.
+7. apps/web/src/app/login/page.tsx, register/page.tsx, verify-email/page.tsx, forgot-password/page.tsx, reset-password/page.tsx cần kiểm tra đồng bộ với contract backend và email provider. Không tự giả lập thành công hoặc gửi người dùng sang đường dẫn sai.
+8. Có hai hệ thống tài khoản: Next.js route handlers trong apps/web/src/app/api/auth/* và Express/Prisma trong apps/server/src/modules/auth/* + schema.prisma; phải xác định hệ nào là nguồn sự thật. Không chạy hai kho người dùng/token không tương thích.
+9. apps/web/next.config.ts dùng Next.js 15, Vercel chạy dynamic Next.js; GitHub Pages là static showcase. Phải giữ tương thích: Next.js 15 dùng middleware.ts (không copy nguyên hướng dẫn proxy.ts cho Next.js 16), xử lý cookies/refresh đúng version thực cài.
+10. apps/web/src/server/db.ts hiện cũng giữ forum/orders; khi chuyển sang database bền vững, KHÔNG chỉ migrate users rồi bỏ mất bài forum/đơn hàng hoặc làm hỏng các API hiện phụ thuộc db.
+11. Không coi thông tin tài khoản seed hay hồ sơ HTX ví dụ là đối tác/nhân sự đã xác minh.
+
+Xuất báo cáo root cause có file:line, log/API status tái hiện, nguyên nhân và mức độ. Xác định rõ những gì quan sát được từ production; không đoán là đã sửa khi chưa chứng minh.
+
+=== PHẦN II: CHỌN KIẾN TRÚC ĐÚNG — MỘT NGUỒN XÁC THỰC ===
+ƯU TIÊN KHUYẾN NGHỊ: Vercel Next.js 15 + Supabase Auth (email/password; có thể thêm Google OAuth khi được phép) + Supabase PostgreSQL cho profiles/supplier roles + Supabase client SSR/cookies/RLS. Tận dụng tài khoản Supabase hiện có của chủ dự án nếu họ cấp quyền.
+- Supabase Auth là authority về identity; auth.users.id liên kết với public.profiles.user_id (UUID), app role được server kiểm soát. Role không lấy từ metadata khách hàng tự sửa.
+- public.profiles chứa full_name, phone, role enum và trạng thái. Bảng supplier_profiles/applications chứa farm_name, address, verification_evidence, approval status, reviewed_by/reviewed_at. Ứng viên FARMER phải PENDING cho đến khi admin xét duyệt; đăng ký không tự thành APPROVED hoặc ADMIN.
+- Nếu cơ sở dữ liệu và Prisma đang vận hành thực ở backend Express và chuyển sang Supabase Auth gây rủi ro migration, có thể chọn PostgreSQL/Supabase + Prisma làm app DB cùng với Supabase Auth sau khi phân tích; hoặc giữ auth hiện có nhưng sửa storage/token/email đạt tiêu chuẩn. QUAN TRỌNG: phải chọn một kiến trúc rõ, không chồng ba auth stack khác nhau.
+- Không sử dụng in-memory, JSON file, /tmp hoặc các KV không có transaction như nguồn sự thật cho tài khoản, quyền, đơn hàng.
+- Bảng liên quan người dùng phải có FK/unique/index, transaction và RLS/policy phù hợp; server-side authorization và DB policy là bắt buộc, UI ẩn nút không phải bảo mật.
+- Nếu dùng Supabase Auth: làm đúng Next.js App Router integration chính thức @supabase/supabase-js + @supabase/ssr cho phiên bản Next.js 15, tạo client browser/server, middleware.ts refresh/cookies. Không trộn JWT tự ký cũ với Supabase JWT trên cùng API nếu chưa có lớp chuyển đổi an toàn. Ưu tiên SDK/session chuẩn do provider quản lý hơn việc tự xử lý refresh token bằng JS thủ công.
+- Nếu chọn custom auth (chỉ khi có lý do kỹ thuật tốt): dùng DB PostgreSQL, argon2id hoặc bcrypt đủ mạnh, refresh token opaque/hash+rotation+revocation, HttpOnly Secure SameSite cookies, CSRF protection phù hợp và JWT secrets ngẫu nhiên trong secrets manager. Không để key fallback.
+- Các endpoint /api/auth/me và các route protected phải xác định phiên thật trên server và nạp role/profile đúng; không dựa vào localStorage làm nguồn xác thực.
+- Tách staging và production theo môi trường được phép; không đưa project Supabase production thật vào local tests có xóa dữ liệu.
+
+=== PHẦN III: TỰ ĐỘNG KẾT NỐI CLOUD FREE BẰNG TÀI KHOẢN CHỦ SỞ HỮU ===
+A. VERCEL: kiểm tra kết nối repo, team và project đang phục vụ cropnetkhoaduc.vercel.app. Yêu cầu người dùng login/cấp quyền qua OAuth/UI nếu cần. Tạo env vars theo target development/preview/production, kiểm tra re-deploy sau khi thay env. Không in values bí mật.
+B. SUPABASE FREE: ưu tiên kết nối project có sẵn thuộc tài khoản người dùng; nếu chưa có project, chỉ tạo mới sau khi chủ sở hữu login/cấp quyền và xác nhận tổ chức/project name/region. Hạn chế xóa hoặc reset project. Chọn region hợp lý với người dùng Việt Nam trong các region free thực sự hỗ trợ, không giả định có một region cụ thể. Cấu hình Authentication URL/redirect allowlist theo URL Vercel thực và localhost; captcha/rate limit khi phù hợp. Bật RLS cho bảng public.
+C. EMAIL: Supabase mặc định chỉ giới hạn và không phải hệ thống gửi email đại trà production. Ưu tiên cấu hình SMTP riêng từ Resend hoặc nhà cung cấp hợp pháp có gói free, có domain đã xác thực và SPF/DKIM. Kết nối SMTP với Supabase Auth hoặc qua service được chọn; thật sự gửi verify/recovery từ domain được phép. Nếu không có domain/không xác minh được SMTP: dừng ở trạng thái BLOCKED_EMAIL_PROVIDER, trình bày yêu cầu chủ tài khoản cấp domain/quyền; tuyệt đối không xuất token cho browser và giả vờ đã gửi.
+D. UPSTASH REDIS FREE (TÙY CHỌN): chỉ thêm nếu cần rate limiting nâng cao, chống brute force/resend abuse và cache không nhạy cảm. Không bắt Redis là nguồn lưu user/session hoặc thành điều kiện vô lý khiến đăng nhập không dùng được khi Redis lỗi; nếu Redis không có, dùng rate limit của provider và biện pháp tương đương với sự minh bạch.
+E. GOOGLE OAUTH (TÙY CHỌN): chỉ bật khi người dùng cấp quyền Google Cloud. Không tự ý tạo OAuth client bằng dữ liệu người khác, không gửi mail, password hoặc OAuth secret vào chat; cấu hình redirect URI, consent screen, domain và xử lý account linking an toàn. Không biến Google login thành điều kiện bắt buộc.
+F. BACKUP: free plan có thể thiếu backup tự động và tạm dừng vì ít hoạt động. Kiểm tra chính sách và tạo hướng dẫn backup/export định kỳ được ủy quyền, kiểm thử restore trên staging, lịch nhắc kiểm tra/quota, không lưu snapshot chứa mật khẩu ra GitHub.
+G. COST: chỉ dùng gói miễn phí trong điều khoản; không bật gói trả phí, billing, add-on có phí hoặc tính năng giới hạn thử nghiệm khi chưa được chủ sở hữu đồng ý. Vercel Hobby chỉ dành cho sử dụng cá nhân/phi thương mại theo điều khoản; nếu ứng dụng thương mại thật, nêu phương án hosting/gói phù hợp trước khi thu giao dịch.
+
+Tài liệu chính thức cần đọc và kiểm tra lại trước thao tác:
+- https://supabase.com/pricing
+- https://supabase.com/docs/guides/auth/quickstarts/nextjs
+- https://supabase.com/docs/guides/auth/server-side
+- https://supabase.com/docs/guides/auth/rate-limits
+- https://supabase.com/docs/guides/auth/auth-smtp
+- https://resend.com/pricing
+- https://upstash.com/pricing/redis
+- https://vercel.com/docs/functions/runtimes
+- https://vercel.com/docs/plans/hobby
+Không hardcode hạn mức lâu dài: kiểm tra bảng giá, điều kiện và tài khoản free thực tế ngay lúc thiết lập.
+
+=== PHẦN IV: LUỒNG ĐĂNG KÝ PHẢI HOẠT ĐỘNG THẬT ===
+1. Khách chọn role CUSTOMER hoặc ứng viên FARMER; không được tự đăng ký ADMIN/INSPECTOR/LOGISTICS bằng sửa request hoặc client. Vai trò đặc biệt chỉ admin cấp trong dashboard có audit trail.
+2. Form có tên, email, số điện thoại nếu cần, password và xác nhận mật khẩu; riêng ứng viên FARMER có farmName, address, hồ sơ chứng minh theo yêu cầu. Validate cả frontend + backend (Zod/schema); email Unicode/idn nếu công nghệ hỗ trợ, chuẩn hóa hợp lý, unique case-insensitive, trim; phone Việt Nam hợp lệ nhưng không cứng nhắc khiến người nước ngoài không thể đăng ký nếu sản phẩm mở rộng quốc tế.
+3. Đăng ký thành công khi Supabase Auth/Postgres xác nhận lưu bền vững (AUTH_PENDING_VERIFICATION hoặc status tương ứng), không phải khi gửi xong request/lưu RAM. Duplicate email có hành vi an toàn bảo vệ quyền riêng tư. Không để double-click tạo hai bản ghi.
+4. Thông báo xác minh email minh bạch, resend có cooldown/rate limit, mã/link có hạn, không expose raw token; redirect đúng host, chống open redirect. Nếu email delivery lỗi, cho retry an toàn và cung cấp thông tin sửa lỗi; không nói đã gửi nếu SMTP thất bại.
+5. Xác minh xong, profile và email verification được đồng bộ, nhấn login mới xác thực đúng. Nếu không bắt email verified trước login thì phải phân biệt rõ privilege và policy.
+6. Kiểm tra restart function/redeploy/browser khác/sessions khác vẫn thấy user. Test 2 tài khoản đăng ký cùng lúc, cùng email, refresh/truy cập protected route.
+7. FARMer chờ duyệt: UI giải thích đang chờ, không cấp quyền chỉnh sản phẩm/chứng nhận trước duyệt. Cấp quyền thay đổi trạng thái chỉ ADMIN đã xác thực.
+8. Không xuất password, reset token, confirmation token, service role secret hoặc hash qua API. Không log credential hoặc PII không cần thiết.
+
+=== PHẦN V: ĐĂNG NHẬP / QUẢN LÝ PHIÊN / ĐĂNG XUẤT ===
+1. Đúng mật khẩu -> session real; sai mật khẩu -> báo chung, không lộ tài khoản có tồn tại hay không. Account banned/pending/locked được xử lý theo policy. Hỗ trợ email uppercase/lowercase và dấu cách đầu/cuối.
+2. Auth state nhất quán khi refresh F5, mở tab mới, đóng/mở trình duyệt, expires/refresh-token, mạng chập chờn. Không loop vô hạn /auth/refresh-token; không tự chuyển người dùng vào trang khác nếu đang ở form chưa gửi; không giả đăng nhập.
+3. Chọn "Ghi nhớ đăng nhập" phải có ý nghĩa thật hoặc ẩn nó nếu không thể triển khai theo thiết kế. Không lưu raw access/refresh JWT trong localStorage khi thay bằng cookie-based SSR.
+4. Đăng nhập admin/farmer/customer/logistics/inspector: RBAC matrix rõ, route guard server kiểm tra claim/profile mỗi request, không phụ thuộc thông tin role do client gửi. ADMIN bị từ chối nếu tự đổi role trong localStorage/API payload.
+5. /api/auth/me trả user profile an toàn (không hash/token), cache-control no-store/private. Session cần refresh/cookie set phải không bao giờ bị CDN cache dùng chung giữa người dùng.
+6. Đăng xuất -> revoke/invalid session theo provider, xóa cookies/session phía client, bảo đảm protected pages trả 401/redirect khi quay lại, browser back không thấy dữ liệu nhạy cảm do cache.
+7. Tránh SSR hydration mismatch, race giữa client SDK và server onAuthStateChange; các nút login/logout không bị double-submit.
+8. Access routes từ forum, giỏ hàng, đơn hàng, dashboard giữ liên kết phù hợp; nếu cần migrate ID nội bộ, tất cả foreign key, ownership và historical order phải được đối chiếu.
+
+=== PHẦN VI: EMAIL VERIFICATION / PASSWORD RESET ===
+1. Đăng ký -> email verify thật với tên miền đã xác nhận (nếu bật); link đích https://cropnetkhoaduc.vercel.app/verify-email hoặc auth/callback phù hợp flow provider.
+2. Forgot password -> dù email không tồn tại, phản hồi tránh lộ danh sách người dùng; khi có tài khoản thật thì email chứa reset link hợp lệ, có expiry, one-time, rate limiting; email được gửi thành công mới xác nhận status tương ứng.
+3. Reset -> mật khẩu mới, xác nhận mật khẩu, chính sách mật khẩu hợp lý; token hết hạn/đã dùng -> từ chối; sau đổi mật khẩu các phiên khác phải được vô hiệu hóa khi provider hỗ trợ, và test thực.
+4. Resend verification -> cooldown, trạng thái, xử lý email vào spam và test các nhà cung cấp Gmail/Outlook nếu có thể.
+5. Templates email tiếng Việt hỗ trợ UTF-8 có đầy đủ dấu; from name rõ, logo link nếu có, nội dung không quảng bá sai sản phẩm.
+6. Nếu chủ tài khoản chưa cấp SMTP/domain, không được mở chức năng production giả vờ gửi email. Cho biết rõ BLOCKED và hướng dẫn UI tối thiểu để cấp quyền.
+
+=== PHẦN VII: MIGRATION KHÔNG MẤT DỮ LIỆU ===
+1. Trước mọi migration, sao lưu tất cả dữ liệu bền vững thực có thể truy cập (PostgreSQL/Prisma/JSON hiện còn trên instance, nếu có), ghi checksum, số lượng users/forum/orders; không thu thập không cần thiết hoặc làm lộ thông tin nhạy cảm. Vercel /tmp có thể không thể phục hồi các instance cũ — phải báo rõ giới hạn, không hứa lấy được dữ liệu mất.
+2. Đánh giá tương thích hash bcrypt của user cũ. Nếu có cách di chuyển hợp lệ qua provider, thực hiện và test đăng nhập với user thật; nếu không, triển khai invite/password-reset bắt buộc an toàn, tuyệt đối không biết hoặc đặt lại password hộ người dùng.
+3. Không đưa seed accounts có credential tĩnh vào production. Seed chỉ trong test isolation, có namespace và tiêu hủy sau test.
+4. Role/profile migration: mapping role + supplier status đúng, không tự chuyển PENDING thành APPROVED, không gắn danh tính mock thành HTX hợp tác chính thức.
+5. Mapping user IDs có FK với forum_posts, comments, orders, likes/bookmarks. Nếu chưa chuyển các module cũ sang PostgreSQL, lập kế hoạch giao diện tương thích nhưng không đánh dấu chức năng đã được bảo toàn khi chưa chứng minh.
+6. Migrations chạy theo script versioned, có dry-run, rollback backup, idempotency, unique constraints; không dùng `prisma db push --force-reset`/DROP TABLE trên production.
+7. Mỗi bước migration ghi PASS/FAIL, user count trước/sau, sample checks không lộ email thật trong báo cáo.
+
+=== PHẦN VIII: BẢO MẬT, PHÒNG LỖI VÀ QUOTA FREE ===
+- Supabase RLS đúng cho user profile; không được SELECT/UPDATE profile người khác, thay role/admin tùy ý. Service role chỉ server và chỉ chức năng thực sự cần, không bao giờ `NEXT_PUBLIC_*`.
+- Rate limit đăng ký/đăng nhập/forgot-password/resend và lockout mềm/CAPTCHA thích hợp chống abuse. Không khóa vĩnh viễn do kẻ xấu spam email người khác.
+- Chống CSRF phù hợp cookie auth và Next.js; XSS; open redirect; session fixation; brute force; reset token replay; user enumeration; role escalation; metadata tampering; JSON schema validation; origin/redirect allowlist.
+- Token nhạy cảm không ở URL log analytics/referrer; nếu callback có code/token thì xử lý an toàn theo provider, loại bỏ query sau xác minh.
+- Các route user-specific set `Cache-Control: private, no-store`. Log theo request ID/status/error category, không ghi password, token, key, cookie hoặc dữ liệu cá nhân.
+- Retry với backoff có giới hạn chỉ cho thao tác idempotent; create account/confirm/reset phải có idempotency/constraint và không double-write. Đứt DB/email -> fail closed, UI báo lỗi có thể thử lại, không tạo status thành công giả.
+- Giám sát kết nối DB, quota auth/mail, gửi email fail, 401/403/429/5xx, login latency. Cảnh báo thiếu env; deploy không được vượt qua health gate nếu DB/Auth cấu hình sai.
+- Tài khoản admin: bật MFA nếu khả dụng và phù hợp; mật khẩu demo không tồn tại production.
+- Không hứa 100% uptime với free tier; nếu Supabase bị paused do inactivity thì cần biện pháp giám sát/recovery hợp lệ. Không chạy cron ping nhằm né chính sách tạm dừng của nhà cung cấp.
+
+=== PHẦN IX: CẢI THIỆN FORM RESPONSIVE & ACCESSIBILITY ===
+Đối với /login, /register, /verify-email, /forgot-password, /reset-password:
+- Giao diện CropNet hiện có: trắng ngà + xanh trầm; tinh tế, font hỗ trợ tiếng Việt, không gradient/neon, không phá theme.
+- Test màn hình 320, 360, 375, 390, 414, 768, 1024, 1280, 1440 px; iOS Safari/Android Chrome/desktop Chrome/Firefox/Edge khi có môi trường test.
+- Khi mở bàn phím điện thoại, form cuộn được và nút Submit hiển thị; không horizontal overflow; không ép zoom-out.
+- Error thông minh tại từng field; focus đúng input lỗi; toggle show/hide password; autocomplete email/current-password/new-password đúng; caps-lock warning tùy chọn; keyboard Enter; aria-label; button loading/disabled, không double click; thông báo status accessible.
+- Luồng "đã có tài khoản"/"quên mật khẩu"/"gửi lại xác minh" rõ, không sử dụng alert() phá UX; spinner/empty/network error rõ ràng.
+- Không hiển thị raw token hoặc mock credential trong UI, html source hay DevTools response trên production.
+
+=== PHẦN X: 55 BÀI TEST NGHIỆM THU BẮT BUỘC ===
+AUTH/REGISTER:
+T01 Đăng ký CUSTOMER thật với email mới và xem record trong DB.
+T02 Đăng ký FARMER -> PENDING và chỉ user phụ trách thấy hồ sơ của mình.
+T03 Duplicate email case-insensitive -> không tạo trùng.
+T04 Email sai format -> validation.
+T05 Password quá ngắn -> validation.
+T06 Confirm password không khớp -> validation UI.
+T07 Tên/field trống -> validation.
+T08 Farmer thiếu farmName/address -> validation.
+T09 Chỉnh request roleName ADMIN/INSPECTOR/LOGISTICS -> 403.
+T10 Spam/double click submit -> một user, không trùng.
+T11 Server offline/DB offline -> UI báo lỗi thực, không "đăng ký thành công".
+T12 User vẫn tồn tại sau redeploy / cold start / instance khác.
+LOGIN/SESSION:
+T13 Email/password đúng -> phiên auth thật.
+T14 Password sai -> 401 chung.
+T15 Email không tồn tại -> 401 chung và không lộ enumeration.
+T16 Email uppercase/spaces -> chuẩn hóa đúng.
+T17 Email chưa verified -> flow phù hợp policy.
+T18 FARMER pending không thể vào dashboard edit/approve.
+T19 CUSTOMER vào đúng menu, không vào admin.
+T20 Admin hợp lệ vào admin; role client bị sửa vẫn không vào được.
+T21 F5/refresh vẫn xác thực đúng, không hydration mismatch.
+T22 2 tabs session sync; logout tab A -> tab B không còn quyền.
+T23 Cookie/refresh rotation hoạt động, không refresh loop.
+T24 Expired access token -> refresh hoặc login lại mượt.
+T25 Invalid/revoked token -> 401, không tạo authenticated state giả.
+T26 Logout xóa session; back/history không lộ dữ liệu bảo vệ.
+T27 2 users cùng lúc không trộn session hoặc user data.
+T28 HTTP/network transient -> error rõ, bounded retry, không double login.
+T29 AccessToken không còn trong localStorage sau migration (nếu chọn cookie auth).
+T30 /api/auth/me và private APIs không bị cache chéo.
+EMAIL/RESET:
+T31 Verify email đến địa chỉ được phép từ SMTP thật.
+T32 Link verify một lần, hết hạn thì reject.
+T33 Resend có cooldown và chống lạm dụng.
+T34 Xác minh account rồi login thành công.
+T35 Forgot password gửi mail thật nhưng không enumerate.
+T36 Reset thành công, mật khẩu cũ không còn hợp lệ.
+T37 Reset token invalid/expired/used -> reject.
+T38 Reset không trả secret/token qua API response.
+T39 SMTP lỗi -> hiển thị trạng thái trung thực, không báo đã gửi.
+T40 URL callback, redirect đúng Vercel host, không open redirect.
+RBAC/MIGRATION/SECURITY:
+T41 RLS cấm user A đọc/sửa profile B.
+T42 User không thể tự sửa role để thành ADMIN.
+T43 User không thể tự approve FARMER.
+T44 Service role/SMTP/JWT secrets không lộ bundle/log.
+T45 Không còn demo admin credentials trong prod seed.
+T46 CSRF/XSS/Open redirect test hợp lý.
+T47 Rate limit 429 và thông báo thử lại.
+T48 Dữ liệu người cũ được giữ hoặc có báo cáo migration không phục hồi được minh bạch.
+T49 Giữ ownership forum posts/comments/orders sau migrate.
+T50 Không có error 500 khi truy cập API với request lỗi.
+RESPONSIVE/PRODUCTION:
+T51 iPhone 320/375/390 px form sử dụng 100% zoom.
+T52 Android 360/414 px keyboard không che nút submit.
+T53 Tablet 768/1024 px layouts và focus states.
+T54 Desktop 1280/1440 px không lỗi dấu/font.
+T55 E2E PRODUCTION: tạo test account -> verify mail -> login -> /me -> logout -> login -> forgot -> reset -> login mới; kiểm tra network/log, ghi screenshot và kết quả.
+
+Không claim PASS nếu chưa thực chạy. Không bao giờ dùng mật khẩu/email thật của người dùng cho test. Nếu không có nhà cung cấp mail được ủy quyền, T31–T40 và E2E đầy đủ là BLOCKED chứ không phải PASS.
+Bổ sung bất kỳ regression test nào phát hiện trong quá trình sửa; mã test phải độc lập và không làm ô nhiễm production.
+
+=== PHẦN XI: QUY TRÌNH THỰC THI ===
+GATE 0 — Kiểm tra branch Vercel đang deploy, hiện trạng auth + database, dữ liệu thật, env availability không in secret; tái hiện lỗi /login /register bằng DevTools/API logs. Snapshot/backup.
+GATE 1 — Kiến trúc auth duy nhất và kế hoạch migration an toàn; xác nhận rõ Supabase Auth+Postgres hoặc giải pháp thay thế có lý do.
+GATE 2 — Kết nối cloud free chủ dự án cấp quyền; cấu hình Supabase, Auth, RLS, callback, env, SMTP/email; không bật billing.
+GATE 3 — Sửa schema migration / user roles / profile links, khôi phục dữ liệu có thể phục hồi, giữ module cũ.
+GATE 4 — Sửa toàn bộ API register/login/me/logout/verification/password reset và luồng frontend; cookie session chuẩn.
+GATE 5 — Test 55 ca + security/CI/build/test performance; không bỏ qua test bằng tắt TypeScript/eslint, không làm giả mocks để báo pass.
+GATE 6 — Deploy preview và kiểm thử trình duyệt/mobile; backup, rollback readiness.
+GATE 7 — Deploy production: https://cropnetkhoaduc.vercel.app/; kiểm tra các route /register /login /verify-email /forgot-password /reset-password và dashboard.
+GATE 8 — Giám sát production (log/errors/quota) và bàn giao báo cáo thật.
+
+=== PHẦN XII: BÀN GIAO VÀ QUY TẮC PHẢN HỒI ===
+Bắt buộc trả:
+1. ROOT_CAUSE.md gồm file:line và lỗi đã xác minh.
+2. AUTH_ARCHITECTURE.md gồm sơ đồ, dữ liệu, RLS, email workflow, lý do chọn hạ tầng.
+3. Migration/versioned SQL hoặc Prisma scripts và backup/rollback guide.
+4. Danh sách cấu hình env CHỈ TÊN, không kèm value, ví dụ NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, server-side Supabase secret nếu cần, SMTP credentials; không copy secrets.
+5. Kết quả các quyền user cần cấp: Supabase/Vercel/Resend/Google OAuth — chỉ yêu cầu đúng quyền còn thiếu; nếu bị chặn thì ghi BLOCKED và cách cấp quyền UI, không nói đã kết nối.
+6. Kết quả test T01–T55 PASS/FAIL/PARTIAL/BLOCKED kèm log đã che dữ liệu và screenshot phù hợp.
+7. Commit SHA, nhánh, PR nếu có, workflow, Vercel deployment ID & URL thực, xác nhận domain production trỏ commit tương ứng.
+8. So sánh trước/sau: số test pass, login/registration P50/P95 nếu đo được, lỗi còn tồn đọng, monitoring và quota.
+9. Xác nhận các tính năng không liên quan (AI RAG, maps, forum, QR, cart, catalog) không bị hỏng bằng smoke tests.
+10. Danh sách mọi blocker/giới hạn free: SMTP/domain, paused Supabase Free, migrations, Vercel Hobby điều khoản và điều chưa được chứng minh.
+
+PHƯƠNG CHÂM: Làm đúng, có chứng cứ, an toàn, bền vững và giảm hỏng hóc; không tuyên bố "100% không lỗi"; không thông báo "thành công" giả; không phá dữ liệu hoặc quyền truy cập.
+YÊU CẦU CUỐI: BẮT ĐẦU PHÂN TÍCH REPO HIỆN TẠI VÀ THỰC HIỆN TỪ GATE 0 ĐẾN GATE 8. ĐỪNG DỪNG SAU KHI VIẾT KẾ HOẠCH.

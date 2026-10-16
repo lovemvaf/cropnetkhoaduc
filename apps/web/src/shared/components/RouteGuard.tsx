@@ -12,9 +12,14 @@ interface RouteGuardProps {
 }
 
 export default function RouteGuard({ children, allowedRoles }: RouteGuardProps) {
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, isLoading, fetchCurrentUser } = useAuthStore();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    fetchCurrentUser();
+  }, [fetchCurrentUser]);
 
   const isPending = user && (
     (user.role === 'FARMER' && user.supplierStatus === 'PENDING') ||
@@ -23,34 +28,30 @@ export default function RouteGuard({ children, allowedRoles }: RouteGuardProps) 
   );
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (mounted && !isAuthenticated) {
+    if (mounted && !isLoading && !isAuthenticated) {
       router.push('/login');
     }
-  }, [mounted, isAuthenticated, router]);
+  }, [mounted, isLoading, isAuthenticated, router]);
 
   useEffect(() => {
-    if (mounted && isAuthenticated && isPending) {
+    if (mounted && !isLoading && isAuthenticated && isPending) {
       const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
       if (pathname !== '/dashboard/pending') {
         router.push('/dashboard/pending');
       }
     }
-  }, [mounted, isAuthenticated, isPending, router]);
+  }, [mounted, isLoading, isAuthenticated, isPending, router]);
 
-  if (!mounted) {
+  if (!mounted || isLoading) {
     return (
       <Container className="py-20 flex justify-center items-center">
-        <div className="w-10 h-10 border-4 border-primary-100 border-t-primary-500 rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-[#C7D1C3] border-t-[#2C4939] rounded-full animate-spin"></div>
       </Container>
     );
   }
 
   if (!isAuthenticated) {
-    return null; // Let the useEffect redirect
+    return null;
   }
 
   if (isPending) {
@@ -87,7 +88,7 @@ export default function RouteGuard({ children, allowedRoles }: RouteGuardProps) 
             </button>
             <button
               onClick={() => router.push('/')}
-              className="bg-primary-500 text-white font-semibold px-4 py-2.5 rounded-xl hover:bg-primary-600 transition-colors flex items-center gap-1.5 text-sm"
+              className="bg-[#2C4939] text-white font-semibold px-4 py-2.5 rounded-xl hover:bg-[#233C2F] transition-colors flex items-center gap-1.5 text-sm"
             >
               <Home className="w-4 h-4" />
               <span>Trang chủ</span>

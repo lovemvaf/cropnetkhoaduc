@@ -5,7 +5,7 @@ import { VERIFIED_PRODUCTS } from '@/data/catalog';
 
 export async function GET(request: NextRequest) {
   try {
-    const user = getUserFromRequest(request);
+    const user = await getUserFromRequest(request);
     if (!user) {
       return NextResponse.json({
         success: false,
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = getUserFromRequest(request);
+    const user = await getUserFromRequest(request);
     const body = await request.json();
     const { items = [], shippingAddress, paymentMethod = 'COD', customerName, customerPhone, customerEmail } = body;
 

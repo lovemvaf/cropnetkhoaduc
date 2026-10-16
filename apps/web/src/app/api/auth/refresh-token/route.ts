@@ -1,53 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/server/db';
-import { verifyRefreshToken, generateTokens, setAuthCookies } from '@/server/auth';
+import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
   try {
-    let token = request.cookies.get('refreshToken')?.value;
-
-    if (!token) {
-      try {
-        const body = await request.json();
-        token = body.refreshToken;
-      } catch {
-        // no body
-      }
-    }
-
-    if (!token) {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       return NextResponse.json({
         success: false,
-        error: 'Refresh token không được tìm thấy.'
-      }, { status: 401 });
+        error: 'Cơ sở dữ liệu Supabase chưa được cấu hình.'
+      }, { status: 503 });
     }
 
-    const payload = verifyRefreshToken(token);
-    if (!payload) {
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error || !data.session) {
       return NextResponse.json({
         success: false,
-        error: 'Refresh token không hợp lệ hoặc đã hết hạn.'
+        error: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'
       }, { status: 401 });
     }
-
-    const user = db.findUserById(payload.userId);
-    if (!user || user.status === 'SUSPENDED') {
-      return NextResponse.json({
-        success: false,
-        error: 'Tài khoản không hợp lệ hoặc đã bị khóa.'
-      }, { status: 401 });
-    }
-
-    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
 
     const response = NextResponse.json({
       success: true,
       data: {
-        accessToken
+        sessionValid: true,
+        expiresAt: data.session.expires_at
       }
     });
 
-    setAuthCookies(response, accessToken, newRefreshToken);
+    response.headers.set('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
     return response;
 
   } catch (error: any) {
