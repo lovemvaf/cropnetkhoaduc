@@ -38,8 +38,8 @@ async function runTests() {
   console.log(`===============================================================\n`);
 
   const timestamp = Date.now();
-  const testCustomerEmail = `qa.customer.${timestamp}@cropnet.vn`;
-  const testFarmerEmail = `qa.farmer.${timestamp}@cropnet.vn`;
+  const testCustomerEmail = `qa.customer.${timestamp}@example.com`;
+  const testFarmerEmail = `qa.farmer.${timestamp}@example.com`;
   const testPassword = 'PasswordCropNet2026!@#';
 
   // -------------------------------------------------------------
